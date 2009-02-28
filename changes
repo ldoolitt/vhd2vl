@@ -1,0 +1,84 @@
+Changes 1.2 to 2.2 (Larry Doolittle, February 2009)
+
+Merge extensive changes from Mark Gonzales' version 2.0.  Thanks, Mark!
+
+Grammar:
+  * add XNOR
+  * add hex strings (X"f0f0")
+  * remove UNIT reserved words, and actually emit timescale directive
+  * case statements without "when others"
+  * add a few more "rem"s to the grammar
+  * add resize to the CONVFUNC_2 list
+  * handle one-bit enumeration bit range correctly (no more [0])
+  * some gratuitous changes in output whitespace
+
+Coding:
+  * clean up GENERIC pattern
+  * debug and clean up slist routines and their usage
+  * wrap malloc with xmalloc to exit if out of memory
+  * update Free Software Foundation address
+
+
+Changes 2.0 to 2.1 (Steve Haynal, unreleased?)
+
+Presumably useful to Steve, but everything is too strange or scary
+for me (Larry Doolittle) to understand and incorporate.  Sorry, Steve,
+maybe I'll get something from your work on my next iteration.  People
+interested in the following features (incomplete list) should contact
+the developers directly:
+  * lower-cased identifiers in translated Verilog
+  * parses VHDL packages
+  * parses many VHDL functions and macros
+  * floating-point "after" construct parsed but ignored
+
+
+Changes 1.0 to 2.0 (Mark Gonzales, June 2006)
+
+Grammar:
+  * FOR LOOP
+  * FOR GENERATE and IF GENERATE
+  * natural, integer, time types
+  * based numbers (16#55aa#)
+  * expressions can now include VHDL type conversion functions, mod operator, numbers
+  * now can tolerate comments in the middle of expressions
+  * expressions can now be used in subscripts and vector range definitions
+  * width on (others => 'x') can now be an expression
+  * uses always @(*) when creating some combinational always blocks
+  * variable initialization support
+  * constant can be initialized by an expression
+  * GENERIC definitions for entity are now translated into Verilog
+      parameter definitions, and GENERIC MAPs on instances are translated
+      into Verilog in-line explicit parameter definitions.
+  * allow entity declarations and architectures in separate files
+
+Operation:
+  * new -d option for trace parse - to debug grammar errors
+
+Coding:
+  * introduce slist data structure to build resulting Verilog
+
+
+Changes 1.0 to 1.2 (Larry Doolittle, May 2005)
+
+Grammar:
+  * allow NATURAL as an expression terminal symbol
+  * allow (name'event and exprc) as process sensitivity
+  * allow IS syntactic sugar in COMPONENT declaration
+  * add a bunch of "rem"s to the grammar
+  * handle inout better
+  * treat "signed", "unsigned", "boolean" as synonyms for "std_logic" and "std_logic_vector" 
+
+Operation:
+  * more complete handling of argc/argv
+  * if error happened, return 1 from main and remove incorrect/incomplete output files
+  * avoid insinuating that output Verilog is covered by GPL 
+
+Coding:
+  * increase gcc warning level
+  * add required #includes
+  * remove spurious commas in bison token lists
+  * drop worthless malloc() casts; see C-faq/q7.7
+  * prototype yylex and yyerror
+  * add braces around confusing if/else chain
+
+Original 1.0 (Vincenzo Liguori, February 2001)
