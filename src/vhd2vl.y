@@ -1,9 +1,9 @@
 /*
-    vhd2vl v2.2
+    vhd2vl v2.3
     VHDL to Verilog RTL translator
     Copyright (C) 2001 Vincenzo Liguori - Ocean Logic Pty Ltd - http://www.ocean-logic.com
     Modifications (C) 2006 Mark Gonzales - PMC Sierra Inc
-    Modifications (C) 2002, 2005, 2008, 2009 Larry Doolittle - LBNL
+    Modifications (C) 2002, 2005, 2008-2010 Larry Doolittle - LBNL
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -68,6 +68,19 @@ slist *slwith;
 /* Indentation variables */
 int indent=0;
 slist *indents[MAXINDENT];
+
+struct vrange *new_vrange(enum vrangeType t)
+{
+  struct vrange *v=xmalloc(sizeof(vrange));
+  v->vtype=t;
+  v->nlo = NULL;
+  v->nhi = NULL;
+  v->size_expr = NULL;
+  v->sizeval = 0;
+  v->xlo = NULL;
+  v->xhi = NULL;
+  return v;
+}
 
 void fslprint(FILE *fp,slist *sl){
   if(sl){
@@ -191,6 +204,23 @@ slist *addvec(slist *sl, char *s){
   return sl;
 }
 
+slist *addvec_base(slist *sl, char *b, char *s){
+  char *base_str="'b ";
+  int base_mult=1;
+  if (strcasecmp(b,"X") == 0) {
+     base_str="'h "; base_mult=4;
+  } else if (strcasecmp(b,"O") == 0) {
+     base_str="'o "; base_mult=3;
+  } else {
+     fprintf(stderr,"Warning on line %d: NAME STRING rule matched but "
+       "NAME='%s' is not X or O.\n",lineno, b);
+  }
+  sl=addval(sl,strlen(s)*base_mult);
+  sl=addtxt(sl,base_str);
+  sl=addtxt(sl,s);
+  return sl;
+}
+
 slist *addind(slist *sl){
   if(sl)
     sl=addsl(indents[indent],sl);
@@ -225,11 +255,36 @@ slist *addpar_snug(slist *sl, vrange *v){
   return sl;
 }
 
+slist *addpost(slist *sl, vrange *v){
+  if(v->xlo != NULL) {
+    sl=addtxt(sl,"[");
+    if(v->xhi != NULL){
+      sl=addsl(sl,v->xhi);
+      sl=addtxt(sl,":");
+    }
+    sl=addsl(sl,v->xlo);
+    sl=addtxt(sl,"]");
+  }
+  return sl;
+}
+
 slist *addwrap(char *l,slist *sl,char *r){
 slist *s;
   s=addtxt(NULL,l);
   s=addsl(s,sl);
   return addtxt(s,r);
+}
+
+expdata *addnest(struct expdata *inner)
+{
+  expdata *e;
+  e=xmalloc(sizeof(expdata));
+  if (inner->op == 'c') {
+    e->sl=addwrap("{",inner->sl,"}");
+  } else {
+    e->sl=addwrap("(",inner->sl,")"); 
+  }
+  return e;
 }
 
 slist *addrem(slist *sl, slist *rem)
@@ -515,6 +570,26 @@ slist *output_timescale(slist *sl)
     return sl;
 }
 
+slist *setup_port(sglist *s_list, int dir, vrange *type) {
+  slist *sl;
+  sglist *p;
+  sl=addtxt(NULL,inout_string(dir));
+  sl=addpar(sl,type);
+  p=s_list;
+  for(;;){
+    p->type=wire;
+    p->range=type;
+    sl=addtxt(sl,p->name);
+    if(p->next==NULL)
+      break;
+    p=p->next;
+    sl=addtxt(sl,", ");
+  }
+  sl=addtxt(sl,";\n");
+  p->next=io_list;
+  io_list=s_list;
+  return sl;
+}
 %}
 
 %union {
@@ -529,22 +604,22 @@ slist *output_timescale(slist *sl)
 
 %token <txt> REM ENTITY IS PORT GENERIC IN OUT INOUT MAP
 %token <txt> INTEGER BIT BITVECT DOWNTO TO TYPE END
-%token <txt> ARCHITECTURE COMPONENT OF
+%token <txt> ARCHITECTURE COMPONENT OF ARRAY
 %token <txt> SIGNAL BEGN NOT WHEN WITH EXIT
 %token <txt> SELECT OTHERS PROCESS VARIABLE CONSTANT
 %token <txt> IF THEN ELSIF ELSE CASE
 %token <txt> FOR LOOP GENERATE
 %token <txt> AFTER AND OR XOR MOD
 %token <txt> LASTVALUE EVENT POSEDGE NEGEDGE
-%token <txt> STRING NAME RANGE NULLV
-%token <txt> CONVFUNC_2 BASED
+%token <txt> STRING NAME RANGE NULLV OPEN
+%token <txt> CONVFUNC_1 CONVFUNC_2 BASED
 %token <n> NATURAL
 
 %type <n> trad
 %type <sl> rem  remlist entity
 %type <sl> portlist genlist architecture
 %type <sl> a_decl a_body p_decl oname
-%type <sl> map_list map_item sigvalue
+%type <sl> map_list map_item mvalue sigvalue
 %type <sl> generic_map_list generic_map_item
 %type <sl> conf exprc sign_list p_body optname
 %type <sl> edge
@@ -673,6 +748,7 @@ entity    : ENTITY NAME IS PORT '(' rem portlist ')' ';' rem END opt_entity onam
                 /*sl=addtxt(sl,p->type);*/
                 sl=addpar(sl,p->range);
                 sl=addtxt(sl,p->name);
+                /* sl=addpost(sl,p->range); */
                 sl=addtxt(sl,";\n");
                 p=p->next;
               } while(p!=NULL);
@@ -806,67 +882,57 @@ genlist  : s_list ':' type ':' '=' expr rem {
          }
         ;
 
-          /* 1      2  3    4    5 */
+          /* 1      2   3   4    5 */
 portlist  : s_list ':' dir type rem {
             slist *sl;
-            sglist *p;
 
               if(dolist){
-                sl=addtxt(NULL,inout_string($3));
-                sl=addpar(sl,$4);
-                p=$1;
-                for(;;){
-                  sl=addtxt(sl,p->name);
-                  p=p->next;
-                  if(p==NULL)
-                    break;
-                  sl=addtxt(sl,", ");
-                }
-                sl=addtxt(sl,";\n");
+                io_list=NULL;
+                sl=setup_port($1,$3,$4);  /* modifies io_list global */
                 $$=addsl(sl,$5);
-                io_list=p=$1;
-                for(;;){
-                  p->type=wire;
-                  p->range=$4;
-                  if(p->next==NULL)
-                    break;
-                  p=p->next;
-                }
               } else{
                 free($5);
                 free($4);
               }
             }
+          /* 1      2   3   4    5   6   7     */
           | s_list ':' dir type ';' rem portlist {
             slist *sl;
-            sglist *p;
 
               if(dolist){
-                sl=addtxt(NULL,inout_string($3));
-                sl=addpar(sl,$4);
-                p=$1;
-                for(;;){
-                  sl=addtxt(sl,p->name);
-                  p=p->next;
-                  if(p==NULL)
-                    break;
-                  sl=addtxt(sl,", ");
-                }
-                sl=addtxt(sl,";\n");
+                sl=setup_port($1,$3,$4);  /* modifies io_list global */
                 sl=addsl(sl,$6);
                 $$=addsl(sl,$7);
-                p=$1;
-                for(;;){
-                  p->type=wire;
-                  p->range=$4;
-                  if(p->next==NULL)
-                    break;
-                  p=p->next;
-                }
-                p->next=io_list;
-                io_list=$1;
               } else{
                 free($6);
+                free($4);
+              }
+            }
+          /* 1      2   3   4    5   6   7    8 */
+          | s_list ':' dir type ':' '=' expr rem {
+            slist *sl;
+              fprintf(stderr,"Warning on line %d: "
+                "port default initialization ignored\n",lineno);
+              if(dolist){
+                io_list=NULL;
+                sl=setup_port($1,$3,$4);  /* modifies io_list global */
+                $$=addsl(sl,$8);
+              } else{
+                free($8);
+                free($4);
+              }
+            }
+          /* 1      2   3   4    5   6   7    8   9   10     */
+          | s_list ':' dir type ':' '=' expr ';' rem portlist {
+            slist *sl;
+              fprintf(stderr,"Warning on line %d: "
+                "port default initialization ignored\n",lineno);
+              if(dolist){
+                sl=setup_port($1,$3,$4);  /* modifies io_list global */
+                sl=addsl(sl,$9);
+                $$=addsl(sl,$10);
+              } else{
+                free($9);
                 free($4);
               }
             }
@@ -878,14 +944,16 @@ dir         : IN { $$=0;}
             ;
 
 type        : BIT {
-                $$=xmalloc(sizeof(vrange));
-                $$->vtype =tSCALAR;
-                $$->nlo = NULL;
-                $$->nhi = NULL;
+                $$=new_vrange(tSCALAR);
+              }
+            | INTEGER RANGE expr TO expr {
+                fprintf(stderr,"Warning on line %d: integer range ignored\n",lineno);
+                $$=new_vrange(tSCALAR);
+                $$->nlo = addtxt(NULL,"0");
+                $$->nhi = addtxt(NULL,"31");
               }
             | INTEGER {
-                $$=xmalloc(sizeof(vrange));
-                $$->vtype =tSCALAR;
+                $$=new_vrange(tSCALAR);
                 $$->nlo = addtxt(NULL,"0");
                 $$->nhi = addtxt(NULL,"31");
               }
@@ -905,11 +973,9 @@ type        : BIT {
 
 /* using expr instead of simple_expr here makes the grammar ambiguous (why?) */
 vec_range : simple_expr updown simple_expr {
-              $$=xmalloc(sizeof(vrange));
-              $$->vtype=tVRANGE;
+              $$=new_vrange(tVRANGE);
               $$->nhi=$1->sl;
               $$->nlo=$3->sl;
-              $$->size_expr = NULL;
               $$->sizeval = -1; /* undefined size */
               /* calculate the width of this vrange */
               if ($1->op == 'n' && $3->op == 'n') {
@@ -945,14 +1011,11 @@ vec_range : simple_expr updown simple_expr {
               }
             }
           | simple_expr {
-              $$=xmalloc(sizeof(vrange));
-              $$->vtype=tSUBSCRIPT;
-              $$->nhi=NULL;
+              $$=new_vrange(tSUBSCRIPT);
               $$->nlo=$1->sl;
           }
           | NAME '\'' RANGE {
               /* lookup NAME and copy its vrange */
-              $$=xmalloc(sizeof(vrange));
               sglist *sg = NULL;
               if((sg=lookup(io_list,$1))==NULL) {
                 sg=lookup(sig_list,$1);
@@ -1005,6 +1068,7 @@ a_decl    : {$$=NULL;}
                 sl=addptxt(sl,&(sg->type));
                 sl=addpar(sl,$5);
                 sl=addtxt(sl,sg->name);
+                sl=addpost(sl,$5);
                 sl=addtxt(sl,";");
                 if(sg->next == NULL)
                   break;
@@ -1053,17 +1117,26 @@ a_decl    : {$$=NULL;}
               $$=addrem(sl,$9);
               p=xmalloc(sizeof(sglist));
               p->name=$3;
-              p->range=xmalloc(sizeof(vrange));
               if(k>0) {
-                p->range->vtype = tVRANGE;
-		p->range->sizeval = k+1;
+                p->range=new_vrange(tVRANGE);
+                p->range->sizeval = k+1;
                 p->range->nhi=addval(NULL,k);
                 p->range->nlo=addtxt(NULL,"0");
               } else {
-                p->range->vtype = tSCALAR;
-                p->range->nhi= NULL;
-                p->range->nlo= NULL;
+                p->range=new_vrange(tSCALAR);
               }
+              p->next=type_list;
+              type_list=p;
+            }
+          | a_decl TYPE NAME IS ARRAY '(' vec_range ')' OF type ';' rem {
+            slist *sl=NULL;
+            sglist *p;
+              $$=addrem(sl,$12);
+              p=xmalloc(sizeof(sglist));
+              p->name=$3;
+              p->range=$10;
+              p->range->xhi=$7->nhi;
+              p->range->xlo=$7->nlo;
               p->next=type_list;
               type_list=p;
             }
@@ -1159,8 +1232,8 @@ a_body : rem {$$=addind($1);}
            sl=addtxt(sl,"end\n\n");
            $$=addsl(sl,$11);
          }
-       /* 1   2   3     4  5    6    7   8          9     10  11  12  13       14 */
-       | rem NAME ':' NAME PORT MAP '(' doindent map_list rem ')' ';' unindent a_body {
+       /* 1   2   3     4  5   6    7    8   9         10     11  12  13  14       15 */
+       | rem NAME ':' NAME rem PORT MAP '(' doindent map_list rem ')' ';' unindent a_body {
          slist *sl;
            sl=addsl($1,indents[indent]);
            sl=addtxt(sl,$4); /* NAME2 */
@@ -1168,26 +1241,30 @@ a_body : rem {$$=addind($1);}
            sl=addtxt(sl,$2); /* NAME1 */
            sl=addtxt(sl,"(\n");
            sl=addsl(sl,indents[indent]);
-           sl=addsl(sl,$9);  /* map_list */
+           sl=addsl(sl,$10);  /* map_list */
            sl=addtxt(sl,");\n\n");
-           $$=addsl(sl,$14); /* a_body */
+           $$=addsl(sl,$15); /* a_body */
          }
-       /* 1   2   3     4  5        6  7    8       9                10  11       12   13   14     15   16       17  18  19       20 */
-       | rem NAME ':' NAME GENERIC MAP '(' doindent generic_map_list ')' unindent PORT MAP '(' doindent map_list ')' ';' unindent a_body {
+       /* 1   2   3     4  5   6        7  8    9       10               11  12       13   14   15     16   17       18  19  20       21 */
+       | rem NAME ':' NAME rem GENERIC MAP '(' doindent generic_map_list ')' unindent PORT MAP '(' doindent map_list ')' ';' unindent a_body {
          slist *sl;
            sl=addsl($1,indents[indent]);
            sl=addtxt(sl,$4); /* NAME2 (component name) */
+           if ($5) {
+             sl=addsl(sl,$5);
+             sl=addsl(sl,indents[indent]);
+           }
            sl=addtxt(sl," #(\n");
            sl=addsl(sl,indents[indent]);
-           sl=addsl(sl,$9); /* (generic) map_list */
+           sl=addsl(sl,$10); /* (generic) map_list */
            sl=addtxt(sl,")\n");
            sl=addsl(sl,indents[indent]);
            sl=addtxt(sl,$2); /* NAME1 (instance name) */
            sl=addtxt(sl,"(\n");
            sl=addsl(sl,indents[indent]);
-           sl=addsl(sl,$16); /* map_list */
+           sl=addsl(sl,$17); /* map_list */
            sl=addtxt(sl,");\n\n");
-           $$=addsl(sl,$20); /* a_body */
+           $$=addsl(sl,$21); /* a_body */
          }
        | optname PROCESS '(' sign_list ')' p_decl opt_is BEGN doindent p_body END PROCESS oname ';' unindent a_body {
          slist *sl;
@@ -1634,6 +1711,7 @@ wlist : wvalue {$$=$1;}
       ;
 
 wvalue : STRING {$$=addvec(NULL,$1);}
+       | NAME STRING {$$=addvec_base(NULL,$1,$2);}
        | NAME {$$=addtxt(NULL,$1);}
        ;
 
@@ -1702,17 +1780,24 @@ map_list : rem map_item {
            }
          ;
 
-map_item : signal {$$=$1->sl; free($1);}
-         | NAME '=' '>' signal {
+map_item : mvalue {$$=$1;}
+         | NAME '=' '>' mvalue {
            slist *sl;
              sl=addtxt(NULL,".");
              sl=addtxt(sl,$1);
              sl=addtxt(sl,"(");
-             sl=addsl(sl,$4->sl);
-             free($4);
+             sl=addsl(sl,$4);
              $$=addtxt(sl,")");
            }
          ;
+
+mvalue : STRING {$$=addvec(NULL,$1);}
+       | signal {$$=addsl(NULL,$1->sl);}
+       | NATURAL {$$=addval(NULL,$1);}
+       | NAME STRING {$$=addvec_base(NULL,$1,$2);}
+       | OPEN {$$=addtxt(NULL,"/* open */");}
+       ;
+
 
 generic_map_list : rem generic_map_item {
            slist *sl;
@@ -1724,6 +1809,9 @@ generic_map_list : rem generic_map_item {
              sl=addsl(sl,$2);
              sl=addtxt(sl,",\n");
              $$=addsl(sl,$4);
+           }
+         | rem expr {  /* only allow a single un-named map item */
+             $$=addsl(NULL,$2->sl);
            }
          ;
 
@@ -1795,6 +1883,7 @@ expr : signal {
            $$=e;
          }
      | NATURAL BASED {  /* e.g. 16#55aa# */
+         /* XXX unify this code with addvec_base */
          expdata *e=xmalloc(sizeof(expdata));
          char *natval = xmalloc(strlen($2)+34);
            e->op='t'; /* Terminal symbol */
@@ -1820,13 +1909,8 @@ expr : signal {
          }
      | NAME STRING {
          expdata *e=xmalloc(sizeof(expdata));
-         char *natval = xmalloc(strlen($2)+3);
-         if (strcasecmp($1,"X") != 0) {
-           fprintf(stderr,"Warning on line %d: NAME STRING rule matched but NAME='%s' is not X.\n",lineno, $1);
-         }
            e->op='t'; /* Terminal symbol */
-           sprintf(natval, "'H%s",$2);
-           e->sl=addtxt(NULL,natval);
+           e->sl=addvec_base(NULL,$1,$2);
            $$=e;
          }
      | '(' OTHERS '=' '>' STRING ')' {
@@ -1870,34 +1954,13 @@ expr : signal {
       }
      | CONVFUNC_2 '(' expr ',' NATURAL ')' {
        /* two argument type conversion e.g. to_unsigned(x, 3) */
-       expdata *e;
-       e=xmalloc(sizeof(expdata));
-       if ($3->op == 'c') {
-         e->sl=addwrap("{",$3->sl,"}");
-       } else {
-         e->sl=addwrap("(",$3->sl,")"); 
-       }
-       $$=e;
+       $$ = addnest($3);
       }
      | CONVFUNC_2 '(' expr ',' NAME ')' {
-       expdata *e;
-       e=xmalloc(sizeof(expdata));
-       if ($3->op == 'c') {
-         e->sl=addwrap("{",$3->sl,"}");
-       } else {
-         e->sl=addwrap("(",$3->sl,")"); 
-       }
-       $$=e;
+       $$ = addnest($3);
       }
      | '(' expr ')' {
-       expdata *e;
-       e=xmalloc(sizeof(expdata));
-       if ($2->op == 'c') {
-         e->sl=addwrap("{",$2->sl,"}");
-       } else {
-         e->sl=addwrap("(",$2->sl,")"); 
-       }
-       $$=e;
+       $$ = addnest($2);
       }
      ;
 
@@ -2063,6 +2126,13 @@ simple_expr : signal {
      | simple_expr '/' simple_expr {
        $$=addexpr($1,'/'," / ",$3);
       }
+     | CONVFUNC_1 '(' simple_expr ')' {
+       /* one argument type conversion e.g. conv_integer(x) */
+       expdata *e;
+       e=xmalloc(sizeof(expdata));
+       e->sl=addwrap("(",$3->sl,")"); 
+       $$=e;
+      }
      | '(' simple_expr ')' {
        expdata *e;
        e=xmalloc(sizeof(expdata));
@@ -2120,13 +2190,13 @@ int status;
      outfile = "-";
   }
 
-  printf("// File %s translated with vhd2vl v2.2 VHDL to Verilog RTL translator\n\n", sourcefile);
+  printf("// File %s translated with vhd2vl v2.3 VHDL to Verilog RTL translator\n\n", sourcefile);
   fputs(
 "// vhd2vl is Free (libre) Software:\n"
 "//   Copyright (C) 2001 Vincenzo Liguori - Ocean Logic Pty Ltd\n"
 "//     http://www.ocean-logic.com\n"
 "//   Modifications Copyright (C) 2006 Mark Gonzales - PMC Sierra Inc\n"
-"//   Modifications Copyright (C) 2002, 2005, 2008, 2009 Larry Doolittle - LBNL\n"
+"//   Modifications Copyright (C) 2002, 2005, 2008-2010 Larry Doolittle - LBNL\n"
 "//     http://doolittle.icarus.com/~larry/vhd2vl/\n"
 "//\n"
 "//   vhd2vl comes with ABSOLUTELY NO WARRANTY.  Always check the resulting\n"

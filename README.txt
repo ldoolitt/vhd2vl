@@ -76,6 +76,11 @@ Part select expression zz(31+k downto k) should convert to zz[31+k+:32]
 variables not handled right, show up as declarations within always blocks
   (see examples/for.vhd)
 
-Conversion functions (resize and to_unsigned) are parsed, but their
-  semantics are ignored: resize(foo,n) and to_unsigned(foo,n) are treated
-  as equivalent to (foo).
+Conversion functions (resize, to_unsigned, conv_integer) are parsed, but
+  their semantics are ignored: resize(foo,n), to_unsigned(foo,n), and
+  conv_integer(foo) are treated as equivalent to (foo).
+
+VHDL is case insensitive, vhd2vl is case retentive, and Verilog is case
+  sensitive.  If you're sloppy with case in the original VHDL, the
+  resulting Verilog will have compile-time warnings or errors.  See
+  the comments about vhd2vl-2.1 in the changes file.

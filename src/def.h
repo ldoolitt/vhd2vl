@@ -1,5 +1,5 @@
 /*
-    vhd2vl v2.2
+    vhd2vl v2.3
     VHDL to Verilog RTL translator
     Copyright (C) 2001 Vincenzo Liguori - Ocean Logic Pty Ltd - http://www.ocean-logic.com
     Modifications (C) 2006 Mark Gonzales - PMC Sierra Inc
@@ -53,6 +53,7 @@ typedef struct vrange {
   struct slist *nhi, *nlo; /* MAG index is a simple expression */
   slist *size_expr;        /* expression that calculates size (width) of this vrange */
   int    sizeval;          /* precalculated size value */
+  struct slist *xhi, *xlo; /* array index range; 0,0 for normal scalars */
 } vrange;
 
 typedef struct slval {

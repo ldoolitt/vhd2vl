@@ -1,9 +1,9 @@
 /*
-    vhd2vl v2.2
+    vhd2vl v2.3
     VHDL to Verilog RTL translator
     Copyright (C) 2001 Vincenzo Liguori - Ocean Logic Pty Ltd - http://www.ocean-logic.com
     Modifications Copyright (C) 2006 Mark Gonzales - PMC Sierra Inc
-    Modifications Copyright (C) 2008, 2009 Larry Doolittle - LBNL
+    Modifications Copyright (C) 2008-2010 Larry Doolittle - LBNL
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -91,13 +91,13 @@ void getbasedstring(int skip);
 "architecture" { return ARCHITECTURE; }
 "component" { return COMPONENT; }
 "of" { return OF; }
+"array" {return ARRAY; }
 "signal" { return SIGNAL; }
 "begin" { return BEGN; }
 "not" { return NOT; }
 "when" { return WHEN; }
 "exit" { return EXIT; }
-"with" {
-  return WITH; }
+"with" { return WITH; }
 "select" { return SELECT; }
 "others" { return OTHERS; }
 "range" { return RANGE; }
@@ -105,6 +105,7 @@ void getbasedstring(int skip);
 "variable" { return VARIABLE; }
 "constant" { return CONSTANT; }
 "null" { return NULLV; }
+"open" { return OPEN; }
 "if" { return IF; }
 "then" { return THEN; }
 "elsif" { return ELSIF; }
@@ -121,6 +122,7 @@ void getbasedstring(int skip);
 "falling_edge" { return NEGEDGE;}
 "resize" { return CONVFUNC_2;}
 "to_unsigned" { return CONVFUNC_2;}
+"conv_integer" { return CONVFUNC_1;}
 
 \"[ \!#-~]*\" |
 \'[01xz]\' { getstring(1); return STRING;}
