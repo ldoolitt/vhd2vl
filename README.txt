@@ -1,4 +1,4 @@
-VHD2VL v2.2 README.txt
+VHD2VL v2.4 README.txt
 
 Vhd2vl is designed to translate synthesizable VHDL into Verilog 2001.
 It does not support the full VHDL grammar - most of the testbench
@@ -11,6 +11,7 @@ tool to compare it to the original VHDL!
 
 The home page for (at least for this version of) vhd2vl is
   http://doolittle.icarus.com/~larry/vhd2vl/
+
 
 1.0 HOW TO BUILD AND INSTALL vhd2vl:
 
@@ -31,6 +32,11 @@ or
    vhd2vl VHDL_file.vhd translated_file.v
 The two are equivalent when everything works.  The latter has some
 advantages when handling errors within a Makefile.
+
+There are a few of options available on the command line:
+  -d  turn on debugging within the yacc (bison) parser
+  -g1995  (default) use traditional Verilog module declaration style
+  -g2001  use Verilog-2001 module declaration style
 
 
 3.0 TROUBLESHOOTING:
@@ -56,6 +62,12 @@ If you need to look at the VHDL grammar, make puts a copy of it in
 vhd2vl.output. If you need to change the grammar, then running vhd2vl
 with the '-d' option will cause vhd2vl to trace how it is parsing the
 input file.  See the bison documentation for more details.
+
+To test a copy of vhdl for regressions against the example code shipped,
+  mkdir test
+  (cd examples && for f in *.vhd; do vhd2vl $f ../test/${f%%.vhd}.v; done)
+  diff -u translated_examples test | less
+from this directory using a Bourne-style shell.
 
 
 4.0 MISSING FEATURES AND KNOWN INCORRECT OUTPUT:
@@ -84,3 +96,9 @@ VHDL is case insensitive, vhd2vl is case retentive, and Verilog is case
   sensitive.  If you're sloppy with case in the original VHDL, the
   resulting Verilog will have compile-time warnings or errors.  See
   the comments about vhd2vl-2.1 in the changes file.
+
+Doesn't necessarily get clock edge sensitivities right if there is more
+  than one clock in the list
+
+Totally broken handling of text in generic mappings, as Xilinx is wont to
+  use for their primitives and wrappers

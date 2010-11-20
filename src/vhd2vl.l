@@ -33,8 +33,8 @@ extern int lineno;
 
 extern int skipRem;
 
-void getstring(int skip);
-void getbasedstring(int skip);
+void getstring(unsigned skip);
+void getbasedstring(unsigned skip);
 
 %}
 %%
@@ -42,18 +42,21 @@ void getbasedstring(int skip);
 [ \t] {;}
 
 "--".*\n {
+  lineno++;
   if (skipRem == 0) {
-    /* sometimes comments should be dropped by lex - 
+    /* sometimes comments should be dropped by lex -
      * e.g. in expressions - this makes the grammar much simpler
      */
-    yylval.txt=malloc(strlen(yytext)+1);
+    size_t l=strlen(yytext);
+    yylval.txt=malloc(l+1);
     strcpy(yylval.txt, yytext);
-    yylval.txt[0]='/'; 
+    yylval.txt[0]='/';
     yylval.txt[1]='/';
-    lineno++; 
+    if(yylval.txt[l-2]=='\r') {
+       yylval.txt[l-2]='\n';
+       yylval.txt[l-1]='\0';
+    }
     return REM;
-  } else {
-    lineno++; 
   }
 }
 "library ".*\n {lineno++;}
@@ -143,24 +146,27 @@ void getbasedstring(int skip);
   return NATURAL;
 }
 
+[0-9]+\.[0-9]+ {
+  getstring(0);
+  return FLOAT;
+}
+
 . { return yytext[0]; }
 
 %%
 
-void getstring(int skip){
+void getstring(unsigned skip){
 /* Gets a string excluding " or ' */
-int i;
-
+  unsigned i;
   for(i=skip; yytext[i]!='"' && yytext[i]!='\'' && yytext[i]!=0; i++);
   yytext[i]=0;
   yylval.txt=malloc(i+1);
   strcpy(yylval.txt, yytext+skip);
 }
 
-void getbasedstring(int skip){
+void getbasedstring(unsigned skip){
 /* Gets a string excluding # */
-int i;
-
+  unsigned i;
   for(i=skip; yytext[i]!='#' && yytext[i]!=0; i++);
   yytext[i]=0;
   yylval.txt=malloc(i+1);

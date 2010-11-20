@@ -1,3 +1,23 @@
+Changes 2.3 to 2.4 (Larry Doolittle, November 2010)
+
+Grammar:
+  * drop DOS-style returns at end of comments
+  * allow FLOAT in expressions (maybe a mistake)
+  * fixed regression in "others" handling since 2.1
+  * don't crash with "others" in instantiation (Verilog result is still broken)
+  (the following were submitted by Shankar Giri)
+  * Verilog 2001 module declaration (runtime selectable, use -g2001)
+  * named generate block support for XST compatibility
+  * support for array of vectors
+  * some generic enhancements on architecture body
+
+Coding:
+  * CLI enhancement (added more switches)
+  * factor out push_clkedge(), pull_clkedge()
+  * fully const-correct
+  * minor whitespace and coding style cleanup
+
+
 Changes 2.2 to 2.3 (Larry Doolittle, May 2010)
 
 Grammar:
@@ -12,8 +32,9 @@ Grammar:
   * accept integer ranges, but ignore the range and give a warning
 
 Coding:
-  * list def.h properly in makefile 
+  * list def.h properly in makefile
   * factor out new_vrange(), addnest(), setup_port()
+
 
 Changes 1.2 to 2.2 (Larry Doolittle, February 2009)
 
@@ -83,12 +104,12 @@ Grammar:
   * allow IS syntactic sugar in COMPONENT declaration
   * add a bunch of "rem"s to the grammar
   * handle inout better
-  * treat "signed", "unsigned", "boolean" as synonyms for "std_logic" and "std_logic_vector" 
+  * treat "signed", "unsigned", "boolean" as synonyms for "std_logic" and "std_logic_vector"
 
 Operation:
   * more complete handling of argc/argv
   * if error happened, return 1 from main and remove incorrect/incomplete output files
-  * avoid insinuating that output Verilog is covered by GPL 
+  * avoid insinuating that output Verilog is covered by GPL
 
 Coding:
   * increase gcc warning level

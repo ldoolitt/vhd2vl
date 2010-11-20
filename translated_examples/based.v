@@ -1,9 +1,12 @@
-// File based.vhd translated with vhd2vl v2.3 VHDL to Verilog RTL translator
+// File based.vhd translated with vhd2vl v2.4 VHDL to Verilog RTL translator
+// vhd2vl settings:
+//  * Verilog Module Declaration Style: 1995
 
 // vhd2vl is Free (libre) Software:
 //   Copyright (C) 2001 Vincenzo Liguori - Ocean Logic Pty Ltd
 //     http://www.ocean-logic.com
 //   Modifications Copyright (C) 2006 Mark Gonzales - PMC Sierra Inc
+//   Modifications (C) 2010 Shankar Giri
 //   Modifications Copyright (C) 2002, 2005, 2008-2010 Larry Doolittle - LBNL
 //     http://doolittle.icarus.com/~larry/vhd2vl/
 //

@@ -1,9 +1,12 @@
-// File bigfile.vhd translated with vhd2vl v2.3 VHDL to Verilog RTL translator
+// File bigfile.vhd translated with vhd2vl v2.4 VHDL to Verilog RTL translator
+// vhd2vl settings:
+//  * Verilog Module Declaration Style: 1995
 
 // vhd2vl is Free (libre) Software:
 //   Copyright (C) 2001 Vincenzo Liguori - Ocean Logic Pty Ltd
 //     http://www.ocean-logic.com
 //   Modifications Copyright (C) 2006 Mark Gonzales - PMC Sierra Inc
+//   Modifications (C) 2010 Shankar Giri
 //   Modifications Copyright (C) 2002, 2005, 2008-2010 Larry Doolittle - LBNL
 //     http://doolittle.icarus.com/~larry/vhd2vl/
 //
@@ -237,7 +240,7 @@ wire [31:0] g_dout_i;
       g_n_div_rebeq_dout <= g_n_div_rebeq_dout &  ~g_noop_clr;
       if((g_wrb == 1'b 0)) begin
         // because we now...
-        for (i=0; i <= 1; i = i + 1) begin 
+        for (i=0; i <= 1; i = i + 1) begin
           if((i == 0)) begin
             g_dout_w0x0f_v = g_dout_w0x0f;
           end
@@ -261,7 +264,7 @@ wire [31:0] g_dout_i;
           end
           g_t_u_w0x0f : begin
             // output klim
-            for (j=0; j <= 31; j = j + 1) begin 
+            for (j=0; j <= 31; j = j + 1) begin
               if(((g_t_klim_dout[j] == 1'b 0 && n9_bit_write == 1'b 0) || (din[j] == 1'b 0 && n9_bit_write == 1'b 1))) begin
                 g_t_u_dout[j] <= din[32 * i + j];
               end
@@ -374,7 +377,7 @@ wire [31:0] g_dout_i;
       //  sample
       if((debct_ping == 1'b 1)) begin
         //  taken
-        for (i=0; i <= 3; i = i + 1) begin 
+        for (i=0; i <= 3; i = i + 1) begin
           if((g_zaq_in_y[i] != q3_g_zaq_in[i])) begin
             q_g_unzq[i] <= 1'b 1;
           end
@@ -389,7 +392,7 @@ wire [31:0] g_dout_i;
         end
       end
       else begin
-        for (i=0; i <= 3; i = i + 1) begin 
+        for (i=0; i <= 3; i = i + 1) begin
           if((g_zaq_in_y[i] != q3_g_zaq_in[i])) begin
             q_g_unzq[i] <= 1'b 1;
           end
@@ -424,7 +427,7 @@ wire [31:0] g_dout_i;
       g_n_vfr_dout <= {32{1'b0}};
       gwerth <= {32{1'b0}};
     end else begin
-      for (i=0; i <= 31; i = i + 1) begin 
+      for (i=0; i <= 31; i = i + 1) begin
         //  lqq
         //  vfr  matches
         if((g_n_active[i] == 1'b 1)) begin
@@ -464,7 +467,7 @@ wire [31:0] g_dout_i;
   always @(g_n_r_bne_dout or g_e_n_r_dout) begin : P1
     reg [31:0] imod8, idiv8;
 
-    for (i=0; i <= 31; i = i + 1) begin 
+    for (i=0; i <= 31; i = i + 1) begin
       imod8 = i % 8;
       idiv8 = i / 8;
       if((g_n_r_bne_dout == 1'b 0)) begin
@@ -487,7 +490,7 @@ wire [31:0] g_dout_i;
   // Qaz
   assign g_noop = g_n_div_rebeq_dout;
   always @(swe_ed or swe_lv or g_e_z_dout) begin
-    for (i=0; i <= 31; i = i + 1) begin 
+    for (i=0; i <= 31; i = i + 1) begin
       if((g_e_z_dout[i] == 1'b 1)) begin
         swe_qaz1[i] <= swe_ed;
       end

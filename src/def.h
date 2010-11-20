@@ -71,9 +71,14 @@ typedef struct expdata {
 typedef struct sglist {
   char *name; /* Signal name */
   char *type; /* Reg or wire */
+  const char *dir; /* input, output, inout */
   vrange *range; /* Signal size */
   struct sglist *next;
 } sglist;
 
+typedef struct blknamelist {
+  char *name; /* Optional name */
+  struct blknamelist *next;
+} blknamelist;
 
 #endif
