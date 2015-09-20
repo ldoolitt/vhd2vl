@@ -1,4 +1,4 @@
-// File generic.vhd translated with vhd2vl v2.4 VHDL to Verilog RTL translator
+// File generic.vhd translated with vhd2vl v2.5 VHDL to Verilog RTL translator
 // vhd2vl settings:
 //  * Verilog Module Declaration Style: 1995
 
@@ -7,7 +7,7 @@
 //     http://www.ocean-logic.com
 //   Modifications Copyright (C) 2006 Mark Gonzales - PMC Sierra Inc
 //   Modifications (C) 2010 Shankar Giri
-//   Modifications Copyright (C) 2002, 2005, 2008-2010 Larry Doolittle - LBNL
+//   Modifications Copyright (C) 2002, 2005, 2008-2010, 2015 Larry Doolittle - LBNL
 //     http://doolittle.icarus.com/~larry/vhd2vl/
 //
 //   vhd2vl comes with ABSOLUTELY NO WARRANTY.  Always check the resulting

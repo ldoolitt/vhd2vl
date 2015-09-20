@@ -1,10 +1,10 @@
 /*
-    vhd2vl v2.4
+    vhd2vl v2.5
     VHDL to Verilog RTL translator
     Copyright (C) 2001 Vincenzo Liguori - Ocean Logic Pty Ltd - http://www.ocean-logic.com
     Modifications (C) 2006 Mark Gonzales - PMC Sierra Inc
     Modifications (C) 2010 Shankar Giri
-    Modifications (C) 2002, 2005, 2008-2010 Larry Doolittle - LBNL
+    Modifications (C) 2002, 2005, 2008-2010, 2015 Larry Doolittle - LBNL
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -702,7 +702,7 @@ slist *emit_io_list(slist *sl)
 %token <txt> AFTER AND OR XOR MOD
 %token <txt> LASTVALUE EVENT POSEDGE NEGEDGE
 %token <txt> STRING NAME RANGE NULLV OPEN
-%token <txt> CONVFUNC_1 CONVFUNC_2 BASED FLOAT
+%token <txt> CONVFUNC_1 CONVFUNC_2 BASED FLOAT LEFT
 %token <n> NATURAL
 
 %type <n> trad
@@ -1105,8 +1105,8 @@ vec_range : simple_expr updown simple_expr {
           }
           ;
 
-updown : DOWNTO {$$=-1}
-       | TO {$$=1}
+updown : DOWNTO {$$=-1;}
+       | TO {$$=1;}
        ;
 
 /* Architecture */
@@ -1130,12 +1130,7 @@ a_decl    : {$$=NULL;}
           | a_decl SIGNAL s_list ':' type ';' rem {
             sglist *sg;
             slist *sl;
-            int size;
 
-              if($5->vtype==tSUBSCRIPT)
-                size=1;
-              else
-                size=-1;
               sl=$1;
               sg=$3;
               for(;;){
@@ -1158,12 +1153,7 @@ a_decl    : {$$=NULL;}
           | a_decl SIGNAL s_list ':' type ':' '=' expr ';' rem {
             sglist *sg;
             slist *sl;
-            int size;
 
-              if($5->vtype==tSUBSCRIPT)
-                size=1;
-              else
-                size=-1;
               sl=$1;
               sg=$3;
               for(;;){
@@ -1653,7 +1643,7 @@ with_item : expr delay WHEN wlist {
               $$=addtxt(sl,";\n");
             }
 
-p_decl : rem {$$=$1}
+p_decl : rem {$$=$1;}
        | rem VARIABLE s_list ':' type ';' p_decl {
          slist *sl;
          sglist *sg, *p;
@@ -2308,6 +2298,22 @@ simple_expr : signal {
          e->sl=addval(NULL,$1);
          $$=e;
       }
+     | NAME '\'' LEFT {
+	      /* lookup NAME and get its left */
+              sglist *sg = NULL;
+              if((sg=lookup(io_list,$1))==NULL) {
+                sg=lookup(sig_list,$1);
+              }
+              if(sg) {
+                expdata *e;
+                e=xmalloc(sizeof(expdata));
+                e->sl=addwrap("(",sg->range->nhi,")");  /* XXX left vs. high? */
+                $$=e;
+              } else {
+                fprintf(stderr,"Undefined left \"%s'left\" on line %d\n",$1,lineno);
+                YYABORT;
+              }
+      }
      | simple_expr '+' simple_expr {
        $$=addexpr($1,'+'," + ",$3);
       }
@@ -2397,7 +2403,7 @@ int status;
      outfile = "-";
   }
 
-  printf("// File %s translated with vhd2vl v2.4 VHDL to Verilog RTL translator\n", sourcefile);
+  printf("// File %s translated with vhd2vl v2.5 VHDL to Verilog RTL translator\n", sourcefile);
   printf("// vhd2vl settings:\n"
          "//  * Verilog Module Declaration Style: %s\n\n",
          vlog_ver ? "2001" : "1995");
@@ -2407,7 +2413,7 @@ int status;
 "//     http://www.ocean-logic.com\n"
 "//   Modifications Copyright (C) 2006 Mark Gonzales - PMC Sierra Inc\n"
 "//   Modifications (C) 2010 Shankar Giri\n"
-"//   Modifications Copyright (C) 2002, 2005, 2008-2010 Larry Doolittle - LBNL\n"
+"//   Modifications Copyright (C) 2002, 2005, 2008-2010, 2015 Larry Doolittle - LBNL\n"
 "//     http://doolittle.icarus.com/~larry/vhd2vl/\n"
 "//\n", stdout);
   fputs(

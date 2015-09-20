@@ -126,6 +126,8 @@ void getbasedstring(unsigned skip);
 "resize" { return CONVFUNC_2;}
 "to_unsigned" { return CONVFUNC_2;}
 "conv_integer" { return CONVFUNC_1;}
+"left" { return LEFT;}
+"high" { return LEFT;}
 
 \"[ \!#-~]*\" |
 \'[01xz]\' { getstring(1); return STRING;}
