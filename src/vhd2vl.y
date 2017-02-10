@@ -203,18 +203,18 @@ slist *addsl(slist *sl, slist *sl2){
 
 slist *addvec(slist *sl, char *s){
   sl=addval(sl,strlen(s));
-  sl=addtxt(sl,"'b ");
+  sl=addtxt(sl,"'b");
   sl=addtxt(sl,s);
   return sl;
 }
 
 slist *addvec_base(slist *sl, char *b, char *s){
-  const char *base_str="'b ";
+  const char *base_str="'b";
   int base_mult=1;
   if (strcasecmp(b,"X") == 0) {
-     base_str="'h "; base_mult=4;
+     base_str="'h"; base_mult=4;
   } else if (strcasecmp(b,"O") == 0) {
-     base_str="'o "; base_mult=3;
+     base_str="'o"; base_mult=3;
   } else {
      fprintf(stderr,"Warning on line %d: NAME STRING rule matched but "
        "NAME='%s' is not X or O.\n",lineno, b);

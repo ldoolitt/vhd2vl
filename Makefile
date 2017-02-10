@@ -14,4 +14,5 @@ diff: translate
 	@diff -u translated_examples temp/verilog
 
 clean:
+	make -C src clean
 	rm -fr temp

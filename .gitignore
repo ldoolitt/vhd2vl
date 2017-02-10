@@ -1,4 +1,5 @@
 temp
+ignore
 
 src/*.c
 src/*.h

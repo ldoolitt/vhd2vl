@@ -48,7 +48,7 @@ reg [2:0] baz;
 reg [4:7 - 1] egg;
 
   always @(posedge reset or posedge sysclk) begin
-    if((reset != 1'b 0)) begin
+    if((reset != 1'b0)) begin
       foo <= {(((10 + 3))-((0))+1){1'b1}};
     end else begin
       foo <= ival[31:31 - ((10 + 3))];
@@ -56,7 +56,7 @@ reg [4:7 - 1] egg;
   end
 
   always @(negedge preset or negedge dsysclk) begin
-    if((preset != 1'b 1)) begin
+    if((preset != 1'b1)) begin
       baz <= {3{1'b0}};
     end else begin
       baz <= ival[2:0];
@@ -64,7 +64,7 @@ reg [4:7 - 1] egg;
   end
 
   always @(negedge qreset or negedge esysclk) begin
-    if((qreset != 1'b 1)) begin
+    if((qreset != 1'b1)) begin
       egg <= {(((7 - 1))-((4))+1){1'b0}};
     end else begin
       egg <= ival[6:4];

@@ -41,13 +41,13 @@ reg [6:0] egg_timer;
     reg [31:0] zz5;
     reg [511:0] zz;
 
-    if(reset == 1'b 1) begin
-      selection <= 1'b 1;
+    if(reset == 1'b1) begin
+      selection <= 1'b1;
       timer_var = 2;
       egg_timer <= {7{1'b0}};
     end else begin
       //  pulse only lasts for once cycle
-      selection <= 1'b 0;
+      selection <= 1'b0;
       egg_timer <= {7{1'b1}};
       for (i=0; i <= j * k; i = i + 1) begin
         a = a + i;

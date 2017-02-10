@@ -48,7 +48,7 @@ complex,
 eno
 );
 
-parameter rst_val=1'b 0;
+parameter rst_val=1'b0;
 parameter [31:0] thing_size=201;
 parameter [31:0] bus_width=201 % 32;
 input clk, rstn;
@@ -116,7 +116,7 @@ wire [1:0] colour;
     .memdout(memdout));
 
   dsp #(
-      .rst_val(1'b 1),
+      .rst_val(1'b1),
     .bus_width(16))
   dsp_inst1(
       // Inputs

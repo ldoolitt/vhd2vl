@@ -106,7 +106,7 @@ reg isrst_r;
   //----- memory -----------------------------
   //------------------------------------------
   always @(posedge clk_WR) begin
-    if(((WR == 1'b 1) && (ifull == 1'b 0))) begin
+    if(((WR == 1'b1) && (ifull == 1'b0))) begin
       ram_mem[(add_WR[3:0])] <= D;
     end
   end
@@ -115,20 +115,20 @@ reg isrst_r;
   //---------------------------------------
   //--- Write address counter -------------
   //---------------------------------------
-  assign add_WR_CE = (ifull == 1'b 1) ? 1'b 0 : (WR == 1'b 0) ? 1'b 0 : 1'b 1;
-  assign n_add_WR = add_WR + 4'h 1;
+  assign add_WR_CE = (ifull == 1'b1) ? 1'b0 : (WR == 1'b0) ? 1'b0 : 1'b1;
+  assign n_add_WR = add_WR + 4'h1;
   always @(posedge clk_WR or posedge rst) begin
-    if((rst == 1'b 1)) begin
+    if((rst == 1'b1)) begin
       add_WR <= {5{1'b0}};
-      add_RD_WS <= 5'b 11000;
+      add_RD_WS <= 5'b11000;
       add_WR_GC <= {5{1'b0}};
     end else begin
       add_RD_WS <= add_RD_GCwc;
-      if((srst_w == 1'b 1)) begin
+      if((srst_w == 1'b1)) begin
         add_WR <= {5{1'b0}};
         add_WR_GC <= {5{1'b0}};
       end
-      else if((add_WR_CE == 1'b 1)) begin
+      else if((add_WR_CE == 1'b1)) begin
         add_WR <= n_add_WR;
         add_WR_GC[0] <= n_add_WR[0] ^ n_add_WR[1];
         add_WR_GC[1] <= n_add_WR[1] ^ n_add_WR[2];
@@ -144,26 +144,26 @@ reg isrst_r;
   end
 
   assign full = ifull;
-  assign ifull = (iempty == 1'b 1) ? 1'b 0 : (add_RD_WS != add_WR_GC) ? 1'b 0 : 1'b 1;
+  assign ifull = (iempty == 1'b1) ? 1'b0 : (add_RD_WS != add_WR_GC) ? 1'b0 : 1'b1;
   //---------------------------------------
   //--- Read address counter --------------
   //---------------------------------------
-  assign add_RD_CE = (iempty == 1'b 1) ? 1'b 0 : (RD == 1'b 0) ? 1'b 0 : 1'b 1;
-  assign n_add_RD = add_RD + 4'h 1;
+  assign add_RD_CE = (iempty == 1'b1) ? 1'b0 : (RD == 1'b0) ? 1'b0 : 1'b1;
+  assign n_add_RD = add_RD + 4'h1;
   always @(posedge clk_RD or posedge rst) begin
-    if((rst == 1'b 1)) begin
+    if((rst == 1'b1)) begin
       add_RD <= {5{1'b0}};
       add_WR_RS <= {5{1'b0}};
       add_RD_GC <= {5{1'b0}};
-      add_RD_GCwc <= 5'b 11000;
+      add_RD_GCwc <= 5'b11000;
     end else begin
       add_WR_RS <= add_WR_GC;
-      if((srst_r == 1'b 1)) begin
+      if((srst_r == 1'b1)) begin
         add_RD <= {5{1'b0}};
         add_RD_GC <= {5{1'b0}};
-        add_RD_GCwc <= 5'b 11000;
+        add_RD_GCwc <= 5'b11000;
       end
-      else if((add_RD_CE == 1'b 1)) begin
+      else if((add_RD_CE == 1'b1)) begin
         add_RD <= n_add_RD;
         add_RD_GC[0] <= n_add_RD[0] ^ n_add_RD[1];
         add_RD_GC[1] <= n_add_RD[1] ^ n_add_RD[2];
@@ -185,38 +185,38 @@ reg isrst_r;
   end
 
   assign empty = iempty;
-  assign iempty = (add_WR_RS == add_RD_GC) ? 1'b 1 : 1'b 0;
+  assign iempty = (add_WR_RS == add_RD_GC) ? 1'b1 : 1'b0;
   //--------------------------------
   //-	sync rest stuff --------------
   //- srst is sync with clk_WR -----
   //- srst_r is sync with clk_RD ---
   //--------------------------------
   always @(posedge clk_WR or posedge rst) begin
-    if((rst == 1'b 1)) begin
-      srst_w <= 1'b 0;
-      isrst_r <= 1'b 0;
+    if((rst == 1'b1)) begin
+      srst_w <= 1'b0;
+      isrst_r <= 1'b0;
     end else begin
       isrst_r <= srst_r;
-      if((srst == 1'b 1)) begin
-        srst_w <= 1'b 1;
+      if((srst == 1'b1)) begin
+        srst_w <= 1'b1;
       end
-      else if((isrst_r == 1'b 1)) begin
-        srst_w <= 1'b 0;
+      else if((isrst_r == 1'b1)) begin
+        srst_w <= 1'b0;
       end
     end
   end
 
   always @(posedge clk_RD or posedge rst) begin
-    if((rst == 1'b 1)) begin
-      srst_r <= 1'b 0;
-      isrst_w <= 1'b 0;
+    if((rst == 1'b1)) begin
+      srst_r <= 1'b0;
+      isrst_w <= 1'b0;
     end else begin
       isrst_w <= srst_w;
-      if((isrst_w == 1'b 1)) begin
-        srst_r <= 1'b 1;
+      if((isrst_w == 1'b1)) begin
+        srst_r <= 1'b1;
       end
       else begin
-        srst_r <= 1'b 0;
+        srst_r <= 1'b0;
       end
     end
   end

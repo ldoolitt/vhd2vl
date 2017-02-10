@@ -62,7 +62,7 @@ reg [bus_width * 2:0] regSelect;
   end
   endgenerate
   always @(posedge sysclk) begin
-    regSelect[1] <= 1'b 1;
+    regSelect[1] <= 1'b1;
   end
 
 

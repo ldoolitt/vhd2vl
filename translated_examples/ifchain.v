@@ -39,9 +39,9 @@ reg status;
 reg [31:0] c[3:0];
 
   always @(posedge clk) begin
-    if({b[1],a[3:2]} == 3'b 001) begin
-      status <= 1'b 1;
-      c[0] <= 16'h FFFF;
+    if({b[1],a[3:2]} == 3'b001) begin
+      status <= 1'b1;
+      c[0] <= 16'hFFFF;
     end
   end
 

@@ -113,30 +113,30 @@ reg [31:0] swe_qaz1;
 
 // IMPLEMENTATION
 // constants 
-parameter g_t_klim_w0x0f = 5'b 00000;
-parameter g_t_u_w0x0f = 5'b 00001;
-parameter g_t_l_w0x0f = 5'b 00010;
-parameter g_t_hhh_l_w0x0f = 5'b 00011;
-parameter g_t_jkl_sink_l_w0x0f = 5'b 00100;
-parameter g_secondary_t_l_w0x0f = 5'b 00101;
-parameter g_style_c_l_w0x0f = 5'b 00110;
-parameter g_e_z_w0x0f = 5'b 00111;
-parameter g_n_both_qbars_l_w0x0f = 5'b 01000;
-parameter g_style_vfr_w0x0f = 5'b 01001;
-parameter g_style_klim_w0x0f = 5'b 01010;
-parameter g_unklimed_style_vfr_w0x0f = 5'b 01011;
-parameter g_style_t_y_w0x0f = 5'b 01100;
-parameter g_n_l_w0x0f = 5'b 01101;
-parameter g_n_vfr_w0x0f = 5'b 01110;
-parameter g_e_n_r_w0x0f = 5'b 01111;
-parameter g_n_r_bne_w0x0f = 5'b 10000;
-parameter g_n_div_rebeq_w0x0f = 5'b 10001;
-parameter g_alu_l_w0x0f = 5'b 10010;
-parameter g_t_qaz_mult_low_w0x0f = 5'b 10011;
-parameter g_t_qaz_mult_high_w0x0f = 5'b 10100;
-parameter gwerthernal_style_u_w0x0f = 5'b 10101;
-parameter gwerthernal_style_l_w0x0f = 5'b 10110;
-parameter g_style_main_reset_hold_w0x0f = 5'b 10111;  // comment
+parameter g_t_klim_w0x0f = 5'b00000;
+parameter g_t_u_w0x0f = 5'b00001;
+parameter g_t_l_w0x0f = 5'b00010;
+parameter g_t_hhh_l_w0x0f = 5'b00011;
+parameter g_t_jkl_sink_l_w0x0f = 5'b00100;
+parameter g_secondary_t_l_w0x0f = 5'b00101;
+parameter g_style_c_l_w0x0f = 5'b00110;
+parameter g_e_z_w0x0f = 5'b00111;
+parameter g_n_both_qbars_l_w0x0f = 5'b01000;
+parameter g_style_vfr_w0x0f = 5'b01001;
+parameter g_style_klim_w0x0f = 5'b01010;
+parameter g_unklimed_style_vfr_w0x0f = 5'b01011;
+parameter g_style_t_y_w0x0f = 5'b01100;
+parameter g_n_l_w0x0f = 5'b01101;
+parameter g_n_vfr_w0x0f = 5'b01110;
+parameter g_e_n_r_w0x0f = 5'b01111;
+parameter g_n_r_bne_w0x0f = 5'b10000;
+parameter g_n_div_rebeq_w0x0f = 5'b10001;
+parameter g_alu_l_w0x0f = 5'b10010;
+parameter g_t_qaz_mult_low_w0x0f = 5'b10011;
+parameter g_t_qaz_mult_high_w0x0f = 5'b10100;
+parameter gwerthernal_style_u_w0x0f = 5'b10101;
+parameter gwerthernal_style_l_w0x0f = 5'b10110;
+parameter g_style_main_reset_hold_w0x0f = 5'b10111;  // comment
 reg [31:0] g_t_klim_dout;
 reg [31:0] g_t_u_dout;
 reg [31:0] g_t_l_dout;
@@ -185,18 +185,18 @@ wire [31:0] g_dout_i;
   assign g_zaq_ctl_i =  ~((((g_t_l_dout &  ~g_t_jkl_sink_l_dout)) | ((g_t_l_dout & g_t_jkl_sink_l_dout &  ~g_zaq_out_i))));
   // mux
   //vnavigatoroff
-  assign g_zaq_ctl = scanb == 1'b 1 ? g_zaq_ctl_i : 32'b 00000000000000000000000000000000;
+  assign g_zaq_ctl = scanb == 1'b1 ? g_zaq_ctl_i : 32'b00000000000000000000000000000000;
   //vnavigatoron
   assign g_zaq_hhh_enb =  ~((g_t_hhh_l_dout));
   assign g_zaq_qaz_hb = g_t_qaz_mult_high_dout;
   assign g_zaq_qaz_lb = g_t_qaz_mult_low_dout;
   // Dout
-  assign g_dout_i = g_dout_w0x0f == g_t_klim_w0x0f ? g_t_klim_dout & g_style_klim_dout : g_dout_w0x0f == g_t_u_w0x0f ? g_t_u_dout & g_style_klim_dout : g_dout_w0x0f == g_t_l_w0x0f ? g_t_l_dout & g_style_klim_dout : g_dout_w0x0f == g_t_hhh_l_w0x0f ? g_t_hhh_l_dout & g_style_klim_dout : g_dout_w0x0f == g_t_jkl_sink_l_w0x0f ? g_t_jkl_sink_l_dout & g_style_klim_dout : g_dout_w0x0f == g_secondary_t_l_w0x0f ? g_secondary_t_l_dout & g_style_klim_dout : g_dout_w0x0f == g_style_c_l_w0x0f ? ({28'b 0000000000000000000000000000,g_style_c_l_dout}) & g_style_klim_dout : g_dout_w0x0f == g_e_z_w0x0f ? g_e_z_dout : g_dout_w0x0f == g_n_both_qbars_l_w0x0f ? g_n_both_qbars_l_dout : g_dout_w0x0f == g_style_vfr_w0x0f ? g_style_vfr_dout & g_style_klim_dout : g_dout_w0x0f == g_style_klim_w0x0f ? g_style_klim_dout : g_dout_w0x0f == g_unklimed_style_vfr_w0x0f ? g_unklimed_style_vfr_dout : g_dout_w0x0f == g_style_t_y_w0x0f ? g_style_t_y_dout & g_style_klim_dout : g_dout_w0x0f == g_n_l_w0x0f ? g_n_l_dout : g_dout_w0x0f == g_n_vfr_w0x0f ? g_n_vfr_dout : g_dout_w0x0f == g_e_n_r_w0x0f ? g_e_n_r_dout : g_dout_w0x0f == g_n_r_bne_w0x0f ? {31'b 0000000000000000000000000000000,g_n_r_bne_dout} : g_dout_w0x0f == g_n_div_rebeq_w0x0f ? g_n_div_rebeq_dout : g_dout_w0x0f == g_alu_l_w0x0f ? g_alu_l_dout & g_style_klim_dout : g_dout_w0x0f == g_t_qaz_mult_low_w0x0f ? g_t_qaz_mult_low_dout & g_style_klim_dout : g_dout_w0x0f == g_t_qaz_mult_high_w0x0f ? g_t_qaz_mult_high_dout & g_style_klim_dout : g_dout_w0x0f == gwerthernal_style_u_w0x0f ? gwerthernal_style_u_dout & g_style_klim_dout : g_dout_w0x0f == g_style_main_reset_hold_w0x0f ? g_style_main_reset_hold_dout & g_style_klim_dout : g_dout_w0x0f == gwerthernal_style_l_w0x0f ? gwerthernal_style_l_dout & g_style_klim_dout : 32'b 00000000000000000000000000000000;
-  assign g_dout = g_rdb == 1'b 0 ? g_dout_i : {32{1'b1}};
+  assign g_dout_i = g_dout_w0x0f == g_t_klim_w0x0f ? g_t_klim_dout & g_style_klim_dout : g_dout_w0x0f == g_t_u_w0x0f ? g_t_u_dout & g_style_klim_dout : g_dout_w0x0f == g_t_l_w0x0f ? g_t_l_dout & g_style_klim_dout : g_dout_w0x0f == g_t_hhh_l_w0x0f ? g_t_hhh_l_dout & g_style_klim_dout : g_dout_w0x0f == g_t_jkl_sink_l_w0x0f ? g_t_jkl_sink_l_dout & g_style_klim_dout : g_dout_w0x0f == g_secondary_t_l_w0x0f ? g_secondary_t_l_dout & g_style_klim_dout : g_dout_w0x0f == g_style_c_l_w0x0f ? ({28'b0000000000000000000000000000,g_style_c_l_dout}) & g_style_klim_dout : g_dout_w0x0f == g_e_z_w0x0f ? g_e_z_dout : g_dout_w0x0f == g_n_both_qbars_l_w0x0f ? g_n_both_qbars_l_dout : g_dout_w0x0f == g_style_vfr_w0x0f ? g_style_vfr_dout & g_style_klim_dout : g_dout_w0x0f == g_style_klim_w0x0f ? g_style_klim_dout : g_dout_w0x0f == g_unklimed_style_vfr_w0x0f ? g_unklimed_style_vfr_dout : g_dout_w0x0f == g_style_t_y_w0x0f ? g_style_t_y_dout & g_style_klim_dout : g_dout_w0x0f == g_n_l_w0x0f ? g_n_l_dout : g_dout_w0x0f == g_n_vfr_w0x0f ? g_n_vfr_dout : g_dout_w0x0f == g_e_n_r_w0x0f ? g_e_n_r_dout : g_dout_w0x0f == g_n_r_bne_w0x0f ? {31'b0000000000000000000000000000000,g_n_r_bne_dout} : g_dout_w0x0f == g_n_div_rebeq_w0x0f ? g_n_div_rebeq_dout : g_dout_w0x0f == g_alu_l_w0x0f ? g_alu_l_dout & g_style_klim_dout : g_dout_w0x0f == g_t_qaz_mult_low_w0x0f ? g_t_qaz_mult_low_dout & g_style_klim_dout : g_dout_w0x0f == g_t_qaz_mult_high_w0x0f ? g_t_qaz_mult_high_dout & g_style_klim_dout : g_dout_w0x0f == gwerthernal_style_u_w0x0f ? gwerthernal_style_u_dout & g_style_klim_dout : g_dout_w0x0f == g_style_main_reset_hold_w0x0f ? g_style_main_reset_hold_dout & g_style_klim_dout : g_dout_w0x0f == gwerthernal_style_l_w0x0f ? gwerthernal_style_l_dout & g_style_klim_dout : 32'b00000000000000000000000000000000;
+  assign g_dout = g_rdb == 1'b0 ? g_dout_i : {32{1'b1}};
   // this  can be used to use zzz1
   always @(posedge sysclk) begin
-    if((scanb == 1'b 1)) begin
-      if((reset == 1'b 1)) begin
+    if((scanb == 1'b1)) begin
+      if((reset == 1'b1)) begin
         g_style_main_reset_hold_dout <= g_zaq_in;
       end
       //vnavigatoroff
@@ -213,7 +213,7 @@ wire [31:0] g_dout_i;
   always @(posedge reset or posedge sysclk) begin : P2
     reg [4:0] g_dout_w0x0f_v;
 
-    if((reset != 1'b 0)) begin
+    if((reset != 1'b0)) begin
       g_t_klim_dout <= {32{1'b0}};
       g_t_u_dout <= {32{1'b0}};
       g_t_l_dout <= {32{1'b0}};
@@ -227,7 +227,7 @@ wire [31:0] g_dout_i;
       g_style_t_y_dout <= {32{1'b0}};
       g_n_l_dout <= {32{1'b0}};
       g_e_n_r_dout <= {32{1'b0}};
-      g_n_r_bne_dout <= 1'b 0;
+      g_n_r_bne_dout <= 1'b0;
       g_n_div_rebeq_dout <= {32{1'b1}};
       g_alu_l_dout <= {32{1'b0}};
       g_t_qaz_mult_low_dout <= {32{1'b1}};
@@ -238,16 +238,16 @@ wire [31:0] g_dout_i;
     end else begin
       // clear
       g_n_div_rebeq_dout <= g_n_div_rebeq_dout &  ~g_noop_clr;
-      if((g_wrb == 1'b 0)) begin
+      if((g_wrb == 1'b0)) begin
         // because we now...
         for (i=0; i <= 1; i = i + 1) begin
           if((i == 0)) begin
             g_dout_w0x0f_v = g_dout_w0x0f;
           end
           else if((i == 1)) begin
-            if((n9_bit_write == 1'b 1)) begin
+            if((n9_bit_write == 1'b1)) begin
               // set
-              g_dout_w0x0f_v = {g_dout_w0x0f[4:1],1'b 1};
+              g_dout_w0x0f_v = {g_dout_w0x0f[4:1],1'b1};
             end
             else begin
               disable;  //VHD2VL: add block name here
@@ -265,7 +265,7 @@ wire [31:0] g_dout_i;
           g_t_u_w0x0f : begin
             // output klim
             for (j=0; j <= 31; j = j + 1) begin
-              if(((g_t_klim_dout[j] == 1'b 0 && n9_bit_write == 1'b 0) || (din[j] == 1'b 0 && n9_bit_write == 1'b 1))) begin
+              if(((g_t_klim_dout[j] == 1'b0 && n9_bit_write == 1'b0) || (din[j] == 1'b0 && n9_bit_write == 1'b1))) begin
                 g_t_u_dout[j] <= din[32 * i + j];
               end
             end
@@ -346,7 +346,7 @@ wire [31:0] g_dout_i;
 
   // sample
   always @(posedge reset or posedge sysclk) begin
-    if((reset != 1'b 0)) begin
+    if((reset != 1'b0)) begin
       q_g_zaq_in <= {32{1'b0}};
       q2_g_zaq_in <= {32{1'b0}};
       q3_g_zaq_in <= {32{1'b0}};
@@ -364,29 +364,29 @@ wire [31:0] g_dout_i;
   // qaz
   assign g_style_vfr_dout = {g_zaq_in_y[31:4],(((g_style_c_l_dout[3:0] & q_g_zaq_in_cd)) | (( ~g_style_c_l_dout[3:0] & g_zaq_in_y[3:0])))};
   // in scan mode
-  assign g_zaq_in_y_no_dout = scanb == 1'b 1 ? (g_style_t_y_dout ^ g_zaq_in) : g_style_t_y_dout;
+  assign g_zaq_in_y_no_dout = scanb == 1'b1 ? (g_style_t_y_dout ^ g_zaq_in) : g_style_t_y_dout;
   //vnavigatoron
   assign g_sys_in_i = ({g_zaq_in_y_no_dout[31:4],(((g_style_c_l_dout[3:0] & q_g_zaq_in_cd)) | (( ~g_style_c_l_dout[3:0] & g_zaq_in_y_no_dout[3:0])))});
   assign g_sys_in_ii = ((g_sys_in_i &  ~gwerthernal_style_l_dout)) | ((gwerthernal_style_u_dout & gwerthernal_style_l_dout));
   assign g_sys_in = g_sys_in_ii;
   always @(posedge reset or posedge sysclk) begin
-    if((reset != 1'b 0)) begin
+    if((reset != 1'b0)) begin
       q_g_zaq_in_cd <= {4{1'b0}};
       q_g_unzq <= {4{1'b1}};
     end else begin
       //  sample
-      if((debct_ping == 1'b 1)) begin
+      if((debct_ping == 1'b1)) begin
         //  taken
         for (i=0; i <= 3; i = i + 1) begin
           if((g_zaq_in_y[i] != q3_g_zaq_in[i])) begin
-            q_g_unzq[i] <= 1'b 1;
+            q_g_unzq[i] <= 1'b1;
           end
           else begin
-            if((q_g_unzq[i] == 1'b 0)) begin
+            if((q_g_unzq[i] == 1'b0)) begin
               q_g_zaq_in_cd[i] <= g_zaq_in_y[i];
             end
             else begin
-              q_g_unzq[i] <= 1'b 0;
+              q_g_unzq[i] <= 1'b0;
             end
           end
         end
@@ -394,7 +394,7 @@ wire [31:0] g_dout_i;
       else begin
         for (i=0; i <= 3; i = i + 1) begin
           if((g_zaq_in_y[i] != q3_g_zaq_in[i])) begin
-            q_g_unzq[i] <= 1'b 1;
+            q_g_unzq[i] <= 1'b1;
           end
         end
       end
@@ -403,16 +403,16 @@ wire [31:0] g_dout_i;
 
   // generate lqqs 
   always @(posedge reset or posedge sysclk) begin
-    if((reset != 1'b 0)) begin
+    if((reset != 1'b0)) begin
       q_g_style_vfr_dout <= {32{1'b0}};
     end else begin
-      if((scanb == 1'b 1)) begin
+      if((scanb == 1'b1)) begin
         q_g_style_vfr_dout <= g_style_vfr_dout;
         //vnavigatoroff
       end
       else begin
         // in scan 
-        q_g_style_vfr_dout <= g_style_vfr_dout | ({g_zaq_out_i[31:17],1'b 0,g_zaq_out_i[15:1],1'b 0}) | g_zaq_ctl_i | g_sys_in_ii;
+        q_g_style_vfr_dout <= g_style_vfr_dout | ({g_zaq_out_i[31:17],1'b0,g_zaq_out_i[15:1],1'b0}) | g_zaq_ctl_i | g_sys_in_ii;
       end
       //vnavigatoron
     end
@@ -423,18 +423,18 @@ wire [31:0] g_dout_i;
   // check for lqq active and set lqq vfr register
   // also clear
   always @(posedge reset or posedge sysclk) begin
-    if((reset != 1'b 0)) begin
+    if((reset != 1'b0)) begin
       g_n_vfr_dout <= {32{1'b0}};
       gwerth <= {32{1'b0}};
     end else begin
       for (i=0; i <= 31; i = i + 1) begin
         //  lqq
         //  vfr  matches
-        if((g_n_active[i] == 1'b 1)) begin
-          gwerth[i] <= 1'b 1;
-          if((g_e_z_dout[i] == 1'b 1)) begin
+        if((g_n_active[i] == 1'b1)) begin
+          gwerth[i] <= 1'b1;
+          if((g_e_z_dout[i] == 1'b1)) begin
             //  lqq          
-            g_n_vfr_dout[i] <= 1'b 1;
+            g_n_vfr_dout[i] <= 1'b1;
           end
           else begin
             g_n_vfr_dout[i] <= q_g_style_vfr_dout[i];
@@ -442,19 +442,19 @@ wire [31:0] g_dout_i;
         end
         else begin
           //  clear
-          if((g_e_z_dout[i] == 1'b 0)) begin
+          if((g_e_z_dout[i] == 1'b0)) begin
             g_n_vfr_dout[i] <= q_g_style_vfr_dout[i];
             // default always assign
             // in both
-            if((g_n_both_qbars_l_dout[i] == 1'b 1 || g_style_vfr_dout[i] == 1'b 1)) begin
-              gwerth[i] <= 1'b 0;
+            if((g_n_both_qbars_l_dout[i] == 1'b1 || g_style_vfr_dout[i] == 1'b1)) begin
+              gwerth[i] <= 1'b0;
             end
           end
           else begin
             // write
-            if((g_wrb == 1'b 0 && g_dout_w0x0f == g_n_vfr_w0x0f && din[i] == 1'b 1)) begin
-              gwerth[i] <= 1'b 0;
-              g_n_vfr_dout[i] <= 1'b 0;
+            if((g_wrb == 1'b0 && g_dout_w0x0f == g_n_vfr_w0x0f && din[i] == 1'b1)) begin
+              gwerth[i] <= 1'b0;
+              g_n_vfr_dout[i] <= 1'b0;
             end
           end
         end
@@ -470,7 +470,7 @@ wire [31:0] g_dout_i;
     for (i=0; i <= 31; i = i + 1) begin
       imod8 = i % 8;
       idiv8 = i / 8;
-      if((g_n_r_bne_dout == 1'b 0)) begin
+      if((g_n_r_bne_dout == 1'b0)) begin
         // non-unique
         g_vector[8 * i + 7:8 * i] <= g_e_n_r_dout[8 * idiv8 + 7:8 * idiv8];
       end
@@ -491,7 +491,7 @@ wire [31:0] g_dout_i;
   assign g_noop = g_n_div_rebeq_dout;
   always @(swe_ed or swe_lv or g_e_z_dout) begin
     for (i=0; i <= 31; i = i + 1) begin
-      if((g_e_z_dout[i] == 1'b 1)) begin
+      if((g_e_z_dout[i] == 1'b1)) begin
         swe_qaz1[i] <= swe_ed;
       end
       else begin

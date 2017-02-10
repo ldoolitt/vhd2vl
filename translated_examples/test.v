@@ -114,9 +114,9 @@ parameter [1:0]
   yellow = 3;
 
 reg [1:0] status;
-parameter PARAM1 = 8'b 01101101;
-parameter PARAM2 = 8'b 11001101;
-parameter PARAM3 = 8'b 00010111;
+parameter PARAM1 = 8'b01101101;
+parameter PARAM2 = 8'b11001101;
+parameter PARAM3 = 8'b00010111;
 wire [7:0] param;
 reg selection;
 reg start; wire enf;  // Start and enable signals
@@ -125,47 +125,47 @@ wire [5:0] memaddr;
 wire [13:0] memdout;
 reg [1:0] colour;
 
-  assign param = config == 1'b 1 ? PARAM1 : status == green ? PARAM2 : PARAM3;
+  assign param = config == 1'b1 ? PARAM1 : status == green ? PARAM2 : PARAM3;
   // Synchronously process
   always @(posedge clk) begin
-    pixel_out <= pixel_in ^ 8'b 11001100;
+    pixel_out <= pixel_in ^ 8'b11001100;
   end
 
   // Synchronous process
   always @(posedge clk) begin
     case(status)
     red : begin
-      colour <= 2'b 00;
+      colour <= 2'b00;
     end
     green : begin
-      colour <= 2'b 01;
+      colour <= 2'b01;
     end
     blue : begin
-      colour <= 2'b 10;
+      colour <= 2'b10;
     end
     default : begin
-      colour <= 2'b 11;
+      colour <= 2'b11;
     end
     endcase
   end
 
   // Synchronous process with asynch reset
   always @(posedge clk or posedge rstn) begin
-    if(rstn == 1'b 0) begin
+    if(rstn == 1'b0) begin
       status <= red;
     end else begin
       case(status)
       red : begin
-        if(pix_req == 1'b 1) begin
+        if(pix_req == 1'b1) begin
           status <= green;
         end
       end
       green : begin
-        if(a[3] == 1'b 1) begin
+        if(a[3] == 1'b1) begin
           start <= start_dec;
           status <= blue;
         end
-        else if(({b[5],a[3:2]}) == 3'b 001) begin
+        else if(({b[5],a[3:2]}) == 3'b001) begin
           status <= yellow;
         end
       end
@@ -173,7 +173,7 @@ reg [1:0] colour;
         status <= yellow;
       end
       default : begin
-        start <= 1'b 0;
+        start <= 1'b0;
         status <= red;
       end
       endcase
@@ -183,30 +183,30 @@ reg [1:0] colour;
   // Example of with statement
   always @(*) begin
     case(memaddr[2:0])
-      3'b 000,3'b 110 : code[9:2] <= {3'b 110,pack[6:2]};
-      3'b 101 : code[9:2] <= 8'b 11100010;
-      3'b 010 : code[9:2] <= {8{1'b1}};
-      3'b 011 : code[9:2] <= {8{1'b0}};
-      default : code[9:2] <= a + b + 1'b 1;
+      3'b000,3'b110 : code[9:2] <= {3'b110,pack[6:2]};
+      3'b101 : code[9:2] <= 8'b11100010;
+      3'b010 : code[9:2] <= {8{1'b1}};
+      3'b011 : code[9:2] <= {8{1'b0}};
+      default : code[9:2] <= a + b + 1'b1;
     endcase
   end
 
   assign code1[1:0] = a[6:5] ^ ({a[4],b[6]});
   // Asynch process
   always @(we or addr or config or bip) begin
-    if(we == 1'b 1) begin
-      if(addr[2:0] == 3'b 100) begin
-        selection <= 1'b 1;
+    if(we == 1'b1) begin
+      if(addr[2:0] == 3'b100) begin
+        selection <= 1'b1;
       end
-      else if(({b,a}) == {a,b} && bip == 1'b 0) begin
+      else if(({b,a}) == {a,b} && bip == 1'b0) begin
         selection <= config;
       end
       else begin
-        selection <= 1'b 1;
+        selection <= 1'b1;
       end
     end
     else begin
-      selection <= 1'b 0;
+      selection <= 1'b0;
     end
   end
 
@@ -238,8 +238,8 @@ reg [1:0] colour;
     // Outputs
     .dout(memdin));
 
-  assign complex = {enf,(3'b 110 * load),qtd[3:0],base,5'b 11001};
-  assign enf = a == (7'b 1101111 + load) && c < 7'b 1000111 ? 1'b 1 : 1'b 0;
+  assign complex = {enf,(3'b110 * load),qtd[3:0],base,5'b11001};
+  assign enf = a == (7'b1101111 + load) && c < 7'b1000111 ? 1'b1 : 1'b0;
   assign eno = enf;
 
 endmodule

@@ -47,7 +47,7 @@ wire enable; wire debug; wire aux; wire outy; wire dv; wire value;
   assign out_i = ((enable & ((aux ^ outy)))) | ((debug & dv &  ~enable)) | (( ~debug &  ~enable & value));
   // not drive
   always @(negedge reset or negedge sysclk) begin
-    if((reset != 1'b 0)) begin
+    if((reset != 1'b0)) begin
       foo <= {14{1'b0}};
     end else begin
       foo[3 * ((2 - 1))] <= (4 * ((1 + 2)));
