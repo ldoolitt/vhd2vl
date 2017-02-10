@@ -703,6 +703,7 @@ slist *emit_io_list(slist *sl)
 %token <txt> LASTVALUE EVENT POSEDGE NEGEDGE
 %token <txt> STRING NAME RANGE NULLV OPEN
 %token <txt> CONVFUNC_1 CONVFUNC_2 BASED FLOAT LEFT
+%token <txt> SCIENTIFIC REAL
 %token <n> NATURAL
 
 %type <n> trad
@@ -1032,6 +1033,9 @@ type        : BIT {
                 $$=new_vrange(tSCALAR);
                 $$->nlo = addtxt(NULL,"0");
                 $$->nhi = addtxt(NULL,"31");
+              }
+            | REAL {
+                $$=new_vrange(tSCALAR);
               }
             | BITVECT '(' vec_range ')' {$$=$3;}
             | NAME {
@@ -2052,6 +2056,12 @@ expr : signal {
            e=xmalloc(sizeof(expdata));
            e->op='t'; /* Terminal symbol */
            e->sl=addvec(NULL,$1);
+           $$=e;
+         }
+     | SCIENTIFIC {
+         expdata *e=xmalloc(sizeof(expdata));
+           e->op='t'; /* Terminal symbol */
+           e->sl=addtxt(NULL,$1);
            $$=e;
          }
      | FLOAT {

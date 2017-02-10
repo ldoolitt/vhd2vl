@@ -6,7 +6,10 @@ VHDLS    = $(notdir $(EXAMPLES))
 
 all: diff
 
-translate:
+src/vhd2vl:
+	make -C src
+
+translate: src/vhd2vl
 	@mkdir -p temp/verilog
 	@$(foreach VHDL,$(VHDLS),cd examples; ../src/vhd2vl $(VHDL) ../temp/verilog/$(basename $(VHDL)).v)
 
