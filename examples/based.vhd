@@ -1,5 +1,5 @@
 LIBRARY IEEE;
-USE IEEE.std_logic_1164.all, IEEE.std_logic_arith.all, IEEE.std_logic_unsigned.all;
+USE IEEE.std_logic_1164.all;
 
 entity based is port( sysclk : in std_logic);
 end based;

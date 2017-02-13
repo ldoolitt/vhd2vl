@@ -18,8 +18,7 @@
 
 library IEEE;
 use IEEE.std_logic_1164.all;
-use IEEE.std_logic_unsigned.all;
-USE ieee.std_logic_arith.all;
+USE ieee.numeric_std.all;
 
 entity gh_fifo_async16_sr is
 	GENERIC (data_width: INTEGER :=8 ); -- size of data bus
@@ -69,12 +68,12 @@ process (clk_WR)
 begin			  
 	if (rising_edge(clk_WR)) then
 		if ((WR = '1') and (ifull = '0')) then
-			ram_mem(CONV_INTEGER(add_WR(3 downto 0))) <= D;
+			--ram_mem(to_integer(unsigned(add_WR(3 downto 0)))) <= D;
 		end if;
 	end if;		
 end process;
 
-	Q <= ram_mem(CONV_INTEGER(add_RD(3 downto 0)));
+	--Q <= ram_mem(to_integer(unsigned(add_RD(3 downto 0))));
 
 -----------------------------------------
 ----- Write address counter -------------
@@ -84,7 +83,7 @@ end process;
 	             '0' when (WR = '0') else
 	             '1';
 
-	n_add_WR <= add_WR + x"1";
+	n_add_WR <= std_logic_vector(unsigned(add_WR) + x"1");
 				 
 process (clk_WR,rst)
 begin 
@@ -126,7 +125,7 @@ end process;
 	             '0' when (RD = '0') else
 	             '1';
 				 
-	n_add_RD <= add_RD + x"1";
+	n_add_RD <= std_logic_vector(unsigned(add_RD) + x"1");
 				 
 process (clk_RD,rst)
 begin 

@@ -54,7 +54,6 @@ entity counters is
     );
 end counters;
 
-
 architecture rtl of counters is
 
   signal wfoo0_llwln_var : unsigned(31 downto 0);
@@ -80,7 +79,6 @@ architecture rtl of counters is
   signal file_card_i : std_logic;
   signal do_file_card_i : std_logic;
   signal prev_do_file_card : std_logic;
-
 
 begin
 
@@ -267,7 +265,6 @@ begin
           X2_cwm_i <= '0';
         end if;
 
-
         if W3_baz = '1' then                                       -- counter Baz
           W3_var <= unsigned(W3_turn);
           if W3_turn = "00000000000000000000000000000000" then
@@ -334,7 +331,6 @@ begin
           end if;  -- debct_bar
 
         end if;  -- debct_blrb
-
 
         -- comment
         if debct_zz1pb = '0' then

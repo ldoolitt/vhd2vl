@@ -83,7 +83,7 @@ wire full;
 
 
 
-reg [data_width - 1:0] ram_mem[15:0];
+wire [data_width - 1:0] ram_mem[15:0];
 wire iempty;
 wire ifull;
 wire add_WR_CE;
@@ -107,16 +107,16 @@ reg isrst_r;
   //------------------------------------------
   always @(posedge clk_WR) begin
     if(((WR == 1'b1) && (ifull == 1'b0))) begin
-      ram_mem[(add_WR[3:0])] <= D;
+      //ram_mem(to_integer(unsigned(add_WR(3 downto 0)))) <= D;
     end
   end
 
-  assign Q = ram_mem[(add_RD[3:0])];
+  //Q <= ram_mem(to_integer(unsigned(add_RD(3 downto 0))));
   //---------------------------------------
   //--- Write address counter -------------
   //---------------------------------------
   assign add_WR_CE = (ifull == 1'b1) ? 1'b0 : (WR == 1'b0) ? 1'b0 : 1'b1;
-  assign n_add_WR = add_WR + 4'h1;
+  assign n_add_WR = (((add_WR)) + 4'h1);
   always @(posedge clk_WR or posedge rst) begin
     if((rst == 1'b1)) begin
       add_WR <= {5{1'b0}};
@@ -149,7 +149,7 @@ reg isrst_r;
   //--- Read address counter --------------
   //---------------------------------------
   assign add_RD_CE = (iempty == 1'b1) ? 1'b0 : (RD == 1'b0) ? 1'b0 : 1'b1;
-  assign n_add_RD = add_RD + 4'h1;
+  assign n_add_RD = (((add_RD)) + 4'h1);
   always @(posedge clk_RD or posedge rst) begin
     if((rst == 1'b1)) begin
       add_RD <= {5{1'b0}};

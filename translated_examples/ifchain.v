@@ -41,7 +41,7 @@ reg [31:0] c[3:0];
   always @(posedge clk) begin
     if({b[1],a[3:2]} == 3'b001) begin
       status <= 1'b1;
-      c[0] <= 16'hFFFF;
+      c[0] <= 32'hFFFFFFFF;
     end
   end
 

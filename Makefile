@@ -11,11 +11,13 @@ src/vhd2vl:
 
 translate: src/vhd2vl
 	@mkdir -p temp/verilog
-	@$(foreach VHDL,$(VHDLS),cd examples; ../src/vhd2vl $(VHDL) ../temp/verilog/$(basename $(VHDL)).v)
+	#@make -C examples
+	@$(foreach VHDL,$(VHDLS),cd examples; echo "Translating: $(VHDL)";../src/vhd2vl $(VHDL) ../temp/verilog/$(basename $(VHDL)).v)
 
 diff: translate
 	@diff -u translated_examples temp/verilog
 
 clean:
 	make -C src clean
+	@make -C examples clean
 	rm -fr temp

@@ -7,7 +7,7 @@
 
 LIBRARY IEEE;
 
-USE IEEE.std_logic_1164.all, IEEE.std_logic_arith.all, IEEE.std_logic_unsigned.all;
+USE IEEE.std_logic_1164.all, IEEE.numeric_std.all;
 
 entity test is port(
   -- Inputs
@@ -135,7 +135,7 @@ begin
                         "11100010" when "101",
                         (others => '1') when "010",
                         (others => '0') when "011",
-                        a + b + '1' when others;
+                        std_logic_vector(unsigned(a) + unsigned(b)) when others;
   code1(1 downto 0) <= a(6 downto 5) xor (a(4) & b(6));
   
   -- Asynch process
@@ -183,9 +183,9 @@ begin
     dout => memdin
   );
 
-  complex <= enf & ("110" * load) & qtd(3 downto 0) & base & "11001";
+  complex <= enf & (std_logic_vector("110" * unsigned(load))) & qtd(3 downto 0) & base & "11001";
 
-  enf <= '1' when a = "1101111" + load and c < "1000111" else '0';
+  enf <= '1' when c < "1000111" else '0';
   eno <= enf;
 
 end rtl;

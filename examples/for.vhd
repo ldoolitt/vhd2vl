@@ -1,6 +1,5 @@
 library IEEE;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_misc.all;
 use ieee.numeric_std.all;
 entity forp is port(
   reset, sysclk : in std_logic
