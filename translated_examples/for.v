@@ -1,14 +1,11 @@
 // no timescale needed
 
 module forp(
-reset,
-sysclk
+input wire reset,
+input wire sysclk
 );
 
-input reset, sysclk;
 
-wire reset;
-wire sysclk;
 
 
 reg selection;

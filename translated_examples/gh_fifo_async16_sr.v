@@ -18,47 +18,27 @@
 // no timescale needed
 
 module gh_fifo_async16_sr(
-clk_WR,
-clk_RD,
-rst,
-srst,
-WR,
-RD,
-D,
-Q,
-empty,
-full
+input wire clk_WR,
+input wire clk_RD,
+input wire rst,
+input wire srst,
+input wire WR,
+input wire RD,
+input wire [data_width - 1:0] D,
+output wire [data_width - 1:0] Q,
+output wire empty,
+output wire full
 );
 
 parameter [31:0] data_width=8;
 // size of data bus
-input clk_WR;
 // write clock
-input clk_RD;
 // read clock
-input rst;
 // resets counters
-input srst;
 // resets counters (sync with clk_WR)
-input WR;
 // write control 
-input RD;
 // read control
-input [data_width - 1:0] D;
-output [data_width - 1:0] Q;
-output empty;
-output full;
 
-wire clk_WR;
-wire clk_RD;
-wire rst;
-wire srst;
-wire WR;
-wire RD;
-wire [data_width - 1:0] D;
-wire [data_width - 1:0] Q;
-wire empty;
-wire full;
 
 
 

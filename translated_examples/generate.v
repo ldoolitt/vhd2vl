@@ -1,24 +1,16 @@
 // no timescale needed
 
 module gen(
-sysclk,
-reset,
-wrb,
-din,
-rdout
+input wire sysclk,
+input wire reset,
+input wire wrb,
+input wire [bus_width:0] din,
+output wire [bus_width:0] rdout
 );
 
 parameter [31:0] bus_width=15;
 parameter [31:0] TOP_GP2=0;
-input sysclk, reset, wrb;
-input [bus_width:0] din;
-output [bus_width:0] rdout;
 
-wire sysclk;
-wire reset;
-wire wrb;
-wire [bus_width:0] din;
-wire [bus_width:0] rdout;
 
 
 reg [bus_width * 2:0] regSelect;

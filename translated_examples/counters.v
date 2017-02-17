@@ -1,145 +1,55 @@
 // no timescale needed
 
 module counters(
-sysclk,
-foo_card,
-wfoo0_baz,
-wfoo0_blrb,
-wfoo0_zz1pb,
-wfoo0_turn,
-debct_baz,
-debct_blrb,
-debct_zz1pb,
-debct_bar,
-debct_turn,
-Z0_bar,
-Z0_baz,
-Z0_blrb,
-Z0_zz1pb,
-Z0_turn,
-Y1_bar,
-Y1_baz,
-Y1_blrb,
-Y1_zz1pb,
-Y1_turn,
-X2_bar,
-X2_baz,
-X2_blrb,
-X2_zz1pb,
-X2_turn,
-W3_bar,
-W3_baz,
-W3_blrb,
-W3_zz1pb,
-W3_turn,
-Z0_cwm,
-Z0,
-Y1_cwm,
-Y1,
-X2_cwm,
-X2,
-W3_cwm,
-W3,
-wfoo0_cwm,
-wfoo0_llwln,
-debct_cwm,
-debct_pull,
-debct,
-wdfilecardA2P
+input wire sysclk,
+input wire foo_card,
+input wire wfoo0_baz,
+input wire wfoo0_blrb,
+input wire wfoo0_zz1pb,
+input wire [31:0] wfoo0_turn,
+input wire debct_baz,
+input wire debct_blrb,
+input wire debct_zz1pb,
+input wire debct_bar,
+input wire [31:0] debct_turn,
+input wire Z0_bar,
+input wire Z0_baz,
+input wire Z0_blrb,
+input wire Z0_zz1pb,
+input wire [31:0] Z0_turn,
+input wire Y1_bar,
+input wire Y1_baz,
+input wire Y1_blrb,
+input wire Y1_zz1pb,
+input wire [31:0] Y1_turn,
+input wire X2_bar,
+input wire X2_baz,
+input wire X2_blrb,
+input wire X2_zz1pb,
+input wire [31:0] X2_turn,
+input wire W3_bar,
+input wire W3_baz,
+input wire W3_blrb,
+input wire W3_zz1pb,
+input wire [31:0] W3_turn,
+output wire Z0_cwm,
+output wire [31:0] Z0,
+output wire Y1_cwm,
+output wire [31:0] Y1,
+output wire X2_cwm,
+output wire [31:0] X2,
+output wire W3_cwm,
+output wire [31:0] W3,
+output reg wfoo0_cwm,
+output wire [31:0] wfoo0_llwln,
+output wire debct_cwm,
+output reg debct_pull,
+output wire [31:0] debct,
+output wire wdfilecardA2P
 );
 
-input sysclk;
-input foo_card;
-input wfoo0_baz;
-input wfoo0_blrb;
-input wfoo0_zz1pb;
-input [31:0] wfoo0_turn;
-input debct_baz;
-input debct_blrb;
-input debct_zz1pb;
-input debct_bar;
-input [31:0] debct_turn;
-input Z0_bar;
-input Z0_baz;
-input Z0_blrb;
-input Z0_zz1pb;
-input [31:0] Z0_turn;
-input Y1_bar;
-input Y1_baz;
-input Y1_blrb;
-input Y1_zz1pb;
-input [31:0] Y1_turn;
-input X2_bar;
-input X2_baz;
-input X2_blrb;
-input X2_zz1pb;
-input [31:0] X2_turn;
-input W3_bar;
-input W3_baz;
-input W3_blrb;
-input W3_zz1pb;
-input [31:0] W3_turn;
 // to engine block
-output Z0_cwm;
-output [31:0] Z0;
-output Y1_cwm;
-output [31:0] Y1;
-output X2_cwm;
-output [31:0] X2;
-output W3_cwm;
-output [31:0] W3;
-output wfoo0_cwm;
-output [31:0] wfoo0_llwln;
-output debct_cwm;
-output debct_pull;
-output [31:0] debct;
-output wdfilecardA2P;
 
-wire sysclk;
-wire foo_card;
-wire wfoo0_baz;
-wire wfoo0_blrb;
-wire wfoo0_zz1pb;
-wire [31:0] wfoo0_turn;
-wire debct_baz;
-wire debct_blrb;
-wire debct_zz1pb;
-wire debct_bar;
-wire [31:0] debct_turn;
-wire Z0_bar;
-wire Z0_baz;
-wire Z0_blrb;
-wire Z0_zz1pb;
-wire [31:0] Z0_turn;
-wire Y1_bar;
-wire Y1_baz;
-wire Y1_blrb;
-wire Y1_zz1pb;
-wire [31:0] Y1_turn;
-wire X2_bar;
-wire X2_baz;
-wire X2_blrb;
-wire X2_zz1pb;
-wire [31:0] X2_turn;
-wire W3_bar;
-wire W3_baz;
-wire W3_blrb;
-wire W3_zz1pb;
-wire [31:0] W3_turn;
-wire Z0_cwm;
-wire [31:0] Z0;
-wire Y1_cwm;
-wire [31:0] Y1;
-wire X2_cwm;
-wire [31:0] X2;
-wire W3_cwm;
-wire [31:0] W3;
-reg wfoo0_cwm;
-wire [31:0] wfoo0_llwln;
-wire debct_cwm;
-reg debct_pull;
-wire [31:0] debct;
-wire wdfilecardA2P;
 
 
 reg [31:0] wfoo0_llwln_var;

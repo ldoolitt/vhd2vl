@@ -1,14 +1,11 @@
 // no timescale needed
 
 module test(
-clk,
-rstn
+input wire clk,
+input wire rstn
 );
 
-input clk, rstn;
 
-wire clk;
-wire rstn;
 
 
 

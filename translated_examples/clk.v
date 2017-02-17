@@ -1,25 +1,16 @@
 // no timescale needed
 
 module clk(
-reset,
-preset,
-qreset,
-sysclk,
-dsysclk,
-esysclk,
-ival
+input wire reset,
+input wire preset,
+input wire qreset,
+input wire sysclk,
+input wire dsysclk,
+input wire esysclk,
+input wire [31:0] ival
 );
 
-input reset, preset, qreset, sysclk, dsysclk, esysclk;
-input [31:0] ival;
 
-wire reset;
-wire preset;
-wire qreset;
-wire sysclk;
-wire dsysclk;
-wire esysclk;
-wire [31:0] ival;
 
 
 reg [10 + 3:0] foo;

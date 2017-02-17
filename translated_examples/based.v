@@ -1,12 +1,10 @@
 // no timescale needed
 
 module based(
-sysclk
+input wire sysclk
 );
 
-input sysclk;
 
-wire sysclk;
 
 
 wire [31:0] foo; wire [31:0] foo2; wire [31:0] foo8; wire [31:0] foo10; wire [31:0] foo11; wire [31:0] foo16;

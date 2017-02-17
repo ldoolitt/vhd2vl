@@ -2,92 +2,38 @@
 // no timescale needed
 
 module bigfile(
-sysclk,
-g_zaq_in,
-g_aux,
-scanb,
-g_wrb,
-g_rdb,
-g_noop_clr,
-swe_ed,
-swe_lv,
-din,
-g_dout_w0x0f,
-n9_bit_write,
-reset,
-alu_u,
-debct_ping,
-g_sys_in,
-g_zaq_in_rst_hold,
-g_zaq_hhh_enb,
-g_zaq_out,
-g_dout,
-g_zaq_ctl,
-g_zaq_qaz_hb,
-g_zaq_qaz_lb,
-gwerth,
-g_noop,
-g_vector,
-swe_qaz1
+input wire sysclk,
+input wire [31:0] g_zaq_in,
+input wire [31:0] g_aux,
+input wire scanb,
+input wire g_wrb,
+input wire g_rdb,
+input wire [31:0] g_noop_clr,
+input wire swe_ed,
+input wire swe_lv,
+input wire [63:0] din,
+input wire [4:0] g_dout_w0x0f,
+input wire n9_bit_write,
+input wire reset,
+input wire [31:0] alu_u,
+input wire debct_ping,
+output wire [31:0] g_sys_in,
+output wire [31:0] g_zaq_in_rst_hold,
+output wire [31:0] g_zaq_hhh_enb,
+output wire [31:0] g_zaq_out,
+output wire [31:0] g_dout,
+output wire [31:0] g_zaq_ctl,
+output wire [31:0] g_zaq_qaz_hb,
+output wire [31:0] g_zaq_qaz_lb,
+output reg [31:0] gwerth,
+output wire [31:0] g_noop,
+output reg [8 * 32 - 1:0] g_vector,
+output reg [31:0] swe_qaz1
 );
 
 // from external pins
-input sysclk;
-input [31:0] g_zaq_in;
-input [31:0] g_aux;
-input scanb;
-input g_wrb;
-input g_rdb;
-input [31:0] g_noop_clr;
-input swe_ed;
-input swe_lv;
-input [63:0] din;
-input [4:0] g_dout_w0x0f;
-input n9_bit_write;
 // from reset_gen block
-input reset;
-input [31:0] alu_u;
-input debct_ping;
-output [31:0] g_sys_in;
-output [31:0] g_zaq_in_rst_hold;
-output [31:0] g_zaq_hhh_enb;
-output [31:0] g_zaq_out;
-output [31:0] g_dout;
-output [31:0] g_zaq_ctl;
-output [31:0] g_zaq_qaz_hb;
-output [31:0] g_zaq_qaz_lb;
-output [31:0] gwerth;
-output [31:0] g_noop;
-output [8 * 32 - 1:0] g_vector;
-output [31:0] swe_qaz1;
 
-wire sysclk;
-wire [31:0] g_zaq_in;
-wire [31:0] g_aux;
-wire scanb;
-wire g_wrb;
-wire g_rdb;
-wire [31:0] g_noop_clr;
-wire swe_ed;
-wire swe_lv;
-wire [63:0] din;
-wire [4:0] g_dout_w0x0f;
-wire n9_bit_write;
-wire reset;
-wire [31:0] alu_u;
-wire debct_ping;
-wire [31:0] g_sys_in;
-wire [31:0] g_zaq_in_rst_hold;
-wire [31:0] g_zaq_hhh_enb;
-wire [31:0] g_zaq_out;
-wire [31:0] g_dout;
-wire [31:0] g_zaq_ctl;
-wire [31:0] g_zaq_qaz_hb;
-wire [31:0] g_zaq_qaz_lb;
-reg [31:0] gwerth;
-wire [31:0] g_noop;
-reg [8 * 32 - 1:0] g_vector;
-reg [31:0] swe_qaz1;
 
 
 // IMPLEMENTATION

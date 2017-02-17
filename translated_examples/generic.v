@@ -1,29 +1,19 @@
 // no timescale needed
 
 module test(
-reset,
-sysclk,
-a,
-b,
-enf,
-load,
-qtd,
-base
+input wire reset,
+input wire sysclk,
+input wire [bus_width:0] a,
+input wire [bus_width:0] b,
+input wire [bus_width:0] enf,
+input wire [bus_width:0] load,
+input wire [bus_width:0] qtd,
+input wire [bus_width:0] base
 );
 
 parameter [7:0] dog_width=8'b10101100;
 parameter [31:0] bus_width=32;
-input reset, sysclk;
-input [bus_width:0] a, b, enf, load, qtd, base;
 
-wire reset;
-wire sysclk;
-wire [bus_width:0] a;
-wire [bus_width:0] b;
-wire [bus_width:0] enf;
-wire [bus_width:0] load;
-wire [bus_width:0] qtd;
-wire [bus_width:0] base;
 
 
 wire [1 + 1:0] foo;

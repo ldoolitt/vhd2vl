@@ -7,81 +7,36 @@
 // no timescale needed
 
 module test(
-clk,
-rstn,
-en,
-start_dec,
-addr,
-din,
-we,
-pixel_in,
-pix_req,
-config,
-bip,
-a,
-b,
-c,
-load,
-pack,
-base,
-qtd,
-dout,
-pixel_out,
-pixel_valid,
-code,
-code1,
-complex,
-eno
+input wire clk,
+input wire rstn,
+input wire en,
+input wire start_dec,
+input wire [2:0] addr,
+input wire [25:0] din,
+input wire we,
+input wire [7:0] pixel_in,
+input wire pix_req,
+input wire config,
+input wire bip,
+input wire [7:0] a,
+input wire [7:0] b,
+input wire [7:0] c,
+input wire [7:0] load,
+input wire [6:0] pack,
+input wire [2:0] base,
+input wire [21:0] qtd,
+output wire [25:0] dout,
+output reg [7:0] pixel_out,
+output wire pixel_valid,
+output reg [9:0] code,
+output wire [9:0] code1,
+output wire [23:0] complex,
+output wire eno
 );
 
 // Inputs
-input clk, rstn;
-input en, start_dec;
-input [2:0] addr;
-input [25:0] din;
-input we;
-input [7:0] pixel_in;
-input pix_req;
-input config, bip;
-input [7:0] a, b;
-input [7:0] c, load;
-input [6:0] pack;
-input [2:0] base;
-input [21:0] qtd;
 // Outputs
-output [25:0] dout;
-output [7:0] pixel_out;
-output pixel_valid;
-output [9:0] code;
-output [9:0] code1;
-output [23:0] complex;
-output eno;
 
-wire clk;
-wire rstn;
-wire en;
-wire start_dec;
-wire [2:0] addr;
-wire [25:0] din;
-wire we;
-wire [7:0] pixel_in;
-wire pix_req;
-wire config;
-wire bip;
-wire [7:0] a;
-wire [7:0] b;
-wire [7:0] c;
-wire [7:0] load;
-wire [6:0] pack;
-wire [2:0] base;
-wire [21:0] qtd;
-wire [25:0] dout;
-reg [7:0] pixel_out;
-wire pixel_valid;
-reg [9:0] code;
-wire [9:0] code1;
-wire [23:0] complex;
-wire eno;
 
 
 // Components declarations are ignored by vhd2vl

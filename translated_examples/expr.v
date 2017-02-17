@@ -1,16 +1,12 @@
 // no timescale needed
 
 module expr(
-reset,
-sysclk,
-ival
+input wire reset,
+input wire sysclk,
+input wire ival
 );
 
-input reset, sysclk, ival;
 
-wire reset;
-wire sysclk;
-wire ival;
 
 
 reg [13:0] foo;
