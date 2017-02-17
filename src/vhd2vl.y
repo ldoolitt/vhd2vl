@@ -33,7 +33,7 @@
 int yylex(void);
 void yyerror(const char *s);
 
-int vlog_ver=0;  /* default is -g1995 */
+int vlog_ver=2001;
 
 /* You will of course want to tinker with this if you use a debugging
  * malloc(), otherwise all the line numbers will point here.
@@ -633,7 +633,7 @@ slist *output_timescale(slist *sl)
 slist *setup_port(sglist *s_list, int dir, vrange *type) {
   slist *sl;
   sglist *p;
-  if (vlog_ver == 1) {
+  if (vlog_ver == 2001) {
     sl=addtxt(NULL,NULL);
   }
   else {
@@ -643,15 +643,15 @@ slist *setup_port(sglist *s_list, int dir, vrange *type) {
   p=s_list;
   for(;;){
     p->type=wire;
-    if (vlog_ver == 1) p->dir=inout_string(dir);
+    if (vlog_ver == 2001) p->dir=inout_string(dir);
     p->range=type;
-    if (vlog_ver == 0) sl=addtxt(sl, p->name);
+    if (vlog_ver == 1995) sl=addtxt(sl, p->name);
     if(p->next==NULL)
       break;
     p=p->next;
-    if (vlog_ver == 0) sl=addtxt(sl,", ");
+    if (vlog_ver == 1995) sl=addtxt(sl,", ");
   }
-  if (vlog_ver == 0) sl=addtxt(sl,";\n");
+  if (vlog_ver == 1995) sl=addtxt(sl,";\n");
   p->next=io_list;
   io_list=s_list;
   return sl;
@@ -663,7 +663,7 @@ slist *emit_io_list(slist *sl)
               sl=addtxt(sl,"(\n");
               p=io_list;
               for(;;){
-                if (vlog_ver == 1) {
+                if (vlog_ver == 2001) {
                   sl=addtxt(sl,p->dir);
                   sl=addtxt(sl," ");
                   sl=addptxt(sl,&(p->type));
@@ -830,7 +830,7 @@ entity    : ENTITY NAME IS rem PORT '(' rem portlist ')' ';' rem END opt_entity 
               sl=addsl(sl,$8); /* portlist */
               sl=addtxt(sl,"\n");
               p=io_list;
-              if (vlog_ver == 0) {
+              if (vlog_ver == 1995) {
                 do{
                 sl=addptxt(sl,&(p->type));
                 /*sl=addtxt(sl,p->type);*/
@@ -860,7 +860,7 @@ entity    : ENTITY NAME IS rem PORT '(' rem portlist ')' ';' rem END opt_entity 
               sl=addsl(sl,$16); /* portlist */
               sl=addtxt(sl,"\n");
               p=io_list;
-              if (vlog_ver == 0) {
+              if (vlog_ver == 1995) {
                 do{
                 sl=addptxt(sl,&(p->type));
                 /*sl=addtxt(sl,p->type);*/
@@ -2369,8 +2369,7 @@ int i,j;
 char *s;
 slist *sl;
 int status;
-int opt=0;
-int std=1995;
+int opt;
 static int quiet;
 
   /* Init the indentation variables */
@@ -2398,12 +2397,8 @@ static int quiet;
       case 0:
          break;
       case 's':
-        std = atoi(optarg);
-        if (std == 1995) {
-           vlog_ver = 0;
-        } else if (std == 2001) {
-           vlog_ver = 1;
-        } else {
+        vlog_ver = atoi(optarg);
+        if (vlog_ver != 1995 && vlog_ver != 2001) {
            print_usage();
            exit(EXIT_FAILURE);
         }
@@ -2441,8 +2436,7 @@ static int quiet;
   if (!quiet) {
      printf("// File %s translated with vhd2vl v2.5 VHDL to Verilog RTL translator\n", sourcefile);
      printf("// vhd2vl settings:\n"
-            "//  * Verilog Module Declaration Style: %s\n\n",
-            vlog_ver ? "2001" : "1995");
+            "//  * Verilog Module Declaration Style: %d\n\n", vlog_ver);
      fputs(
 "// vhd2vl is Free (libre) Software:\n"
 "//   Copyright (C) 2001 Vincenzo Liguori - Ocean Logic Pty Ltd\n"
