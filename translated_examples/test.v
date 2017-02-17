@@ -84,7 +84,7 @@ reg [1:0] colour;
   end
 
   // Synchronous process with asynch reset
-  always @(posedge clk or posedge rstn) begin
+  always @(posedge clk, posedge rstn) begin
     if(rstn == 1'b0) begin
       status <= red;
     end else begin
@@ -127,7 +127,7 @@ reg [1:0] colour;
 
   assign code1[1:0] = a[6:5] ^ ({a[4],b[6]});
   // Asynch process
-  always @(we or addr or config or bip) begin
+  always @(we, addr, config, bip) begin
     if(we == 1'b1) begin
       if(addr[2:0] == 3'b100) begin
         selection <= 1'b1;

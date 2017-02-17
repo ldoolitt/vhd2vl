@@ -21,7 +21,7 @@ wire enable; wire debug; wire aux; wire outy; wire dv; wire value;
   // drive based on foo
   assign out_i[4] = ((enable & ((aux ^ outy)))) | ((debug & dv &  ~enable)) | (( ~debug &  ~enable & value));
   // not drive
-  always @(negedge reset or negedge sysclk) begin
+  always @(negedge reset, negedge sysclk) begin
     if((reset != 1'b0)) begin
       foo <= {14{1'b0}};
     end else begin

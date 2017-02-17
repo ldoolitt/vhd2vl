@@ -88,7 +88,7 @@ reg prev_do_file_card;
   assign W3_cwm = W3_cwm_i;
   assign debct_cwm = debct_cwm_i;
   assign wdfilecardA2P = do_file_card_i;
-  always @(posedge foo_card or posedge sysclk) begin
+  always @(posedge foo_card, posedge sysclk) begin
     if(foo_card == 1'b1) begin
       wfoo0_llwln_var <= {32{1'b0}};
       debct_var <= {32{1'b0}};

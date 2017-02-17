@@ -76,7 +76,7 @@ reg isrst_r;
   //---------------------------------------
   assign add_WR_CE = (ifull == 1'b1) ? 1'b0 : (WR == 1'b0) ? 1'b0 : 1'b1;
   assign n_add_WR = (((add_WR)) + 4'h1);
-  always @(posedge clk_WR or posedge rst) begin
+  always @(posedge clk_WR, posedge rst) begin
     if((rst == 1'b1)) begin
       add_WR <= {5{1'b0}};
       add_RD_WS <= 5'b11000;
@@ -109,7 +109,7 @@ reg isrst_r;
   //---------------------------------------
   assign add_RD_CE = (iempty == 1'b1) ? 1'b0 : (RD == 1'b0) ? 1'b0 : 1'b1;
   assign n_add_RD = (((add_RD)) + 4'h1);
-  always @(posedge clk_RD or posedge rst) begin
+  always @(posedge clk_RD, posedge rst) begin
     if((rst == 1'b1)) begin
       add_RD <= {5{1'b0}};
       add_WR_RS <= {5{1'b0}};
@@ -150,7 +150,7 @@ reg isrst_r;
   //- srst is sync with clk_WR -----
   //- srst_r is sync with clk_RD ---
   //--------------------------------
-  always @(posedge clk_WR or posedge rst) begin
+  always @(posedge clk_WR, posedge rst) begin
     if((rst == 1'b1)) begin
       srst_w <= 1'b0;
       isrst_r <= 1'b0;
@@ -165,7 +165,7 @@ reg isrst_r;
     end
   end
 
-  always @(posedge clk_RD or posedge rst) begin
+  always @(posedge clk_RD, posedge rst) begin
     if((rst == 1'b1)) begin
       srst_r <= 1'b0;
       isrst_w <= 1'b0;

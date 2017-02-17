@@ -135,7 +135,7 @@ wire [31:0] g_dout_i;
   // qaz
   assign g_zaq_in_rst_hold = g_style_main_reset_hold_dout;
   // Din 
-  always @(posedge reset or posedge sysclk) begin : P2
+  always @(posedge reset, posedge sysclk) begin : P2
     reg [4:0] g_dout_w0x0f_v;
 
     if((reset != 1'b0)) begin
@@ -270,7 +270,7 @@ wire [31:0] g_dout_i;
   end
 
   // sample
-  always @(posedge reset or posedge sysclk) begin
+  always @(posedge reset, posedge sysclk) begin
     if((reset != 1'b0)) begin
       q_g_zaq_in <= {32{1'b0}};
       q2_g_zaq_in <= {32{1'b0}};
@@ -294,7 +294,7 @@ wire [31:0] g_dout_i;
   assign g_sys_in_i = ({g_zaq_in_y_no_dout[31:4],(((g_style_c_l_dout[3:0] & q_g_zaq_in_cd)) | (( ~g_style_c_l_dout[3:0] & g_zaq_in_y_no_dout[3:0])))});
   assign g_sys_in_ii = ((g_sys_in_i &  ~gwerthernal_style_l_dout)) | ((gwerthernal_style_u_dout & gwerthernal_style_l_dout));
   assign g_sys_in = g_sys_in_ii;
-  always @(posedge reset or posedge sysclk) begin
+  always @(posedge reset, posedge sysclk) begin
     if((reset != 1'b0)) begin
       q_g_zaq_in_cd <= {4{1'b0}};
       q_g_unzq <= {4{1'b1}};
@@ -327,7 +327,7 @@ wire [31:0] g_dout_i;
   end
 
   // generate lqqs 
-  always @(posedge reset or posedge sysclk) begin
+  always @(posedge reset, posedge sysclk) begin
     if((reset != 1'b0)) begin
       q_g_style_vfr_dout <= {32{1'b0}};
     end else begin
@@ -347,7 +347,7 @@ wire [31:0] g_dout_i;
   assign g_n_active = (((((q_g_style_vfr_dout &  ~g_style_vfr_dout)) | (( ~q_g_style_vfr_dout & g_style_vfr_dout & g_n_both_qbars_l_dout))))) & g_n_l_dout;
   // check for lqq active and set lqq vfr register
   // also clear
-  always @(posedge reset or posedge sysclk) begin
+  always @(posedge reset, posedge sysclk) begin
     if((reset != 1'b0)) begin
       g_n_vfr_dout <= {32{1'b0}};
       gwerth <= {32{1'b0}};
@@ -389,7 +389,7 @@ wire [31:0] g_dout_i;
 
   //--
   // Create the Lqq
-  always @(g_n_r_bne_dout or g_e_n_r_dout) begin : P1
+  always @(g_n_r_bne_dout, g_e_n_r_dout) begin : P1
     reg [31:0] imod8, idiv8;
 
     for (i=0; i <= 31; i = i + 1) begin
@@ -414,7 +414,7 @@ wire [31:0] g_dout_i;
   //--
   // Qaz
   assign g_noop = g_n_div_rebeq_dout;
-  always @(swe_ed or swe_lv or g_e_z_dout) begin
+  always @(swe_ed, swe_lv, g_e_z_dout) begin
     for (i=0; i <= 31; i = i + 1) begin
       if((g_e_z_dout[i] == 1'b1)) begin
         swe_qaz1[i] <= swe_ed;
