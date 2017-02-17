@@ -2359,8 +2359,8 @@ const char *sourcefile; /* Input file */
 
 void print_usage() {
    printf(
-      "Usage: vhd2vl [--debug] [--std 1995|2001] source_file.vhd > target_file.v\n"
-      "   or  vhd2vl [--debug] [--std 1995|2001] source_file.vhd target_file.v\n"
+      "Usage: vhd2vl [--debug] [--quiet] [--std 1995|2001] source_file.vhd > target_file.v\n"
+      "   or  vhd2vl [--debug] [--quiet] [--std 1995|2001] source_file.vhd target_file.v\n"
    );
 }
 
@@ -2371,6 +2371,7 @@ slist *sl;
 int status;
 int opt=0;
 int std=1995;
+static int quiet;
 
   /* Init the indentation variables */
   indents[0]=NULL;
@@ -2386,6 +2387,7 @@ int std=1995;
 
   static struct option options[] = {
     {"debug",     no_argument,       &yydebug,  1  },
+    {"quiet",     no_argument,       &quiet,    1  },
     {"std",       required_argument, 0,        's' },
     {"help",      no_argument,       0,        'h' },
     {0,           0,                 0,         0  }
@@ -2436,11 +2438,12 @@ int std=1995;
      exit(EXIT_FAILURE);
   }
 
-  printf("// File %s translated with vhd2vl v2.5 VHDL to Verilog RTL translator\n", sourcefile);
-  printf("// vhd2vl settings:\n"
-         "//  * Verilog Module Declaration Style: %s\n\n",
-         vlog_ver ? "2001" : "1995");
-  fputs(
+  if (!quiet) {
+     printf("// File %s translated with vhd2vl v2.5 VHDL to Verilog RTL translator\n", sourcefile);
+     printf("// vhd2vl settings:\n"
+            "//  * Verilog Module Declaration Style: %s\n\n",
+            vlog_ver ? "2001" : "1995");
+     fputs(
 "// vhd2vl is Free (libre) Software:\n"
 "//   Copyright (C) 2001 Vincenzo Liguori - Ocean Logic Pty Ltd\n"
 "//     http://www.ocean-logic.com\n"
@@ -2449,7 +2452,7 @@ int std=1995;
 "//   Modifications Copyright (C) 2002, 2005, 2008-2010, 2015 Larry Doolittle - LBNL\n"
 "//     http://doolittle.icarus.com/~larry/vhd2vl/\n"
 "//\n", stdout);
-  fputs(
+     fputs(
 "//   vhd2vl comes with ABSOLUTELY NO WARRANTY.  Always check the resulting\n"
 "//   Verilog for correctness, ideally with a formal verification tool.\n"
 "//\n"
@@ -2457,7 +2460,8 @@ int std=1995;
 "//   See the license (GPLv2) file included with the source for details.\n\n"
 "// The result of translation follows.  Its copyright status should be\n"
 "// considered unchanged from the original VHDL.\n\n"
-  , stdout);
+     , stdout);
+  }
   status = yyparse();
   fclose(stdout);
   fclose(stdin);
