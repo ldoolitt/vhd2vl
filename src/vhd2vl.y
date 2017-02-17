@@ -1,10 +1,11 @@
 /*
-    vhd2vl v2.5
+    vhd2vl v3.0
     VHDL to Verilog RTL translator
     Copyright (C) 2001 Vincenzo Liguori - Ocean Logic Pty Ltd - http://www.ocean-logic.com
     Modifications (C) 2006 Mark Gonzales - PMC Sierra Inc
     Modifications (C) 2010 Shankar Giri
     Modifications (C) 2002, 2005, 2008-2010, 2015 Larry Doolittle - LBNL
+    Modifications (C) 2017 Rodrigo A. Melo
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -2434,7 +2435,7 @@ static int quiet;
   }
 
   if (!quiet) {
-     printf("// File %s translated with vhd2vl v2.5 VHDL to Verilog RTL translator\n", sourcefile);
+     printf("// File %s translated with vhd2vl v3.0 VHDL to Verilog RTL translator\n", sourcefile);
      printf("// vhd2vl settings:\n"
             "//  * Verilog Module Declaration Style: %d\n\n", vlog_ver);
      fputs(
@@ -2445,6 +2446,7 @@ static int quiet;
 "//   Modifications (C) 2010 Shankar Giri\n"
 "//   Modifications Copyright (C) 2002, 2005, 2008-2010, 2015 Larry Doolittle - LBNL\n"
 "//     http://doolittle.icarus.com/~larry/vhd2vl/\n"
+"//   Modifications (C) 2017 Rodrigo A. Melo\n"
 "//\n", stdout);
      fputs(
 "//   vhd2vl comes with ABSOLUTELY NO WARRANTY.  Always check the resulting\n"
