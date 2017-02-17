@@ -472,16 +472,12 @@ slist *add_always(slist *sl, slist *sensitivities, slist *decls, int munge)
              if(clkedge) {
                sl=addtxt(sl,"posedge ");
                /* traverse $4->sl replacing " or " with " or posedge " if there is a clockedge */
-               if (vlog_ver == 2001)
-                  slTxtReplace(sensitivities,", ", ", posedge ");
-               if (vlog_ver == 1995)
-                  slTxtReplace(sensitivities," or ", " or posedge ");
+               if (vlog_ver == 2001) slTxtReplace(sensitivities,", ", ", posedge ");
+               if (vlog_ver == 1995) slTxtReplace(sensitivities," or ", " or posedge ");
              } else {
                sl=addtxt(sl,"negedge ");
-               if (vlog_ver == 2001)
-                  slTxtReplace(sensitivities,", ", ", negedge ");
-               if (vlog_ver == 1995)
-                  slTxtReplace(sensitivities," or ", " or negedge ");
+               if (vlog_ver == 2001) slTxtReplace(sensitivities,", ", ", negedge ");
+               if (vlog_ver == 1995) slTxtReplace(sensitivities," or ", " or negedge ");
              }
            }
            sl=addsl(sl,sensitivities);
@@ -1880,8 +1876,10 @@ sign_list : signal {$$=$1->sl; free($1);}
             slist *sl;
               if (vlog_ver == 2001)
                  sl=addtxt($1->sl,", ");
-              if (vlog_ver == 1995)
+              else if (vlog_ver == 1995)
                  sl=addtxt($1->sl," or ");
+              else
+                 sl=0;
               free($1);
               $$=addsl(sl,$3);
             }
