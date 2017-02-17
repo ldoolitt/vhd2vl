@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <getopt.h>
 #include <assert.h>
 #include "def.h"
 
@@ -2356,11 +2357,20 @@ simple_expr : signal {
 const char *outfile;    /* Output file */
 const char *sourcefile; /* Input file */
 
-int main(int argc, char *argv[]){
+void print_usage() {
+   printf(
+      "Usage: vhd2vl [--debug] [--std 1995|2001] source_file.vhd > target_file.v\n"
+      "   or  vhd2vl [--debug] [--std 1995|2001] source_file.vhd target_file.v\n"
+   );
+}
+
+int main(int argc, char **argv){
 int i,j;
 char *s;
 slist *sl;
 int status;
+int opt=0;
+int std=1995;
 
   /* Init the indentation variables */
   indents[0]=NULL;
@@ -2373,44 +2383,57 @@ int status;
     sl->type=1;
     sl->slst=NULL;
   }
-  if (argc >= 2 && strcmp(argv[1], "--help") == 0) {
-    printf(
-      "Usage: vhd2vl [-d] [-g1995|-g2001] source_file.vhd > target_file.v\n"
-      "   or  vhd2vl [-d] [-g1995|-g2001] source_file.vhd target_file.v\n");
-    exit(EXIT_SUCCESS);
+
+  static struct option options[] = {
+    {"debug",     no_argument,       &yydebug,  1  },
+    {"std",       required_argument, 0,        's' },
+    {"help",      no_argument,       0,        'h' },
+    {0,           0,                 0,         0  }
+  };
+
+  while ((opt = getopt_long(argc, argv,"s:h", options, 0 )) != -1) {
+    switch (opt) {
+      case 0:
+         break;
+      case 's':
+        std = atoi(optarg);
+        if (std == 1995) {
+           vlog_ver = 0;
+        } else if (std == 2001) {
+           vlog_ver = 1;
+        } else {
+           print_usage();
+           exit(EXIT_FAILURE);
+        }
+        break;
+      default:
+        print_usage();
+        exit(EXIT_SUCCESS);
+    }
   }
 
-  while (argc >= 2) {
-     if (strcmp(argv[1], "-d") == 0) {
-       yydebug = 1;
-     } else if (strcmp(argv[1], "-g1995") == 0) {
-       vlog_ver = 0;
-     } else if (strcmp(argv[1], "-g2001") == 0) {
-       vlog_ver = 1;
-     } else {
-       break;
-     }
-     argv++;
-     argc--;
-  }
-  if (argc>=2) {
-     sourcefile = argv[1];
+  sourcefile = "-";
+  outfile    = "-";
+  if (optind < argc) {
+     sourcefile = argv[optind++];
      if (strcmp(sourcefile,"-")!=0 && !freopen(sourcefile, "r", stdin)) {
         fprintf(stderr, "Error: Can't open input file '%s'\n", sourcefile);
         return(1);
      }
   } else {
-     sourcefile = "-";
+    print_usage();
+    exit(EXIT_FAILURE);
   }
-
-  if (argc>=3) {
-     outfile = argv[2];
+  if (optind < argc) {
+     outfile = argv[optind++];
      if (strcmp(outfile,"-")!=0 && !freopen(outfile, "w", stdout)) {
         fprintf(stderr, "Error: Can't open output file '%s'\n", outfile);
         return(1);
      }
-  } else {
-     outfile = "-";
+  }
+  if (optind < argc) {
+     print_usage();
+     exit(EXIT_FAILURE);
   }
 
   printf("// File %s translated with vhd2vl v2.5 VHDL to Verilog RTL translator\n", sourcefile);
