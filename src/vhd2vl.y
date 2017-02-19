@@ -218,8 +218,7 @@ slist *addvec_base(slist *sl, char *b, char *s){
   } else if (strcasecmp(b,"O") == 0) {
      base_str="'o"; base_mult=3;
   } else {
-     fprintf(stderr,"Warning on line %d: NAME STRING rule matched but "
-       "NAME='%s' is not X or O.\n",lineno, b);
+     fprintf(stderr,"WARNING (line %d): NAME STRING rule matched but NAME='%s' is not X or O.\n", lineno, b);
   }
   sl=addval(sl,strlen(s)*base_mult);
   sl=addtxt(sl,base_str);
@@ -607,12 +606,11 @@ static void set_timescale(const char *s)
     else if (strcasecmp(s,"ns") == 0) { new_unit[0] = 'n'; }
     else if (strcasecmp(s,"ps") == 0) { new_unit[0] = 'p'; }
     else {
-        fprintf(stderr,"Warning on line %d: AFTER NATURAL NAME pattern"
-               " matched, but NAME='%s' should be a time unit.\n",lineno,s);
+        fprintf(stderr,"WARNING (line %d): AFTER NATURAL NAME pattern matched, but NAME='%s' should be a time unit.\n", lineno, s);
     }
     if (new_unit[0] != time_unit[0]) {
         if (time_unit[0] != 0) {
-            fprintf(stderr,"Warning on line %d: inconsistent time unit (%s) ignored\n", lineno, s);
+            fprintf(stderr,"WARNING (line %d): inconsistent time unit (%s) ignored.\n", lineno, s);
         } else {
             time_unit[0] = new_unit[0];
         }
@@ -992,8 +990,7 @@ portlist  : s_list ':' dir type rem {
           /* 1      2   3   4    5   6   7    8 */
           | s_list ':' dir type ':' '=' expr rem {
             slist *sl;
-              fprintf(stderr,"Warning on line %d: "
-                "port default initialization ignored\n",lineno);
+              fprintf(stderr,"WARNING (line %d): port default initialization ignored.\n",lineno);
               if(dolist){
                 io_list=NULL;
                 sl=setup_port($1,$3,$4);  /* modifies io_list global */
@@ -1006,8 +1003,7 @@ portlist  : s_list ':' dir type rem {
           /* 1      2   3   4    5   6   7    8   9   10     */
           | s_list ':' dir type ':' '=' expr ';' rem portlist {
             slist *sl;
-              fprintf(stderr,"Warning on line %d: "
-                "port default initialization ignored\n",lineno);
+              fprintf(stderr,"WARNING (line %d): port default initialization ignored.\n",lineno);
               if(dolist){
                 sl=setup_port($1,$3,$4);  /* modifies io_list global */
                 sl=addsl(sl,$9);
@@ -1028,7 +1024,7 @@ type        : BIT {
                 $$=new_vrange(tSCALAR);
               }
             | INTEGER RANGE expr TO expr {
-                fprintf(stderr,"Warning on line %d: integer range ignored\n",lineno);
+                fprintf(stderr,"WARNING (line %d): integer range ignored.\n",lineno);
                 $$=new_vrange(tSCALAR);
                 $$->nlo = addtxt(NULL,"0");
                 $$->nhi = addtxt(NULL,"31");
@@ -1049,7 +1045,7 @@ type        : BIT {
                 if(sg)
                   $$=sg->range;
                 else{
-                  fprintf(stderr,"ERROR: undefined type '%s' on line %d\n",$1,lineno);
+                  fprintf(stderr,"ERROR (line %d): undefined type '%s'.\n", lineno, $1);
                   YYABORT;
                 }
               }
@@ -1107,7 +1103,7 @@ vec_range : simple_expr updown simple_expr {
               if(sg) {
                 $$ = sg->range;
               } else {
-                fprintf(stderr,"ERROR: undefined range \"%s'range\" on line %d\n",$1,lineno);
+                fprintf(stderr,"ERROR (line %d): undefined range \"%s'range\".\n", lineno, $1);
                 YYABORT;
               }
           }
@@ -1902,7 +1898,7 @@ sigvalue : expr delay ';' {
              $$=sl;
            }
          | expr delay WHEN exprc ';' {
-             fprintf(stderr,"Warning on line %d: Can't translate 'expr delay WHEN exprc;' expressions\n",lineno);
+             fprintf(stderr,"WARNING (line %d): Can't translate 'expr delay WHEN exprc;' expressions.\n",lineno);
              $$=NULL;
            }
          | expr delay WHEN exprc ELSE nodelay sigvalue {
@@ -1961,7 +1957,7 @@ mvalue : STRING {$$=addvec(NULL,$1);}
              $$=addtxt(NULL,"{broken{");
              $$=addtxt($$,$5);
              $$=addtxt($$,"}}");
-             fprintf(stderr,"Warning on line %d: broken width on port with OTHERS\n",lineno);
+             fprintf(stderr,"WARNING (line %d): broken width on port with OTHERS.\n",lineno);
            }
        ;
 
@@ -2105,7 +2101,7 @@ expr : signal {
              break;
            default:
              sprintf(natval,"%d#%s#",$1,$2);
-             fprintf(stderr,"ERROR: can't translate based number %s (only bases of 2, 8, 10, and 16 are translatable) on line %d\n",natval,lineno);
+             fprintf(stderr,"ERROR (line %d): can't translate based number %s (only bases of 2, 8, 10, and 16 are translatable).\n", lineno, natval);
              YYABORT;
            }
            e->sl=addtxt(NULL,natval);
@@ -2330,7 +2326,7 @@ simple_expr : signal {
                 e->sl=addwrap("(",sg->range->nhi,")");  /* XXX left vs. high? */
                 $$=e;
               } else {
-                fprintf(stderr,"ERROR: undefined left \"%s'left\" on line %d\n",$1,lineno);
+                fprintf(stderr,"ERROR (line %d): undefined left \"%s'left\".\n", lineno, $1);
                 YYABORT;
               }
       }
@@ -2423,7 +2419,7 @@ static int quiet;
   if (optind < argc) {
      sourcefile = argv[optind++];
      if (strcmp(sourcefile,"-")!=0 && !freopen(sourcefile, "r", stdin)) {
-        fprintf(stderr, "Error: Can't open input file '%s'\n", sourcefile);
+        fprintf(stderr, "ERROR: Can't open input file '%s'.\n", sourcefile);
         return(1);
      }
   } else {
@@ -2433,7 +2429,7 @@ static int quiet;
   if (optind < argc) {
      outfile = argv[optind++];
      if (strcmp(outfile,"-")!=0 && !freopen(outfile, "w", stdout)) {
-        fprintf(stderr, "Error: Can't open output file '%s'\n", outfile);
+        fprintf(stderr, "ERROR: Can't open output file '%s'.\n", outfile);
         return(1);
      }
   }
