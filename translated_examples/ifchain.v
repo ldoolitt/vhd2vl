@@ -1,6 +1,6 @@
 // no timescale needed
 
-module test(
+module ifchain(
 input wire clk,
 input wire rstn
 );

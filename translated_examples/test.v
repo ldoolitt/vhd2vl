@@ -16,7 +16,7 @@ input wire [25:0] din,
 input wire we,
 input wire [7:0] pixel_in,
 input wire pix_req,
-input wire config,
+input wire config1,
 input wire bip,
 input wire [7:0] a,
 input wire [7:0] b,
@@ -59,7 +59,7 @@ wire [5:0] memaddr;
 wire [13:0] memdout;
 reg [1:0] colour;
 
-  assign param = config == 1'b1 ? PARAM1 : status == green ? PARAM2 : PARAM3;
+  assign param = config1 == 1'b1 ? PARAM1 : status == green ? PARAM2 : PARAM3;
   // Synchronously process
   always @(posedge clk) begin
     pixel_out <= pixel_in ^ 8'b11001100;
@@ -127,13 +127,13 @@ reg [1:0] colour;
 
   assign code1[1:0] = a[6:5] ^ ({a[4],b[6]});
   // Asynch process
-  always @(we, addr, config, bip) begin
+  always @(we, addr, config1, bip) begin
     if(we == 1'b1) begin
       if(addr[2:0] == 3'b100) begin
         selection <= 1'b1;
       end
       else if(({b,a}) == {a,b} && bip == 1'b0) begin
-        selection <= config;
+        selection <= config1;
       end
       else begin
         selection <= 1'b1;

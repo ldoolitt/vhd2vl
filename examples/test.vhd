@@ -18,7 +18,7 @@ entity test is port(
   we : in std_logic;
   pixel_in : in std_logic_vector(7 downto 0);
   pix_req : in std_logic;
-  config, bip : in std_logic;
+  config1, bip : in std_logic;
   a, b : in std_logic_vector(7 downto 0);
   c, load : in std_logic_vector(7 downto 0);
   pack : in std_logic_vector(6 downto 0);
@@ -82,7 +82,7 @@ end component;
   signal colour : std_logic_vector(1 downto 0);
 begin
 
-  param <= PARAM1 when config = '1' else PARAM2 when status = green else PARAM3;
+  param <= PARAM1 when config1 = '1' else PARAM2 when status = green else PARAM3;
 
   -- Synchronously process
   process(clk) begin
@@ -139,12 +139,12 @@ begin
   code1(1 downto 0) <= a(6 downto 5) xor (a(4) & b(6));
   
   -- Asynch process
-  decode : process(we, addr, config, bip) begin
+  decode : process(we, addr, config1, bip) begin
     if we = '1' then
       if addr(2 downto 0) = "100" then
         selection <= '1';
       elsif (b & a) = a & b and bip = '0' then
-        selection <= config;
+        selection <= config1;
       else
         selection <= '1';
       end if;

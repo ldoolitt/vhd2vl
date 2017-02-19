@@ -1,6 +1,6 @@
 // no timescale needed
 
-module test(
+module generic1(
 input wire reset,
 input wire sysclk,
 input wire [bus_width:0] a,

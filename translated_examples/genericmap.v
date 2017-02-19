@@ -1,6 +1,6 @@
 // no timescale needed
 
-module test(
+module genericmap(
 input wire clk,
 input wire rstn,
 input wire en,
@@ -10,7 +10,6 @@ input wire [25:0] din,
 input wire we,
 input wire [7:0] pixel_in,
 input wire pix_req,
-input wire config,
 input wire bip,
 input wire [7:0] a,
 input wire [7:0] b,

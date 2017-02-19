@@ -1,12 +1,12 @@
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
 
-entity test is port(
+entity ifchain is port(
   clk, rstn : in std_logic
 );
-end test;
+end ifchain;
 
-architecture rtl of test is
+architecture rtl of ifchain is
   type   t is array (3 downto 0) of std_logic_vector(31 downto 0);
   signal a : std_logic_vector(3 downto 0);
   signal b : std_logic_vector(3 downto 0);
