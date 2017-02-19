@@ -1049,7 +1049,7 @@ type        : BIT {
                 if(sg)
                   $$=sg->range;
                 else{
-                  fprintf(stderr,"Undefined type '%s' on line %d\n",$1,lineno);
+                  fprintf(stderr,"ERROR: undefined type '%s' on line %d\n",$1,lineno);
                   YYABORT;
                 }
               }
@@ -1107,7 +1107,7 @@ vec_range : simple_expr updown simple_expr {
               if(sg) {
                 $$ = sg->range;
               } else {
-                fprintf(stderr,"Undefined range \"%s'range\" on line %d\n",$1,lineno);
+                fprintf(stderr,"ERROR: undefined range \"%s'range\" on line %d\n",$1,lineno);
                 YYABORT;
               }
           }
@@ -2105,7 +2105,8 @@ expr : signal {
              break;
            default:
              sprintf(natval,"%d#%s#",$1,$2);
-             fprintf(stderr,"Warning on line %d: Can't translate based number %s (only bases of 2, 8, 10, and 16 are translatable)\n",lineno,natval);
+             fprintf(stderr,"ERROR: can't translate based number %s (only bases of 2, 8, 10, and 16 are translatable) on line %d\n",natval,lineno);
+             YYABORT;
            }
            e->sl=addtxt(NULL,natval);
            $$=e;
@@ -2329,7 +2330,7 @@ simple_expr : signal {
                 e->sl=addwrap("(",sg->range->nhi,")");  /* XXX left vs. high? */
                 $$=e;
               } else {
-                fprintf(stderr,"Undefined left \"%s'left\" on line %d\n",$1,lineno);
+                fprintf(stderr,"ERROR: undefined left \"%s'left\" on line %d\n",$1,lineno);
                 YYABORT;
               }
       }
