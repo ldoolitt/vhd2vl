@@ -114,6 +114,7 @@ parameter [1:0]
   yellow = 3;
 
 reg [1:0] status;
+parameter BIG_VALUE = 1010000777;
 parameter PARAM1 = 8'b 01101101;
 parameter PARAM2 = 8'b 11001101;
 parameter PARAM3 = 8'b 00010111;

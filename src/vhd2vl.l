@@ -35,6 +35,7 @@ extern int skipRem;
 
 void getstring(unsigned skip);
 void getbasedstring(unsigned skip);
+void removechar(char c);
 
 %}
 %%
@@ -143,7 +144,8 @@ void getbasedstring(unsigned skip);
   return NAME;
 }
 
-[0-9]+ {
+[0-9_]+ {
+	removechar('_');
   sscanf(yytext, "%d", &yylval.n);
   return NATURAL;
 }
@@ -156,6 +158,19 @@ void getbasedstring(unsigned skip);
 . { return yytext[0]; }
 
 %%
+
+void removechar(char c) {
+  int i = 0;
+  int j = 0;
+
+  while (yytext[i]) {
+      if (yytext[i] != c) {
+          yytext[j++] = yytext[i];
+      }
+      i++;
+  }
+  yytext[j]=0;
+}
 
 void getstring(unsigned skip){
 /* Gets a string excluding " or ' */
