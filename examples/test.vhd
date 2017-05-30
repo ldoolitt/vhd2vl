@@ -70,6 +70,7 @@ end component;
 
   type state is (red, green, blue, yellow);
   signal status : state;
+  constant BIG_VALUE : integer := 101_0000_777;
   constant PARAM1 : std_logic_vector(7 downto 0):="01101101";
   constant PARAM2 : std_logic_vector(7 downto 0):="11001101";
   constant PARAM3 : std_logic_vector(7 downto 0):="00010111";
