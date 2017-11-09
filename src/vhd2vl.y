@@ -1357,8 +1357,8 @@ a_body : rem {$$=addind($1);}
            sl=addtxt(sl,");\n\n");
            $$=addsl(sl,$15); /* a_body */
          }
-       /* 1   2   3     4  5   6        7  8    9       10               11  12       13   14   15     16   17       18  19  20       21 */
-       | rem NAME ':' NAME rem GENERIC MAP '(' doindent generic_map_list ')' unindent PORT MAP '(' doindent map_list ')' ';' unindent a_body {
+       /* 1   2   3     4  5   6        7  8    9       10               11  12  13       14   15  16  17       18       19  20  21       22 */
+       | rem NAME ':' NAME rem GENERIC MAP '(' doindent generic_map_list ')' rem unindent PORT MAP '(' doindent map_list ')' ';' unindent a_body {
          slist *sl;
            sl=addsl($1,indents[indent]);
            sl=addtxt(sl,$4); /* NAME2 (component name) */
@@ -1374,9 +1374,9 @@ a_body : rem {$$=addind($1);}
            sl=addtxt(sl,$2); /* NAME1 (instance name) */
            sl=addtxt(sl,"(\n");
            sl=addsl(sl,indents[indent]);
-           sl=addsl(sl,$17); /* map_list */
+           sl=addsl(sl,$18); /* map_list */
            sl=addtxt(sl,");\n\n");
-           $$=addsl(sl,$21); /* a_body */
+           $$=addsl(sl,$22); /* a_body */
          }
        | optname PROCESS '(' sign_list ')' p_decl opt_is BEGN doindent p_body END PROCESS oname ';' unindent a_body {
          slist *sl;
