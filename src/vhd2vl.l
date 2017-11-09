@@ -84,6 +84,7 @@ void getbasedstring(unsigned skip);
 "unsigned" |
 "std_logic_vector" |
 "std_ulogic_vector" { return BITVECT; }
+"real" { return REAL; }
 "downto" { return DOWNTO; }
 "to" { return TO; }
 "type" {return TYPE; }
@@ -146,6 +147,13 @@ void getbasedstring(unsigned skip);
 [0-9]+ {
   sscanf(yytext, "%d", &yylval.n);
   return NATURAL;
+}
+
+[0-9]+e[0-9]+ |
+[0-9]+\.[0-9]+e[0-9]+ {
+  yylval.txt=malloc(strlen(yytext)+1);
+  strcpy(yylval.txt, yytext);
+  return SCIENTIFIC;
 }
 
 [0-9]+\.[0-9]+ {

@@ -1,10 +1,11 @@
 /*
-    vhd2vl v2.5
+    vhd2vl v3.0
     VHDL to Verilog RTL translator
     Copyright (C) 2001 Vincenzo Liguori - Ocean Logic Pty Ltd - http://www.ocean-logic.com
     Modifications (C) 2006 Mark Gonzales - PMC Sierra Inc
     Modifications (C) 2010 Shankar Giri
     Modifications (C) 2002, 2005, 2008-2010, 2015 Larry Doolittle - LBNL
+    Modifications (C) 2017 Rodrigo A. Melo
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,13 +27,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <getopt.h>
 #include <assert.h>
 #include "def.h"
 
 int yylex(void);
 void yyerror(const char *s);
 
-int vlog_ver=0;  /* default is -g1995 */
+int vlog_ver=2001;
 
 /* You will of course want to tinker with this if you use a debugging
  * malloc(), otherwise all the line numbers will point here.
@@ -203,21 +205,20 @@ slist *addsl(slist *sl, slist *sl2){
 
 slist *addvec(slist *sl, char *s){
   sl=addval(sl,strlen(s));
-  sl=addtxt(sl,"'b ");
+  sl=addtxt(sl,"'b");
   sl=addtxt(sl,s);
   return sl;
 }
 
 slist *addvec_base(slist *sl, char *b, char *s){
-  const char *base_str="'b ";
+  const char *base_str="'b";
   int base_mult=1;
   if (strcasecmp(b,"X") == 0) {
-     base_str="'h "; base_mult=4;
+     base_str="'h"; base_mult=4;
   } else if (strcasecmp(b,"O") == 0) {
-     base_str="'o "; base_mult=3;
+     base_str="'o"; base_mult=3;
   } else {
-     fprintf(stderr,"Warning on line %d: NAME STRING rule matched but "
-       "NAME='%s' is not X or O.\n",lineno, b);
+     fprintf(stderr,"WARNING (line %d): NAME STRING rule matched but NAME='%s' is not X or O.\n", lineno, b);
   }
   sl=addval(sl,strlen(s)*base_mult);
   sl=addtxt(sl,base_str);
@@ -470,10 +471,12 @@ slist *add_always(slist *sl, slist *sensitivities, slist *decls, int munge)
              if(clkedge) {
                sl=addtxt(sl,"posedge ");
                /* traverse $4->sl replacing " or " with " or posedge " if there is a clockedge */
-               slTxtReplace(sensitivities," or ", " or posedge ");
+               if (vlog_ver == 2001) slTxtReplace(sensitivities,", ", ", posedge ");
+               if (vlog_ver == 1995) slTxtReplace(sensitivities," or ", " or posedge ");
              } else {
                sl=addtxt(sl,"negedge ");
-               slTxtReplace(sensitivities," or ", " or negedge ");
+               if (vlog_ver == 2001) slTxtReplace(sensitivities,", ", ", negedge ");
+               if (vlog_ver == 1995) slTxtReplace(sensitivities," or ", " or negedge ");
              }
            }
            sl=addsl(sl,sensitivities);
@@ -603,12 +606,11 @@ static void set_timescale(const char *s)
     else if (strcasecmp(s,"ns") == 0) { new_unit[0] = 'n'; }
     else if (strcasecmp(s,"ps") == 0) { new_unit[0] = 'p'; }
     else {
-        fprintf(stderr,"Warning on line %d: AFTER NATURAL NAME pattern"
-               " matched, but NAME='%s' should be a time unit.\n",lineno,s);
+        fprintf(stderr,"WARNING (line %d): AFTER NATURAL NAME pattern matched, but NAME='%s' should be a time unit.\n", lineno, s);
     }
     if (new_unit[0] != time_unit[0]) {
         if (time_unit[0] != 0) {
-            fprintf(stderr,"Warning on line %d: inconsistent time unit (%s) ignored\n", lineno, s);
+            fprintf(stderr,"WARNING (line %d): inconsistent time unit (%s) ignored.\n", lineno, s);
         } else {
             time_unit[0] = new_unit[0];
         }
@@ -632,7 +634,7 @@ slist *output_timescale(slist *sl)
 slist *setup_port(sglist *s_list, int dir, vrange *type) {
   slist *sl;
   sglist *p;
-  if (vlog_ver == 1) {
+  if (vlog_ver == 2001) {
     sl=addtxt(NULL,NULL);
   }
   else {
@@ -642,15 +644,15 @@ slist *setup_port(sglist *s_list, int dir, vrange *type) {
   p=s_list;
   for(;;){
     p->type=wire;
-    if (vlog_ver == 1) p->dir=inout_string(dir);
+    if (vlog_ver == 2001) p->dir=inout_string(dir);
     p->range=type;
-    if (vlog_ver == 0) sl=addtxt(sl, p->name);
+    if (vlog_ver == 1995) sl=addtxt(sl, p->name);
     if(p->next==NULL)
       break;
     p=p->next;
-    if (vlog_ver == 0) sl=addtxt(sl,", ");
+    if (vlog_ver == 1995) sl=addtxt(sl,", ");
   }
-  if (vlog_ver == 0) sl=addtxt(sl,";\n");
+  if (vlog_ver == 1995) sl=addtxt(sl,";\n");
   p->next=io_list;
   io_list=s_list;
   return sl;
@@ -662,7 +664,7 @@ slist *emit_io_list(slist *sl)
               sl=addtxt(sl,"(\n");
               p=io_list;
               for(;;){
-                if (vlog_ver == 1) {
+                if (vlog_ver == 2001) {
                   sl=addtxt(sl,p->dir);
                   sl=addtxt(sl," ");
                   sl=addptxt(sl,&(p->type));
@@ -703,6 +705,7 @@ slist *emit_io_list(slist *sl)
 %token <txt> LASTVALUE EVENT POSEDGE NEGEDGE
 %token <txt> STRING NAME RANGE NULLV OPEN
 %token <txt> CONVFUNC_1 CONVFUNC_2 BASED FLOAT LEFT
+%token <txt> SCIENTIFIC REAL
 %token <n> NATURAL
 
 %type <n> trad
@@ -828,7 +831,7 @@ entity    : ENTITY NAME IS rem PORT '(' rem portlist ')' ';' rem END opt_entity 
               sl=addsl(sl,$8); /* portlist */
               sl=addtxt(sl,"\n");
               p=io_list;
-              if (vlog_ver == 0) {
+              if (vlog_ver == 1995) {
                 do{
                 sl=addptxt(sl,&(p->type));
                 /*sl=addtxt(sl,p->type);*/
@@ -858,7 +861,7 @@ entity    : ENTITY NAME IS rem PORT '(' rem portlist ')' ';' rem END opt_entity 
               sl=addsl(sl,$16); /* portlist */
               sl=addtxt(sl,"\n");
               p=io_list;
-              if (vlog_ver == 0) {
+              if (vlog_ver == 1995) {
                 do{
                 sl=addptxt(sl,&(p->type));
                 /*sl=addtxt(sl,p->type);*/
@@ -987,8 +990,7 @@ portlist  : s_list ':' dir type rem {
           /* 1      2   3   4    5   6   7    8 */
           | s_list ':' dir type ':' '=' expr rem {
             slist *sl;
-              fprintf(stderr,"Warning on line %d: "
-                "port default initialization ignored\n",lineno);
+              fprintf(stderr,"WARNING (line %d): port default initialization ignored.\n",lineno);
               if(dolist){
                 io_list=NULL;
                 sl=setup_port($1,$3,$4);  /* modifies io_list global */
@@ -1001,8 +1003,7 @@ portlist  : s_list ':' dir type rem {
           /* 1      2   3   4    5   6   7    8   9   10     */
           | s_list ':' dir type ':' '=' expr ';' rem portlist {
             slist *sl;
-              fprintf(stderr,"Warning on line %d: "
-                "port default initialization ignored\n",lineno);
+              fprintf(stderr,"WARNING (line %d): port default initialization ignored.\n",lineno);
               if(dolist){
                 sl=setup_port($1,$3,$4);  /* modifies io_list global */
                 sl=addsl(sl,$9);
@@ -1023,7 +1024,7 @@ type        : BIT {
                 $$=new_vrange(tSCALAR);
               }
             | INTEGER RANGE expr TO expr {
-                fprintf(stderr,"Warning on line %d: integer range ignored\n",lineno);
+                fprintf(stderr,"WARNING (line %d): integer range ignored.\n",lineno);
                 $$=new_vrange(tSCALAR);
                 $$->nlo = addtxt(NULL,"0");
                 $$->nhi = addtxt(NULL,"31");
@@ -1033,6 +1034,9 @@ type        : BIT {
                 $$->nlo = addtxt(NULL,"0");
                 $$->nhi = addtxt(NULL,"31");
               }
+            | REAL {
+                $$=new_vrange(tSCALAR);
+              }
             | BITVECT '(' vec_range ')' {$$=$3;}
             | NAME {
               sglist *sg;
@@ -1041,7 +1045,7 @@ type        : BIT {
                 if(sg)
                   $$=sg->range;
                 else{
-                  fprintf(stderr,"Undefined type '%s' on line %d\n",$1,lineno);
+                  fprintf(stderr,"ERROR (line %d): undefined type '%s'.\n", lineno, $1);
                   YYABORT;
                 }
               }
@@ -1099,7 +1103,7 @@ vec_range : simple_expr updown simple_expr {
               if(sg) {
                 $$ = sg->range;
               } else {
-                fprintf(stderr,"Undefined range \"%s'range\" on line %d\n",$1,lineno);
+                fprintf(stderr,"ERROR (line %d): undefined range \"%s'range\".\n", lineno, $1);
                 YYABORT;
               }
           }
@@ -1866,7 +1870,12 @@ wvalue : STRING {$$=addvec(NULL,$1);}
 sign_list : signal {$$=$1->sl; free($1);}
           | signal ',' sign_list {
             slist *sl;
-              sl=addtxt($1->sl," or ");
+              if (vlog_ver == 2001)
+                 sl=addtxt($1->sl,", ");
+              else if (vlog_ver == 1995)
+                 sl=addtxt($1->sl," or ");
+              else
+                 sl=0;
               free($1);
               $$=addsl(sl,$3);
             }
@@ -1889,7 +1898,7 @@ sigvalue : expr delay ';' {
              $$=sl;
            }
          | expr delay WHEN exprc ';' {
-             fprintf(stderr,"Warning on line %d: Can't translate 'expr delay WHEN exprc;' expressions\n",lineno);
+             fprintf(stderr,"WARNING (line %d): Can't translate 'expr delay WHEN exprc;' expressions.\n",lineno);
              $$=NULL;
            }
          | expr delay WHEN exprc ELSE nodelay sigvalue {
@@ -1948,7 +1957,7 @@ mvalue : STRING {$$=addvec(NULL,$1);}
              $$=addtxt(NULL,"{broken{");
              $$=addtxt($$,$5);
              $$=addtxt($$,"}}");
-             fprintf(stderr,"Warning on line %d: broken width on port with OTHERS\n",lineno);
+             fprintf(stderr,"WARNING (line %d): broken width on port with OTHERS.\n",lineno);
            }
        ;
 
@@ -2054,6 +2063,12 @@ expr : signal {
            e->sl=addvec(NULL,$1);
            $$=e;
          }
+     | SCIENTIFIC {
+         expdata *e=xmalloc(sizeof(expdata));
+           e->op='t'; /* Terminal symbol */
+           e->sl=addtxt(NULL,$1);
+           $$=e;
+         }
      | FLOAT {
          expdata *e=xmalloc(sizeof(expdata));
            e->op='t'; /* Terminal symbol */
@@ -2086,7 +2101,8 @@ expr : signal {
              break;
            default:
              sprintf(natval,"%d#%s#",$1,$2);
-             fprintf(stderr,"Warning on line %d: Can't translate based number %s (only bases of 2, 8, 10, and 16 are translatable)\n",lineno,natval);
+             fprintf(stderr,"ERROR (line %d): can't translate based number %s (only bases of 2, 8, 10, and 16 are translatable).\n", lineno, natval);
+             YYABORT;
            }
            e->sl=addtxt(NULL,natval);
            $$=e;
@@ -2310,7 +2326,7 @@ simple_expr : signal {
                 e->sl=addwrap("(",sg->range->nhi,")");  /* XXX left vs. high? */
                 $$=e;
               } else {
-                fprintf(stderr,"Undefined left \"%s'left\" on line %d\n",$1,lineno);
+                fprintf(stderr,"ERROR (line %d): undefined left \"%s'left\".\n", lineno, $1);
                 YYABORT;
               }
       }
@@ -2346,11 +2362,20 @@ simple_expr : signal {
 const char *outfile;    /* Output file */
 const char *sourcefile; /* Input file */
 
-int main(int argc, char *argv[]){
+void print_usage() {
+   printf(
+      "Usage: vhd2vl [--debug] [--quiet] [--std 1995|2001] source_file.vhd > target_file.v\n"
+      "   or  vhd2vl [--debug] [--quiet] [--std 1995|2001] source_file.vhd target_file.v\n"
+   );
+}
+
+int main(int argc, char **argv){
 int i,j;
 char *s;
 slist *sl;
 int status;
+int opt;
+static int quiet;
 
   /* Init the indentation variables */
   indents[0]=NULL;
@@ -2363,51 +2388,61 @@ int status;
     sl->type=1;
     sl->slst=NULL;
   }
-  if (argc >= 2 && strcmp(argv[1], "--help") == 0) {
-    printf(
-      "Usage: vhd2vl [-d] [-g1995|-g2001] source_file.vhd > target_file.v\n"
-      "   or  vhd2vl [-d] [-g1995|-g2001] source_file.vhd target_file.v\n");
-    exit(EXIT_SUCCESS);
+
+  static struct option options[] = {
+    {"debug",     no_argument,       &yydebug,  1  },
+    {"quiet",     no_argument,       &quiet,    1  },
+    {"std",       required_argument, 0,        's' },
+    {"help",      no_argument,       0,        'h' },
+    {0,           0,                 0,         0  }
+  };
+
+  while ((opt = getopt_long(argc, argv,"s:h", options, 0 )) != -1) {
+    switch (opt) {
+      case 0:
+         break;
+      case 's':
+        vlog_ver = atoi(optarg);
+        if (vlog_ver != 1995 && vlog_ver != 2001) {
+           print_usage();
+           exit(EXIT_FAILURE);
+        }
+        break;
+      default:
+        print_usage();
+        exit(EXIT_SUCCESS);
+    }
   }
 
-  while (argc >= 2) {
-     if (strcmp(argv[1], "-d") == 0) {
-       yydebug = 1;
-     } else if (strcmp(argv[1], "-g1995") == 0) {
-       vlog_ver = 0;
-     } else if (strcmp(argv[1], "-g2001") == 0) {
-       vlog_ver = 1;
-     } else {
-       break;
-     }
-     argv++;
-     argc--;
-  }
-  if (argc>=2) {
-     sourcefile = argv[1];
+  sourcefile = "-";
+  outfile    = "-";
+  if (optind < argc) {
+     sourcefile = argv[optind++];
      if (strcmp(sourcefile,"-")!=0 && !freopen(sourcefile, "r", stdin)) {
-        fprintf(stderr, "Error: Can't open input file '%s'\n", sourcefile);
+        fprintf(stderr, "ERROR: Can't open input file '%s'.\n", sourcefile);
         return(1);
      }
   } else {
-     sourcefile = "-";
+    print_usage();
+    exit(EXIT_FAILURE);
   }
-
-  if (argc>=3) {
-     outfile = argv[2];
+  if (optind < argc) {
+     outfile = argv[optind++];
      if (strcmp(outfile,"-")!=0 && !freopen(outfile, "w", stdout)) {
-        fprintf(stderr, "Error: Can't open output file '%s'\n", outfile);
+        fprintf(stderr, "ERROR: Can't open output file '%s'.\n", outfile);
         return(1);
      }
-  } else {
-     outfile = "-";
+  }
+  if (optind < argc) {
+     print_usage();
+     exit(EXIT_FAILURE);
   }
 
-  printf("// File %s translated with vhd2vl v2.5 VHDL to Verilog RTL translator\n", sourcefile);
-  printf("// vhd2vl settings:\n"
-         "//  * Verilog Module Declaration Style: %s\n\n",
-         vlog_ver ? "2001" : "1995");
-  fputs(
+  if (!quiet) {
+     printf("// File %s translated with vhd2vl v3.0 VHDL to Verilog RTL translator\n", sourcefile);
+     printf("// vhd2vl settings:\n"
+            "//  * Verilog Module Declaration Style: %d\n\n", vlog_ver);
+     fputs(
 "// vhd2vl is Free (libre) Software:\n"
 "//   Copyright (C) 2001 Vincenzo Liguori - Ocean Logic Pty Ltd\n"
 "//     http://www.ocean-logic.com\n"
@@ -2415,8 +2450,9 @@ int status;
 "//   Modifications (C) 2010 Shankar Giri\n"
 "//   Modifications Copyright (C) 2002, 2005, 2008-2010, 2015 Larry Doolittle - LBNL\n"
 "//     http://doolittle.icarus.com/~larry/vhd2vl/\n"
+"//   Modifications (C) 2017 Rodrigo A. Melo\n"
 "//\n", stdout);
-  fputs(
+     fputs(
 "//   vhd2vl comes with ABSOLUTELY NO WARRANTY.  Always check the resulting\n"
 "//   Verilog for correctness, ideally with a formal verification tool.\n"
 "//\n"
@@ -2424,7 +2460,8 @@ int status;
 "//   See the license (GPLv2) file included with the source for details.\n\n"
 "// The result of translation follows.  Its copyright status should be\n"
 "// considered unchanged from the original VHDL.\n\n"
-  , stdout);
+     , stdout);
+  }
   status = yyparse();
   fclose(stdout);
   fclose(stdin);

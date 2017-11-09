@@ -1,0 +1,10 @@
+temp
+ignore
+
+src/*.c
+src/*.h
+src/*.output
+src/vhd2vl
+
+examples/*.o
+examples/*.cf

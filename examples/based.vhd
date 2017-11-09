@@ -1,5 +1,5 @@
 LIBRARY IEEE;
-USE IEEE.std_logic_1164.all, IEEE.std_logic_arith.all, IEEE.std_logic_unsigned.all;
+USE IEEE.std_logic_1164.all;
 
 entity based is port( sysclk : in std_logic);
 end based;
@@ -10,6 +10,6 @@ begin
   foo2 <= 2#00101101110111#;
   foo8 <= 8#0177362#;
   foo10<= 10#01234#;
-  foo11<= 11#01234#;
+  --foo11<= 11#01234#;
   foo16<= 16#12af#;
 end rtl;

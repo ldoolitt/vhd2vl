@@ -1,5 +1,5 @@
 LIBRARY IEEE;
-USE IEEE.std_logic_1164.all, IEEE.std_logic_arith.all, IEEE.std_logic_unsigned.all;
+USE IEEE.std_logic_1164.all;
 entity clk is port( reset, preset, qreset, sysclk, dsysclk, esysclk : in std_logic;
                      ival : in std_logic_vector(31 downto 0)
                      );

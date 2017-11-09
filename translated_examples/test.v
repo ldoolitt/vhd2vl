@@ -1,24 +1,3 @@
-// File test.vhd translated with vhd2vl v2.5 VHDL to Verilog RTL translator
-// vhd2vl settings:
-//  * Verilog Module Declaration Style: 1995
-
-// vhd2vl is Free (libre) Software:
-//   Copyright (C) 2001 Vincenzo Liguori - Ocean Logic Pty Ltd
-//     http://www.ocean-logic.com
-//   Modifications Copyright (C) 2006 Mark Gonzales - PMC Sierra Inc
-//   Modifications (C) 2010 Shankar Giri
-//   Modifications Copyright (C) 2002, 2005, 2008-2010, 2015 Larry Doolittle - LBNL
-//     http://doolittle.icarus.com/~larry/vhd2vl/
-//
-//   vhd2vl comes with ABSOLUTELY NO WARRANTY.  Always check the resulting
-//   Verilog for correctness, ideally with a formal verification tool.
-//
-//   You are welcome to redistribute vhd2vl under certain conditions.
-//   See the license (GPLv2) file included with the source for details.
-
-// The result of translation follows.  Its copyright status should be
-// considered unchanged from the original VHDL.
-
 // Project: VHDL to Verilog RTL translation 
 // Revision: 1.0 
 // Date of last Revision: February 27 2001 
@@ -28,81 +7,36 @@
 // no timescale needed
 
 module test(
-clk,
-rstn,
-en,
-start_dec,
-addr,
-din,
-we,
-pixel_in,
-pix_req,
-config,
-bip,
-a,
-b,
-c,
-load,
-pack,
-base,
-qtd,
-dout,
-pixel_out,
-pixel_valid,
-code,
-code1,
-complex,
-eno
+input wire clk,
+input wire rstn,
+input wire en,
+input wire start_dec,
+input wire [2:0] addr,
+input wire [25:0] din,
+input wire we,
+input wire [7:0] pixel_in,
+input wire pix_req,
+input wire config1,
+input wire bip,
+input wire [7:0] a,
+input wire [7:0] b,
+input wire [7:0] c,
+input wire [7:0] load,
+input wire [6:0] pack,
+input wire [2:0] base,
+input wire [21:0] qtd,
+output wire [25:0] dout,
+output reg [7:0] pixel_out,
+output wire pixel_valid,
+output reg [9:0] code,
+output wire [9:0] code1,
+output wire [23:0] complex,
+output wire eno
 );
 
 // Inputs
-input clk, rstn;
-input en, start_dec;
-input [2:0] addr;
-input [25:0] din;
-input we;
-input [7:0] pixel_in;
-input pix_req;
-input config, bip;
-input [7:0] a, b;
-input [7:0] c, load;
-input [6:0] pack;
-input [2:0] base;
-input [21:0] qtd;
 // Outputs
-output [25:0] dout;
-output [7:0] pixel_out;
-output pixel_valid;
-output [9:0] code;
-output [9:0] code1;
-output [23:0] complex;
-output eno;
 
-wire clk;
-wire rstn;
-wire en;
-wire start_dec;
-wire [2:0] addr;
-wire [25:0] din;
-wire we;
-wire [7:0] pixel_in;
-wire pix_req;
-wire config;
-wire bip;
-wire [7:0] a;
-wire [7:0] b;
-wire [7:0] c;
-wire [7:0] load;
-wire [6:0] pack;
-wire [2:0] base;
-wire [21:0] qtd;
-wire [25:0] dout;
-reg [7:0] pixel_out;
-wire pixel_valid;
-reg [9:0] code;
-wire [9:0] code1;
-wire [23:0] complex;
-wire eno;
 
 
 // Components declarations are ignored by vhd2vl
@@ -114,9 +48,9 @@ parameter [1:0]
   yellow = 3;
 
 reg [1:0] status;
-parameter PARAM1 = 8'b 01101101;
-parameter PARAM2 = 8'b 11001101;
-parameter PARAM3 = 8'b 00010111;
+parameter PARAM1 = 8'b01101101;
+parameter PARAM2 = 8'b11001101;
+parameter PARAM3 = 8'b00010111;
 wire [7:0] param;
 reg selection;
 reg start; wire enf;  // Start and enable signals
@@ -125,47 +59,47 @@ wire [5:0] memaddr;
 wire [13:0] memdout;
 reg [1:0] colour;
 
-  assign param = config == 1'b 1 ? PARAM1 : status == green ? PARAM2 : PARAM3;
+  assign param = config1 == 1'b1 ? PARAM1 : status == green ? PARAM2 : PARAM3;
   // Synchronously process
   always @(posedge clk) begin
-    pixel_out <= pixel_in ^ 8'b 11001100;
+    pixel_out <= pixel_in ^ 8'b11001100;
   end
 
   // Synchronous process
   always @(posedge clk) begin
     case(status)
     red : begin
-      colour <= 2'b 00;
+      colour <= 2'b00;
     end
     green : begin
-      colour <= 2'b 01;
+      colour <= 2'b01;
     end
     blue : begin
-      colour <= 2'b 10;
+      colour <= 2'b10;
     end
     default : begin
-      colour <= 2'b 11;
+      colour <= 2'b11;
     end
     endcase
   end
 
   // Synchronous process with asynch reset
-  always @(posedge clk or posedge rstn) begin
-    if(rstn == 1'b 0) begin
+  always @(posedge clk, posedge rstn) begin
+    if(rstn == 1'b0) begin
       status <= red;
     end else begin
       case(status)
       red : begin
-        if(pix_req == 1'b 1) begin
+        if(pix_req == 1'b1) begin
           status <= green;
         end
       end
       green : begin
-        if(a[3] == 1'b 1) begin
+        if(a[3] == 1'b1) begin
           start <= start_dec;
           status <= blue;
         end
-        else if(({b[5],a[3:2]}) == 3'b 001) begin
+        else if(({b[5],a[3:2]}) == 3'b001) begin
           status <= yellow;
         end
       end
@@ -173,7 +107,7 @@ reg [1:0] colour;
         status <= yellow;
       end
       default : begin
-        start <= 1'b 0;
+        start <= 1'b0;
         status <= red;
       end
       endcase
@@ -183,30 +117,30 @@ reg [1:0] colour;
   // Example of with statement
   always @(*) begin
     case(memaddr[2:0])
-      3'b 000,3'b 110 : code[9:2] <= {3'b 110,pack[6:2]};
-      3'b 101 : code[9:2] <= 8'b 11100010;
-      3'b 010 : code[9:2] <= {8{1'b1}};
-      3'b 011 : code[9:2] <= {8{1'b0}};
-      default : code[9:2] <= a + b + 1'b 1;
+      3'b000,3'b110 : code[9:2] <= {3'b110,pack[6:2]};
+      3'b101 : code[9:2] <= 8'b11100010;
+      3'b010 : code[9:2] <= {8{1'b1}};
+      3'b011 : code[9:2] <= {8{1'b0}};
+      default : code[9:2] <= (((a)) + ((b)));
     endcase
   end
 
   assign code1[1:0] = a[6:5] ^ ({a[4],b[6]});
   // Asynch process
-  always @(we or addr or config or bip) begin
-    if(we == 1'b 1) begin
-      if(addr[2:0] == 3'b 100) begin
-        selection <= 1'b 1;
+  always @(we, addr, config1, bip) begin
+    if(we == 1'b1) begin
+      if(addr[2:0] == 3'b100) begin
+        selection <= 1'b1;
       end
-      else if(({b,a}) == {a,b} && bip == 1'b 0) begin
-        selection <= config;
+      else if(({b,a}) == {a,b} && bip == 1'b0) begin
+        selection <= config1;
       end
       else begin
-        selection <= 1'b 1;
+        selection <= 1'b1;
       end
     end
     else begin
-      selection <= 1'b 0;
+      selection <= 1'b0;
     end
   end
 
@@ -238,8 +172,8 @@ reg [1:0] colour;
     // Outputs
     .dout(memdin));
 
-  assign complex = {enf,(3'b 110 * load),qtd[3:0],base,5'b 11001};
-  assign enf = a == (7'b 1101111 + load) && c < 7'b 1000111 ? 1'b 1 : 1'b 0;
+  assign complex = {enf,((3'b110 * ((load)))),qtd[3:0],base,5'b11001};
+  assign enf = c < 7'b1000111 ? 1'b1 : 1'b0;
   assign eno = enf;
 
 endmodule

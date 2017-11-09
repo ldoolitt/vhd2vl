@@ -1,6 +1,6 @@
 LIBRARY IEEE;
-USE IEEE.std_logic_1164.all, IEEE.std_logic_arith.all, IEEE.std_logic_unsigned.all;
-entity test is
+USE IEEE.std_logic_1164.all;
+entity genericmap is
 generic(
   rst_val   : std_logic := '0';
   thing_size: integer := 201;
@@ -13,7 +13,7 @@ port(
   we : in std_logic;
   pixel_in : in std_logic_vector(7 downto 0);
   pix_req : in std_logic;
-  config, bip : in std_logic;
+  bip : in std_logic;
   a, b : in std_logic_vector(7 downto 0);
   c, load : in std_logic_vector(7 downto 0);
   pack : in std_logic_vector(6 downto 0);
@@ -27,8 +27,8 @@ port(
   complex : out std_logic_vector(23 downto 0);
   eno : out std_logic
 );
-end test;
-architecture rtl of test is
+end genericmap;
+architecture rtl of genericmap is
 
   component dsp
     generic(

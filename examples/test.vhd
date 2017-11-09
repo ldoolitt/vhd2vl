@@ -7,7 +7,7 @@
 
 LIBRARY IEEE;
 
-USE IEEE.std_logic_1164.all, IEEE.std_logic_arith.all, IEEE.std_logic_unsigned.all;
+USE IEEE.std_logic_1164.all, IEEE.numeric_std.all;
 
 entity test is port(
   -- Inputs
@@ -18,7 +18,7 @@ entity test is port(
   we : in std_logic;
   pixel_in : in std_logic_vector(7 downto 0);
   pix_req : in std_logic;
-  config, bip : in std_logic;
+  config1, bip : in std_logic;
   a, b : in std_logic_vector(7 downto 0);
   c, load : in std_logic_vector(7 downto 0);
   pack : in std_logic_vector(6 downto 0);
@@ -82,7 +82,7 @@ end component;
   signal colour : std_logic_vector(1 downto 0);
 begin
 
-  param <= PARAM1 when config = '1' else PARAM2 when status = green else PARAM3;
+  param <= PARAM1 when config1 = '1' else PARAM2 when status = green else PARAM3;
 
   -- Synchronously process
   process(clk) begin
@@ -135,16 +135,16 @@ begin
                         "11100010" when "101",
                         (others => '1') when "010",
                         (others => '0') when "011",
-                        a + b + '1' when others;
+                        std_logic_vector(unsigned(a) + unsigned(b)) when others;
   code1(1 downto 0) <= a(6 downto 5) xor (a(4) & b(6));
   
   -- Asynch process
-  decode : process(we, addr, config, bip) begin
+  decode : process(we, addr, config1, bip) begin
     if we = '1' then
       if addr(2 downto 0) = "100" then
         selection <= '1';
       elsif (b & a) = a & b and bip = '0' then
-        selection <= config;
+        selection <= config1;
       else
         selection <= '1';
       end if;
@@ -183,9 +183,9 @@ begin
     dout => memdin
   );
 
-  complex <= enf & ("110" * load) & qtd(3 downto 0) & base & "11001";
+  complex <= enf & (std_logic_vector("110" * unsigned(load))) & qtd(3 downto 0) & base & "11001";
 
-  enf <= '1' when a = "1101111" + load and c < "1000111" else '0';
+  enf <= '1' when c < "1000111" else '0';
   eno <= enf;
 
 end rtl;
