@@ -93,11 +93,11 @@ void fslprint(FILE *fp,slist *sl){
     assert(sl != sl->slst);
     fslprint(fp,sl->slst);
     switch(sl->type){
-    case tSLIST :
+    case tSLIST : case tOTHERS :
       assert(sl != sl->data.sl);
       fslprint(fp,sl->data.sl);
       break;
-    case tTXT : case tOTHERS :
+    case tTXT :
       fprintf(fp,"%s",sl->data.txt);
       break;
     case tVAL :
@@ -124,13 +124,13 @@ slist *copysl(slist *sl){
       newsl->slst = copysl(sl->slst);
     }
     switch(sl->type){
-    case tSLIST :
+    case tSLIST : case tOTHERS :
       if (sl->data.sl != NULL) {
         assert(sl != sl->data.sl);
         newsl->data.sl = copysl(sl->data.sl);
       }
       break;
-    case tTXT : case tOTHERS :
+    case tTXT :
       newsl->data.txt = xmalloc(strlen(sl->data.txt) + 1);
       strcpy(newsl->data.txt, sl->data.txt);
       break;
@@ -158,16 +158,15 @@ slist *addtxt(slist *sl, const char *s){
   return p;
 }
 
-slist *addothers(slist *sl, char *s){
+slist *addothers(slist *sl, slist *sl2){
   slist *p;
 
-  if(s == NULL)
+  if(sl2 == NULL)
     return sl;
   p = xmalloc(sizeof *p);
   p->type = tOTHERS;
   p->slst = sl;
-  p->data.txt = xmalloc(strlen(s) + 1);
-  strcpy(p->data.txt, s);
+  p->data.sl = sl2;
 
   return p;
 }
@@ -515,16 +514,14 @@ void fixothers(slist *size_expr, slist *sl) {
         fslprint(stderr,size_expr);
         fprintf(stderr,"\n");
       }
-      p = addtxt(NULL, "1'b");
-      p = addtxt(p, sl->data.txt);
-      p = addwrap("{",p,"}");
+      p = addwrap("{",sl->data.sl,"}");
       p = addsl(size_copy, p);
       p = addwrap("{",p,"}");
       sl->type=tSLIST;
       sl->slst=p;
       sl->data.sl=NULL;
       break;
-    } /* case 4 */
+    } /* case tOTHERS */
     default :
       /* fprintf(stderr, "WARNING (line %d): unexpected slist type in fixothers()\n", lineno); */
       break; /* no action */
@@ -2123,11 +2120,11 @@ expr : signal {
            e->sl=addvec_base(NULL,$1,$2);
            $$=e;
          }
-     | '(' OTHERS '=' '>' STRING ')' {
+     | '(' OTHERS '=' '>' expr ')' {
          expdata *e;
            e=xmalloc(sizeof(expdata));
            e->op='o'; /* others */
-           e->sl=addothers(NULL,$5);
+           e->sl=addothers(NULL,$5->sl);
            $$=e;
          }
      | expr '&' expr { /* Vector chaining */
