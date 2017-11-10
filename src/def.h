@@ -35,8 +35,9 @@ typedef struct nlist {
   struct nlist *next;
 } nlist;
 
+enum slistType {tSLIST, tTXT, tVAL, tPTXT, tOTHERS};
 typedef struct slist {
-  unsigned int type;
+  enum slistType type;
   struct slist *slst;
   union {
     struct slist *sl; /* type 0 */
