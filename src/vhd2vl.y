@@ -1395,7 +1395,7 @@ a_body : rem {$$=addind($1);}
            $$=addsl(sl,$16);
          }
        | optname PROCESS '(' sign_list ')' p_decl opt_is BEGN doindent
-           rem IF edge THEN p_body END IF ';' END PROCESS oname ';' unindent a_body {
+           rem IF edge THEN p_body END IF ';' rem END PROCESS oname ';' unindent a_body {
            slist *sl;
              if (0) fprintf(stderr,"process style 2: if then end if\n");
              sl=add_always($1,$4,$6,1);
@@ -1406,14 +1406,14 @@ a_body : rem {$$=addind($1);}
              sl=addsl(sl,$14);
              sl=addsl(sl,indents[indent]);
              sl=addtxt(sl,"end\n\n");
-             $$=addsl(sl,$23);
+             $$=addsl(sl,$24);
          }
        /* 1      2        3  4          5  6       7      8     9 */
        | optname PROCESS '(' sign_list ')' p_decl opt_is BEGN doindent
          /* 10 11 12    13    14         15  16       17    18   19   20       21     22       23  24 25 */
            rem IF exprc THEN doindent p_body unindent ELSIF edge THEN doindent p_body unindent END IF ';'
-         /* 26      27    28 29       30   31    */
-           END PROCESS oname ';' unindent a_body {
+         /* 26  27      28    29 30       31   32    */
+           rem END PROCESS oname ';' unindent a_body {
            slist *sl;
              if (0) fprintf(stderr,"process style 3: if then elsif then end if\n");
              sl=add_always($1,$4,$6,1);
@@ -1433,7 +1433,7 @@ a_body : rem {$$=addind($1);}
              sl=addtxt(sl,"  end\n");
              sl=addsl(sl,indents[indent]);
              sl=addtxt(sl,"end\n\n");
-             $$=addsl(sl,$31);
+             $$=addsl(sl,$32);
          }
        /* 1      2        3  4          5  6       7      8     9 */
        | optname PROCESS '(' sign_list ')' p_decl opt_is BEGN doindent
