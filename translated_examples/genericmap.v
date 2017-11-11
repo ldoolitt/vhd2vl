@@ -45,8 +45,14 @@ wire [1:0] colour;
       // Inputs
     .clk(clk),
     .rstn(rstn),
+    .en(1'b1),
+    .start(1'b0),
+    .param(8'h42),
+    .addr(3'b101),
+    .din(24'h111111),
+    .we(1'b0),
     // Outputs
-    .dout(dout),
+    .dout(dout[23:0]),
     .memaddr(memaddr),
     .memdout(memdout));
 
@@ -57,8 +63,14 @@ wire [1:0] colour;
       // Inputs
     .clk(clk),
     .rstn(rstn),
+    .en(1'b1),
+    .start(1'b0),
+    .param(8'h42),
+    .addr(3'b101),
+    .din(16'h1111),
+    .we(1'b0),
     // Outputs
-    .dout(dout),
+    .dout(dout[15:0]),
     .memaddr(memaddr),
     .memdout(memdout));
 

@@ -25,7 +25,7 @@ entity test is port(
   base : in std_logic_vector(2 downto 0);
   qtd : in std_logic_vector(21 downto 0);
   -- Outputs
-  dout : out std_logic_vector(25 downto 0);
+  dout : out std_logic_vector(23 downto 0);
   pixel_out : out std_logic_vector(7 downto 0);
   pixel_valid : out std_logic;
   code : out std_logic_vector(9 downto 0);
@@ -46,11 +46,11 @@ component dsp port(
   en, start : in std_logic;
   param : in std_logic_vector(7 downto 0);
   addr : in std_logic_vector(2 downto 0);
-  din : in std_logic_vector(25 downto 0);
+  din : in std_logic_vector(23 downto 0);
   we : in std_logic;
   memdin : out std_logic_vector(13 downto 0);
     -- Outputs
-  dout : out std_logic_vector(25 downto 0);
+  dout : out std_logic_vector(23 downto 0);
   memaddr : out std_logic_vector(5 downto 0);
   memdout : out std_logic_vector(13 downto 0)
 );
@@ -162,7 +162,7 @@ begin
     start => start,
     param => param,
     addr => addr,
-    din => din,
+    din => din(23 downto 0),
     we => we,
     memdin => memdin,
     -- Outputs

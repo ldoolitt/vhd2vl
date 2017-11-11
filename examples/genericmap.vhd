@@ -38,8 +38,14 @@ architecture rtl of genericmap is
     port(
       -- Inputs
       clk, rstn : in std_logic;
+      en, start : in std_logic;
+      param : in std_logic_vector(7 downto 0);
+      addr : in std_logic_vector(2 downto 0);
+      din : in std_logic_vector(25 downto 0);
+      we : in std_logic;
+      memdin : out std_logic_vector(13 downto 0);
       -- Outputs
-      dout : out std_logic_vector(bus_width downto 0);
+      dout : out std_logic_vector(bus_width-1 downto 0);
       memaddr : out std_logic_vector(5 downto 0);
       memdout : out std_logic_vector(13 downto 0)
       );
@@ -53,12 +59,19 @@ architecture rtl of genericmap is
   signal colour : std_logic_vector(1 downto 0);
 begin
   dsp_inst0 : dsp
+    -- default bus_width is 24
     port map(
     -- Inputs
     clk => clk,
     rstn => rstn,
+    en => '1',
+    start => '0',
+    param => X"42",
+    addr => "101",
+    din => X"111111",
+    we => '0',
     -- Outputs
-    dout => dout,
+    dout => dout(23 downto 0),
     memaddr => memaddr,
     memdout => memdout
   );
@@ -71,8 +84,14 @@ begin
     -- Inputs
     clk => clk,
     rstn => rstn,
+    en => '1',
+    start => '0',
+    param => X"42",
+    addr => "101",
+    din => X"1111",
+    we => '0',
     -- Outputs
-    dout => dout,
+    dout => dout(15 downto 0),
     memaddr => memaddr,
     memdout => memdout
   );

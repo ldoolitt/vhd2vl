@@ -24,7 +24,7 @@ diff: translate
 	@echo "PASS"
 
 verilogcheck:
-	@cd translated_examples; for f in *.v; do $(VERILOG) $$f; done
+	@cd translated_examples; for f in *.v; do echo "Checking: $$f"; $(VERILOG) $$f; done
 
 clean:
 	make -C src clean
