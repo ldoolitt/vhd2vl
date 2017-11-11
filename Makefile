@@ -1,6 +1,7 @@
 #!/usr/bin/make
 # by RAM 2017
 
+VERILOG = iverilog -Wall -y . -t null
 EXAMPLES = $(wildcard examples/*.vhd)
 VHDLS    = $(notdir $(EXAMPLES))
 
@@ -21,6 +22,9 @@ translate: src/vhd2vl
 diff: translate
 	diff -u translated_examples temp/verilog
 	@echo "PASS"
+
+verilogcheck:
+	@cd translated_examples; for f in *.v; do $(VERILOG) $$f; done
 
 clean:
 	make -C src clean

@@ -3,6 +3,7 @@
 module ifchain(
 input wire clk,
 input wire rstn,
+input wire enable,
 output reg result
 );
 
@@ -10,6 +11,7 @@ output reg result
 
 
 reg [3:0] counter;
+parameter CLK_DIV_VAL = 11;
 
   always @(posedge clk, posedge rstn) begin
     if((rstn == 1'b0)) begin

@@ -3,12 +3,14 @@ USE IEEE.std_logic_1164.all;
 
 entity ifchain is port(
   clk, rstn : in std_logic;
+  enable: in std_logic;
   result: out std_logic
 );
 end ifchain;
 
 architecture rtl of ifchain is
   signal counter : std_logic_vector(3 downto 0);
+  constant CLK_DIV_VAL : unsigned(3 downto 0) := 11;
 begin
 
 clk_src : process(clk, rstn) is
