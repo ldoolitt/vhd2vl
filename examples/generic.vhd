@@ -25,7 +25,7 @@ begin
                         (others => '0') when "011",
                         std_logic_vector(unsigned(a) + unsigned(b)) when others;
   code1(1 downto 0) <= a(6 downto 5) xor (a(4) & b(6));
-  
+
   foo <= (others => '0');
   egg <= (others => '0');
   baz <= (others => '1');

@@ -1,7 +1,7 @@
-// Project: VHDL to Verilog RTL translation 
-// Revision: 1.0 
-// Date of last Revision: February 27 2001 
-// Designer: Vincenzo Liguori 
+// Project: VHDL to Verilog RTL translation
+// Revision: 1.0
+// Date of last Revision: February 27 2001
+// Designer: Vincenzo Liguori
 // vhd2vl test file
 // This VHDL file exercises vhd2vl
 // no timescale needed

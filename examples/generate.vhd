@@ -8,7 +8,6 @@ entity gen is   generic(
                   sysclk, reset, wrb : in std_logic;
                   din : in std_logic_vector(bus_width downto 0);
                   rdout: out std_logic_vector(bus_width downto 0)
-                  
 );
 end gen;
 architecture rtl of gen is

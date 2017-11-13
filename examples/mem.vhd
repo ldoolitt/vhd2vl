@@ -16,14 +16,14 @@ generic(
     din : in unsigned(bus_width-1 downto 0);
     dout : out unsigned(bus_width-1 downto 0)
   );
-end entity; 
+end entity;
 
 architecture rtl of mem is
   type mem_Type is array (255 downto 0) of unsigned(bus_width-1 downto 0);
   signal mem : mem_Type;
   signal al : unsigned(addr_width-1 downto 0) := X"00";
 begin
-  dout <= mem(al);  
+  dout <= mem(al);
   process (clk) is
   begin
     if rising_edge(clk) then
