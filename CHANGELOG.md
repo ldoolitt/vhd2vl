@@ -1,3 +1,18 @@
+Changes 3.0 to (unreleased):
+  * Clean up examples to yield better Verilog output
+  * Improved WARNING messages
+  * Use ',' to separate sensitivity list in Verilog 2001 output
+
+
+Changes 2.5 to 3.0 (Rodrigo Melo, February 2017):
+  * Github-ization, inlcuding converting text to markdown
+  * Better Verilog standard selection, and make 2001 the default
+  * New --quiet option
+  * Support scientific notation for floats
+  * Use GHDL to test example VHDL input, corrected problems discovered
+  * Yosys-compatible whitespace in \<size\>'\<radix\>\<number\> notation output
+
+
 Changes 2.4 to 2.5 (Larry Doolittle, September 2015)
 
 Coding:
@@ -13,7 +28,8 @@ Grammar:
   * allow FLOAT in expressions (maybe a mistake)
   * fixed regression in "others" handling since 2.1
   * don't crash with "others" in instantiation (Verilog result is still broken)
-  (the following were submitted by Shankar Giri)
+
+Grammar submitted by Shankar Giri:
   * Verilog 2001 module declaration (runtime selectable, use -g2001)
   * named generate block support for XST compatibility
   * support for array of vectors
