@@ -10,15 +10,19 @@ entity todo is
 end todo;
 
 architecture rtl of todo is
+   type mem_type is array (0 to 255) of integer;
+   signal mem : mem_type;
+
    signal int : integer;
    signal uns : unsigned(7 downto 0);
 begin
    --**************************************************************************
    -- Wrong translations
    --**************************************************************************
-   -- to_integer is unsupported (is not removed)
+   -- to_integer not always work (probably the same with conv_integer)
    uns <= "10101001";
-   int <= to_integer(uns);
+   int <= mem(to_integer(uns)); -- here work
+   int <= to_integer(uns);      -- here fail
    --**************************************************************************
    -- Translations which abort with syntax error (uncomment to test)
    --**************************************************************************

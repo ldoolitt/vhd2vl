@@ -126,6 +126,7 @@ void getbasedstring(unsigned skip);
 "falling_edge" { return NEGEDGE;}
 "resize" { return CONVFUNC_2;}
 "to_unsigned" { return CONVFUNC_2;}
+"to_integer" |
 "conv_integer" { return CONVFUNC_1;}
 "left" { return LEFT;}
 "high" { return LEFT;}
