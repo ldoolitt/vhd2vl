@@ -68,7 +68,7 @@ begin
     start => '0',
     param => X"42",
     addr => "101",
-    din => "00" & X"111111",
+    din => "00000100010001000100010001",
     we => '0',
     -- Outputs
     dout => dout(23 downto 0),
@@ -88,7 +88,7 @@ begin
     start => '0',
     param => X"42",
     addr => "101",
-    din => "00" & X"001111",
+    din => "00000000000001000100010001",
     we => '0',
     -- Outputs
     dout => dout(15 downto 0),

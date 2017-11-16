@@ -49,7 +49,7 @@ wire [1:0] colour;
     .start(1'b0),
     .param(8'h42),
     .addr(3'b101),
-    .din(24'h111111),
+    .din(26'b00000100010001000100010001),
     .we(1'b0),
     // Outputs
     .dout(dout[23:0]),
@@ -67,7 +67,7 @@ wire [1:0] colour;
     .start(1'b0),
     .param(8'h42),
     .addr(3'b101),
-    .din(16'h1111),
+    .din(26'b00000000000001000100010001),
     .we(1'b0),
     // Outputs
     .dout(dout[15:0]),
