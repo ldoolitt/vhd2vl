@@ -1,8 +1,11 @@
 #!/usr/bin/make
 # by RAM 2017
 
+TEMP = ../temp/vhdl
+
 all:
-	ghdl -a *.vhd
+	@mkdir -p $(TEMP)
+	ghdl -a --workdir=$(TEMP) *.vhd
 
 clean:
-	rm -fr *.o *.cf
+	rm -fr $(TEMP)
