@@ -1,9 +1,9 @@
 #!/usr/bin/make
-# by RAM 2017
 
-VERILOG = iverilog -Wall -y . -t null
+VERILOG  = iverilog -Wall -y . -t null
 EXAMPLES = $(wildcard examples/*.vhd)
 VHDLS    = $(notdir $(EXAMPLES))
+VHDLS   := $(filter-out todo.vhd,$(VHDLS))
 
 all: vhdlcheck diff
 
@@ -25,6 +25,9 @@ diff: translate
 
 verilogcheck:
 	@cd translated_examples; for f in *.v; do echo "Checking: $$f"; $(VERILOG) $$f; done
+
+todo: src/vhd2vl
+	src/vhd2vl --quiet examples/todo.vhd temp/todo.v
 
 clean:
 	make -C src clean
