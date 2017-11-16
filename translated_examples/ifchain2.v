@@ -11,7 +11,7 @@ output reg result
 
 
 reg [3:0] counter;
-parameter CLK_DIV_VAL = 11;
+parameter CLK_DIV_VAL = (11);
 
   always @(posedge clk, posedge rstn) begin
     if((rstn == 1'b0)) begin
