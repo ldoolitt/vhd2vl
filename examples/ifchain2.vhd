@@ -1,5 +1,6 @@
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
+USE IEEE.numeric_std.all;
 
 entity ifchain is port(
   clk, rstn : in std_logic;
@@ -9,8 +10,8 @@ entity ifchain is port(
 end ifchain;
 
 architecture rtl of ifchain is
-  signal counter : std_logic_vector(3 downto 0);
-  constant CLK_DIV_VAL : unsigned(3 downto 0) := 11;
+  signal counter : unsigned(3 downto 0);
+  constant CLK_DIV_VAL : unsigned(3 downto 0) := to_unsigned(11,4);
 begin
 
 clk_src : process(clk, rstn) is

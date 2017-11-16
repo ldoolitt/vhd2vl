@@ -1,6 +1,7 @@
 -- Nearly useless stub, it's here to support genericmap.vhd
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
+USE IEEE.numeric_std.all;
 
 entity dsp is generic(
   rst_val   : std_logic := '0';
@@ -27,6 +28,6 @@ architecture rtl of dsp is
     signal foo : std_logic;
 begin
     process(clk) begin
-       dout <= '1';
+       dout <= std_logic_vector(to_unsigned(1,bus_width));
     end process;
 end rtl;

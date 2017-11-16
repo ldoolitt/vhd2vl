@@ -23,13 +23,13 @@ architecture rtl of mem is
   signal mem : mem_Type;
   signal al : unsigned(addr_width-1 downto 0) := X"00";
 begin
-  dout <= mem(al);
+  dout <= mem(to_integer(al));
   process (clk) is
   begin
     if rising_edge(clk) then
       al <= addr;
       if en = '1' then
-        mem(addr) <= din;
+        mem(to_integer(addr)) <= din;
       end if;
     end if;
   end process;
