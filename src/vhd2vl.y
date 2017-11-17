@@ -2149,15 +2149,8 @@ expr : signal {
      | expr XOR expr {$$=addexpr($1,'^'," ^ ",$3);}
      | expr XNOR expr {$$=addexpr(NULL,'~'," ~",addexpr($1,'^'," ^ ",$3));}
      | BITVECT '(' expr ')' {
-       /* single argument type conversion function e.g. std_ulogic_vector(x) */
-       expdata *e;
-       e=xmalloc(sizeof(expdata));
-       if ($3->op == 'c') {
-         e->sl=addwrap("{",$3->sl,"}");
-       } else {
-         e->sl=addwrap("(",$3->sl,")");
-       }
-       $$=e;
+       /* single argument type conversion function e.g. std_logic_vector(x) */
+       $$ = addnest($3);
       }
      | CONVFUNC_2 '(' expr ',' NATURAL ')' {
        /* two argument type conversion e.g. to_unsigned(x, 3) */
