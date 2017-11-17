@@ -7,15 +7,11 @@ VHDLS   := $(filter-out todo.vhd,$(VHDLS))
 
 all: vhdlcheck diff
 
-# This rule is only helpful for a quick start;
-# it doesn't understand the actual dependencies for rebuilds.
-src/vhd2vl:
-	make -C src
-
 vhdlcheck:
 	@make -C examples
 
-translate: src/vhd2vl
+translate:
+	@make -C src
 	@mkdir -p temp/verilog
 	@cd examples; $(foreach VHDL,$(VHDLS), echo "Translating: $(VHDL)";../src/vhd2vl --quiet $(VHDL) ../temp/verilog/$(basename $(VHDL)).v;)
 
@@ -26,7 +22,8 @@ diff: translate
 verilogcheck:
 	@cd translated_examples; for f in *.v; do echo "Checking: $$f"; $(VERILOG) $$f; done
 
-todo: src/vhd2vl
+todo:
+	@make -C src
 	src/vhd2vl --quiet examples/todo.vhd temp/todo.v
 
 clean:
