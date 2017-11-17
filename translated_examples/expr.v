@@ -17,9 +17,9 @@ wire [8:0] input_status;
 wire enable; wire debug; wire aux; wire outy; wire dv; wire value;
 
   // drive input status
-  assign input_status = {foo[9:4],((((baz[2:0] & foo[3:0])) | (( ~baz[2:0] & bam[3:0]))))};
+  assign input_status = {foo[9:4],(baz[2:0] & foo[3:0]) | ( ~baz[2:0] & bam[3:0])};
   // drive based on foo
-  assign out_i[4] = ((enable & ((aux ^ outy)))) | ((debug & dv &  ~enable)) | (( ~debug &  ~enable & value));
+  assign out_i[4] = (enable & (aux ^ outy)) | (debug & dv &  ~enable) | ( ~debug &  ~enable & value);
   // not drive
   always @(negedge reset, negedge sysclk) begin
     if((reset != 1'b0)) begin

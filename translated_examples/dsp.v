@@ -27,7 +27,7 @@ parameter [31:0] bus_width=24;
 wire foo;
 
   always @(clk) begin
-    dout <= ((1));
+    dout <= 1;
   end
 
 

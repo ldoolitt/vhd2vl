@@ -121,7 +121,7 @@ reg [1:0] colour;
       3'b101 : code[9:2] <= 8'b11100010;
       3'b010 : code[9:2] <= {8{1'b1}};
       3'b011 : code[9:2] <= {8{1'b0}};
-      default : code[9:2] <= (((a)) + ((b)));
+      default : code[9:2] <= (a) + (b);
     endcase
   end
 
@@ -172,7 +172,7 @@ reg [1:0] colour;
     // Outputs
     .dout(memdin));
 
-  assign complex = {enf,((3'b110 * ((load)))),qtd[3:0],base,5'b11001};
+  assign complex = {enf,3'b110 * (load),qtd[3:0],base,5'b11001};
   assign enf = c < 7'b1000111 ? 1'b1 : 1'b0;
   assign eno = enf;
 

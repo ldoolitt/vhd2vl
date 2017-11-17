@@ -313,7 +313,7 @@ expdata *addnest(struct expdata *inner)
   if (inner->op == 'c') {
     e->sl=addwrap("{",inner->sl,"}");
   } else {
-    e->sl=addwrap("(",inner->sl,")");
+    e->sl=addsl(NULL,inner->sl);
   }
   return e;
 }

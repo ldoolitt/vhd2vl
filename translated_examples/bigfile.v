@@ -102,17 +102,17 @@ wire [31:0] g_sys_in_ii;
 wire [31:0] g_dout_i;
 
   // qaz out
-  assign g_zaq_out_i = ((g_secondary_t_l_dout & ((g_aux ^ g_style_t_y_dout)))) | ((g_alu_l_dout & alu_u &  ~g_secondary_t_l_dout)) | (( ~g_alu_l_dout &  ~g_secondary_t_l_dout & g_t_u_dout));
+  assign g_zaq_out_i = (g_secondary_t_l_dout & (g_aux ^ g_style_t_y_dout)) | (g_alu_l_dout & alu_u &  ~g_secondary_t_l_dout) | ( ~g_alu_l_dout &  ~g_secondary_t_l_dout & g_t_u_dout);
   // Changed
   assign g_zaq_out = g_zaq_out_i &  ~g_t_jkl_sink_l_dout;
   // qaz 
   // JLB
-  assign g_zaq_ctl_i =  ~((((g_t_l_dout &  ~g_t_jkl_sink_l_dout)) | ((g_t_l_dout & g_t_jkl_sink_l_dout &  ~g_zaq_out_i))));
+  assign g_zaq_ctl_i =  ~((g_t_l_dout &  ~g_t_jkl_sink_l_dout) | (g_t_l_dout & g_t_jkl_sink_l_dout &  ~g_zaq_out_i));
   // mux
   //vnavigatoroff
   assign g_zaq_ctl = scanb == 1'b1 ? g_zaq_ctl_i : 32'b00000000000000000000000000000000;
   //vnavigatoron
-  assign g_zaq_hhh_enb =  ~((g_t_hhh_l_dout));
+  assign g_zaq_hhh_enb =  ~(g_t_hhh_l_dout);
   assign g_zaq_qaz_hb = g_t_qaz_mult_high_dout;
   assign g_zaq_qaz_lb = g_t_qaz_mult_low_dout;
   // Dout
@@ -287,12 +287,12 @@ wire [31:0] g_dout_i;
   // switch
   assign g_zaq_in_y = g_style_t_y_dout ^ q2_g_zaq_in;
   // qaz
-  assign g_style_vfr_dout = {g_zaq_in_y[31:4],(((g_style_c_l_dout[3:0] & q_g_zaq_in_cd)) | (( ~g_style_c_l_dout[3:0] & g_zaq_in_y[3:0])))};
+  assign g_style_vfr_dout = {g_zaq_in_y[31:4],(g_style_c_l_dout[3:0] & q_g_zaq_in_cd) | ( ~g_style_c_l_dout[3:0] & g_zaq_in_y[3:0])};
   // in scan mode
-  assign g_zaq_in_y_no_dout = scanb == 1'b1 ? (g_style_t_y_dout ^ g_zaq_in) : g_style_t_y_dout;
+  assign g_zaq_in_y_no_dout = scanb == 1'b1 ? g_style_t_y_dout ^ g_zaq_in : g_style_t_y_dout;
   //vnavigatoron
-  assign g_sys_in_i = ({g_zaq_in_y_no_dout[31:4],(((g_style_c_l_dout[3:0] & q_g_zaq_in_cd)) | (( ~g_style_c_l_dout[3:0] & g_zaq_in_y_no_dout[3:0])))});
-  assign g_sys_in_ii = ((g_sys_in_i &  ~gwerthernal_style_l_dout)) | ((gwerthernal_style_u_dout & gwerthernal_style_l_dout));
+  assign g_sys_in_i = {g_zaq_in_y_no_dout[31:4],(g_style_c_l_dout[3:0] & q_g_zaq_in_cd) | ( ~g_style_c_l_dout[3:0] & g_zaq_in_y_no_dout[3:0])};
+  assign g_sys_in_ii = (g_sys_in_i &  ~gwerthernal_style_l_dout) | (gwerthernal_style_u_dout & gwerthernal_style_l_dout);
   assign g_sys_in = g_sys_in_ii;
   always @(posedge reset, posedge sysclk) begin
     if((reset != 1'b0)) begin
@@ -344,7 +344,7 @@ wire [31:0] g_dout_i;
   end
 
   // generate
-  assign g_n_active = (((((q_g_style_vfr_dout &  ~g_style_vfr_dout)) | (( ~q_g_style_vfr_dout & g_style_vfr_dout & g_n_both_qbars_l_dout))))) & g_n_l_dout;
+  assign g_n_active = ((q_g_style_vfr_dout &  ~g_style_vfr_dout) | ( ~q_g_style_vfr_dout & g_style_vfr_dout & g_n_both_qbars_l_dout)) & g_n_l_dout;
   // check for lqq active and set lqq vfr register
   // also clear
   always @(posedge reset, posedge sysclk) begin
@@ -405,7 +405,7 @@ wire [31:0] g_dout_i;
           g_vector[8 * i + 7:8 * i] <= g_e_n_r_dout[8 * idiv8 + 7:8 * idiv8];
         end
         else begin
-          g_vector[8 * i + 7:8 * i] <= (((g_e_n_r_dout[8 * idiv8 + 7:8 * idiv8])) + ((imod8)));
+          g_vector[8 * i + 7:8 * i] <= (g_e_n_r_dout[8 * idiv8 + 7:8 * idiv8]) + (imod8);
         end
       end
     end

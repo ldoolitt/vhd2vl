@@ -76,12 +76,12 @@ reg prev_do_file_card;
 
   //---
   // form the outputs
-  assign wfoo0_llwln = (wfoo0_llwln_var);
-  assign debct = (debct_var);
-  assign Z0 = (Z0_var);
-  assign Y1 = (Y1_var);
-  assign X2 = (X2_var);
-  assign W3 = (W3_var);
+  assign wfoo0_llwln = wfoo0_llwln_var;
+  assign debct = debct_var;
+  assign Z0 = Z0_var;
+  assign Y1 = Y1_var;
+  assign X2 = X2_var;
+  assign W3 = W3_var;
   assign Z0_cwm = Z0_cwm_i;
   assign Y1_cwm = Y1_cwm_i;
   assign X2_cwm = X2_cwm_i;
@@ -120,7 +120,7 @@ reg prev_do_file_card;
       //--
       //  wfoo0
       if(wfoo0_baz == 1'b1) begin
-        wfoo0_llwln_var <= (wfoo0_turn);
+        wfoo0_llwln_var <= wfoo0_turn;
         main_wfoo0_cwm <= 1'b0;
         if(wfoo0_llwln_var == 32'b00000000000000000000000000000000) begin
           do_q3p_wfoo0 <= 1'b0;
@@ -133,7 +133,7 @@ reg prev_do_file_card;
         if(do_q3p_wfoo0 == 1'b1 && wfoo0_blrb == 1'b1) begin
           wfoo0_llwln_var <= wfoo0_llwln_var - 1;
           if((wfoo0_llwln_var == 32'b00000000000000000000000000000000)) begin
-            wfoo0_llwln_var <= (wfoo0_turn);
+            wfoo0_llwln_var <= wfoo0_turn;
             if(main_wfoo0_cwm == 1'b0) begin
               wfoo0_cwm <= 1'b1;
               main_wfoo0_cwm <= 1'b1;
@@ -150,7 +150,7 @@ reg prev_do_file_card;
       end
       if(Z0_baz == 1'b1) begin
         // counter Baz
-        Z0_var <= (Z0_turn);
+        Z0_var <= Z0_turn;
         if(Z0_turn == 32'b00000000000000000000000000000000) begin
           do_q3p_Z0 <= 1'b0;
         end
@@ -175,7 +175,7 @@ reg prev_do_file_card;
             Z0_var <= Z0_var - 1;
             if((Z0_var == 32'b00000000000000000000000000000000)) begin
               Z0_cwm_i <= 1'b1;
-              Z0_var <= (Z0_turn);
+              Z0_var <= Z0_turn;
             end
           end
           // Z0_bar
@@ -187,7 +187,7 @@ reg prev_do_file_card;
       end
       if(Y1_baz == 1'b1) begin
         // counter Baz
-        Y1_var <= (Y1_turn);
+        Y1_var <= Y1_turn;
         if(Y1_turn == 32'b00000000000000000000000000000000) begin
           do_q3p_Y1 <= 1'b0;
         end
@@ -211,7 +211,7 @@ reg prev_do_file_card;
           Y1_var <= Y1_var - 1;
           if((Y1_var == 32'b00000000000000000000000000000000)) begin
             Y1_cwm_i <= 1'b1;
-            Y1_var <= (Y1_turn);
+            Y1_var <= Y1_turn;
           end
         end
         // Y1_bar
@@ -222,7 +222,7 @@ reg prev_do_file_card;
       end
       if(X2_baz == 1'b1) begin
         // counter Baz
-        X2_var <= (X2_turn);
+        X2_var <= X2_turn;
         if(X2_turn == 32'b00000000000000000000000000000000) begin
           do_q3p_X2 <= 1'b0;
         end
@@ -247,7 +247,7 @@ reg prev_do_file_card;
           if((X2_var == 32'b00000000000000000000000000000000)) begin
             //{
             X2_cwm_i <= 1'b1;
-            X2_var <= (X2_turn);
+            X2_var <= X2_turn;
           end
         end
         //X2_bar
@@ -258,7 +258,7 @@ reg prev_do_file_card;
       end
       if(W3_baz == 1'b1) begin
         // counter Baz
-        W3_var <= (W3_turn);
+        W3_var <= W3_turn;
         if(W3_turn == 32'b00000000000000000000000000000000) begin
           do_q3p_W3 <= 1'b0;
         end
@@ -283,7 +283,7 @@ reg prev_do_file_card;
           if((W3_var == 32'b00000000000000000000000000000000)) begin
             //{
             W3_cwm_i <= 1'b1;
-            W3_var <= (W3_turn);
+            W3_var <= W3_turn;
           end
         end
         // W3_bar
@@ -294,7 +294,7 @@ reg prev_do_file_card;
       end
       if(debct_baz == 1'b1) begin
         // counter Baz
-        debct_var <= (debct_turn);
+        debct_var <= debct_turn;
         if(debct_turn == 32'b00000000000000000000000000000000) begin
           do_q3p_debct <= 1'b0;
         end
@@ -324,7 +324,7 @@ reg prev_do_file_card;
             //{
             debct_cwm_i <= 1'b1;
             debct_pull <= 1'b1;
-            debct_var <= (debct_turn);
+            debct_var <= debct_turn;
           end
         end
         // debct_bar
