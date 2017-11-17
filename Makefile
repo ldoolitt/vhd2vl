@@ -1,26 +1,24 @@
 #!/usr/bin/make
 
-VERILOG  = iverilog -Wall -y . -t null
-EXAMPLES = $(wildcard examples/*.vhd)
-VHDLS    = $(notdir $(EXAMPLES))
-VHDLS   := $(filter-out todo.vhd,$(VHDLS))
+VHDLS  = $(wildcard examples/*.vhd)
+VHDLS := $(notdir $(VHDLS))
+VHDLS := $(filter-out todo.vhd,$(VHDLS))
 
-all: vhdlcheck diff
-
-vhdlcheck:
-	@make -C examples
+all: diff
 
 translate:
 	@make -C src
+	@make -C examples
 	@mkdir -p temp/verilog
-	@cd examples; $(foreach VHDL,$(VHDLS), echo "Translating: $(VHDL)";../src/vhd2vl --quiet $(VHDL) ../temp/verilog/$(basename $(VHDL)).v;)
+	@echo "##### Translating Examples #####################################"
+	@cd examples; $(foreach VHDL,$(VHDLS), echo "Translating: $(VHDL)";\
+	../src/vhd2vl --quiet $(VHDL) ../temp/verilog/$(basename $(VHDL)).v;)
+	@make -C translated_examples
 
 diff: translate
-	diff -u translated_examples temp/verilog
+	@echo "##### Diff #####################################################"
+	diff -u --exclude=Makefile translated_examples temp/verilog
 	@echo "PASS"
-
-verilogcheck:
-	@cd translated_examples; for f in *.v; do echo "Checking: $$f"; $(VERILOG) $$f; done
 
 todo:
 	@make -C src
@@ -28,5 +26,4 @@ todo:
 
 clean:
 	make -C src clean
-	@make -C examples clean
 	rm -fr temp
