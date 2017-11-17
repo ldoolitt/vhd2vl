@@ -21,11 +21,11 @@ parameter [31:0] bus_width=14;
 reg [bus_width - 1:0] mem[255:0];
 reg [addr_width - 1:0] al = 8'h00;
 
-  assign dout = mem[(al)];
+  assign dout = mem[al];
   always @(posedge clk) begin
     al <= addr;
     if(en == 1'b1) begin
-      mem[(addr)] <= din;
+      mem[addr] <= din;
     end
   end
 

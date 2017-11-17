@@ -2350,10 +2350,10 @@ simple_expr : signal {
        $$=addexpr($1,'/'," / ",$3);
       }
      | CONVFUNC_1 '(' simple_expr ')' {
-       /* one argument type conversion e.g. conv_integer(x) */
+       /* one argument type conversion e.g. to_integer(x) */
        expdata *e;
        e=xmalloc(sizeof(expdata));
-       e->sl=addwrap("(",$3->sl,")");
+       e->sl=addsl(NULL,$3->sl);
        $$=e;
       }
      | '(' simple_expr ')' {
