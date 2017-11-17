@@ -21,7 +21,7 @@ reg [4:7 - 1] egg;
     if((reset != 1'b0)) begin
       foo <= {(((10 + 3))-((0))+1){1'b1}};
     end else begin
-      foo <= ival[31:31 - ((10 + 3))];
+      foo <= ival[31:31 - (10 + 3)];
     end
   end
 

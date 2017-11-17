@@ -25,7 +25,7 @@ wire enable; wire debug; wire aux; wire outy; wire dv; wire value;
     if((reset != 1'b0)) begin
       foo <= {14{1'b0}};
     end else begin
-      foo[3 * ((2 - 1))] <= baz[1 * ((1 + 2)) - 2];
+      foo[3 * (2 - 1)] <= baz[1 * (1 + 2) - 2];
       bam[13:0] <= foo;
     end
   end

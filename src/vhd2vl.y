@@ -2352,7 +2352,8 @@ simple_expr : signal {
      | '(' simple_expr ')' {
        expdata *e;
        e=xmalloc(sizeof(expdata));
-       e->sl=addwrap("(",$2->sl,")");
+       //e->sl=addwrap("(",$2->sl,")");
+       e->sl=addsl(NULL,$2->sl);
        $$=e;
       }
      ;
