@@ -712,6 +712,7 @@ slist *emit_io_list(slist *sl)
 %token <txt> STRING NAME RANGE NULLV OPEN
 %token <txt> CONVFUNC_1 CONVFUNC_2 BASED FLOAT LEFT
 %token <txt> SCIENTIFIC REAL
+%token <txt> ASSERT REPORT SEVERITY WARNING ERROR FAILURE NOTE
 %token <n> NATURAL
 
 %type <n> trad
@@ -724,6 +725,7 @@ slist *emit_io_list(slist *sl)
 %type <sl> edge
 %type <sl> elsepart wlist wvalue cases
 %type <sl> with_item with_list
+%type <sl> vhdassert
 %type <sg> s_list
 %type <n> dir delay
 %type <v> type vec_range
@@ -733,6 +735,7 @@ slist *emit_io_list(slist *sl)
 %type <ss> signal
 %type <txt> opt_is opt_generic opt_entity opt_architecture opt_begin
 %type <txt> generate endgenerate
+%type <txt> sevlevel
 
 %right '='
 /* Logic operators: */
@@ -823,6 +826,16 @@ endgenerate    : END GENERATE;
 /* tell the lexer to discard or keep comments ('-- ') - this makes the grammar much easier */
 norem : /*Empty*/ {skipRem = 1;}
 yesrem : /*Empty*/ {skipRem = 0;}
+
+/* Beginning support for assertions. Currently parsed but not translated. */
+vhdassert : ASSERT exprc REPORT STRING SEVERITY sevlevel ';' {
+              fprintf(stderr,"WARNING (line %d): Ignoring assertion.\n",lineno);
+              $$=NULL;
+            }
+
+sevlevel  : WARNING | ERROR | FAILURE | NOTE {
+               $$=NULL;
+            }
 
 /* Entity */
 /*          1      2    3  4     5  6   7         8   9  10  11  12    13 */
@@ -1566,6 +1579,11 @@ a_body : rem {$$=addind($1);}
            sl=addtxt(sl,"endgenerate\n");
            $$=addsl(sl,$15);    /* a_body:2 */
          }
+        | rem vhdassert a_body {
+           slist *sl;
+           sl=addsl($1,$2);
+           $$=addsl(sl,$3);
+        }
        ;
 
 oname : {$$=NULL;}

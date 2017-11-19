@@ -31,5 +31,6 @@ begin
         end if; -- enable
     end if; -- clk, rst_n
 end process clk_src;
+assert (counter < CLK_DIV_VAL) report "test case" severity error;
 
 end rtl;

@@ -130,6 +130,13 @@ void getbasedstring(unsigned skip);
 "conv_integer" { return CONVFUNC_1;}
 "left" { return LEFT;}
 "high" { return LEFT;}
+"assert" {return ASSERT;}
+"report" {return REPORT;}
+"severity" {return SEVERITY;}
+"failure" {return FAILURE;}
+"error" {return ERROR;}
+"warning" {return WARNING;}
+"note" {return NOTE;}
 
 \"[ \!#-~]*\" |
 \'[01xz]\' { getstring(1); return STRING;}
