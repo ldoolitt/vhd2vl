@@ -114,6 +114,7 @@ void getbasedstring(unsigned skip);
 "then" { return THEN; }
 "elsif" { return ELSIF; }
 "else" { return ELSE; }
+"while" { return WHILE; }
 "case" { return CASE; }
 "after" { return AFTER; }
 "and" { return AND; }

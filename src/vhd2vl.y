@@ -705,7 +705,7 @@ slist *emit_io_list(slist *sl)
 %token <txt> ARCHITECTURE COMPONENT OF ARRAY
 %token <txt> SIGNAL BEGN NOT WHEN WITH EXIT
 %token <txt> SELECT OTHERS PROCESS VARIABLE CONSTANT
-%token <txt> IF THEN ELSIF ELSE CASE
+%token <txt> IF THEN ELSIF ELSE CASE WHILE
 %token <txt> FOR LOOP GENERATE
 %token <txt> AFTER AND OR XOR MOD
 %token <txt> LASTVALUE EVENT POSEDGE NEGEDGE
@@ -1807,6 +1807,19 @@ p_body : rem {$$=$1;}
            sl=addsl(sl,indents[indent]);
            sl=addtxt(sl,"end\n");
            $$=addsl(sl,$15);    /* p_body:2 */
+         }
+/*        1   2    3      4   5         6      7       8   9    10  11*/
+       | rem WHILE exprc LOOP doindent p_body unindent END LOOP ';' p_body {
+         slist *sl;
+           sl=addsl($1,indents[indent]);
+           sl=addtxt(sl,"while ");
+           sl=addtxt(sl,"(");
+           sl=addsl(sl,$3); /* exprc */
+           sl=addtxt(sl,") begin\n");
+           sl=addsl(sl,$6);    /* p_body:1 */
+           sl=addsl(sl,indents[indent]);
+           sl=addtxt(sl,"end\n");
+           $$=addsl(sl,$11);    /* p_body:2 */
          }
 /*        1   2    3      4 5       6  7   8    9      10 */
        | rem CASE signal IS rem cases END CASE ';' p_body {
