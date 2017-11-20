@@ -34,14 +34,14 @@ architecture rtl of genericmap is
     generic(
       rst_val   : std_logic := '0';
       thing_size: integer := 201;
-      bus_width : integer := 22);
+      bus_width : integer := 24);
     port(
       -- Inputs
       clk, rstn : in std_logic;
       en, start : in std_logic;
       param : in std_logic_vector(7 downto 0);
       addr : in std_logic_vector(2 downto 0);
-      din : in std_logic_vector(25 downto 0);
+      din : in std_logic_vector(bus_width-1 downto 0);
       we : in std_logic;
       memdin : out std_logic_vector(13 downto 0);
       -- Outputs

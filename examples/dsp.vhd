@@ -6,8 +6,7 @@ USE IEEE.numeric_std.all;
 entity dsp is generic(
   rst_val   : std_logic := '0';
   thing_size: integer := 201;
-  bus_width : integer := 24
-);
+  bus_width : integer := 24);
     port(
       -- Inputs
       clk, rstn : in std_logic;
