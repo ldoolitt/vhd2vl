@@ -2431,7 +2431,7 @@ simple_expr : signal {
      | '(' simple_expr ')' {
        expdata *e;
        e=xmalloc(sizeof(expdata));
-       //e->sl=addwrap("(",$2->sl,")");
+       /* e->sl=addwrap("(",$2->sl,")"); */
        e->sl=addsl(NULL,$2->sl);
        $$=e;
       }
@@ -2457,6 +2457,14 @@ int status;
 int opt;
 static int quiet;
 
+  static struct option options[] = {
+    {"debug",     no_argument,       &yydebug,  1  },
+    {"quiet",     no_argument,       &quiet,    1  },
+    {"std",       required_argument, 0,        's' },
+    {"help",      no_argument,       0,        'h' },
+    {0,           0,                 0,         0  }
+  };
+
   /* Init the indentation variables */
   indents[0]=NULL;
   for(i=1;i<MAXINDENT;i++){
@@ -2468,14 +2476,6 @@ static int quiet;
     sl->type=tTXT;
     sl->slst=NULL;
   }
-
-  static struct option options[] = {
-    {"debug",     no_argument,       &yydebug,  1  },
-    {"quiet",     no_argument,       &quiet,    1  },
-    {"std",       required_argument, 0,        's' },
-    {"help",      no_argument,       0,        'h' },
-    {0,           0,                 0,         0  }
-  };
 
   while ((opt = getopt_long(argc, argv,"s:h", options, 0 )) != -1) {
     switch (opt) {
