@@ -88,6 +88,39 @@ struct vrange *new_vrange(enum vrangeType t)
   return v;
 }
 
+void qindent(int ind){
+  int ix;
+  for (ix=0; ix<ind; ix++) fputc(' ', stderr);
+}
+
+/* Visualise an slist structures as an aid to debugging and development.
+ * Will never be used for actual Verilog generation. */
+void sldump(int ind, slist *sl){
+  if (sl){
+    assert(sl != sl->slst);
+    qindent(ind);
+    fprintf(stderr, "slst:\n");
+    sldump(ind + 4, sl->slst);
+    qindent(ind);
+    switch(sl->type){
+    case tSLIST : case tOTHERS :
+      assert(sl != sl->data.sl);
+      fprintf(stderr, "tSLIST:\n");
+      sldump(ind + 4,sl->data.sl);
+      break;
+    case tTXT :
+      fprintf(stderr, "pTXT \"%s\"\n",sl->data.txt);
+      break;
+    case tVAL :
+      fprintf(stderr, "tVAL %d\n",sl->data.val);
+      break;
+    case tPTXT :
+      fprintf(stderr, "pPTXT \"%s\"\n",*(sl->data.ptxt));
+      break;
+    }
+  }
+}
+
 void fslprint(FILE *fp,slist *sl){
   if(sl){
     assert(sl != sl->slst);
@@ -1093,6 +1126,21 @@ vec_range : simple_expr updown simple_expr {
                 expdata *diff12  = xmalloc(sizeof(expdata));
                 expdata *plusone = xmalloc(sizeof(expdata));
                 expdata *finalexpr = xmalloc(sizeof(expdata));
+                /* Here is where we may want to analyze the two expressions to
+                 * see if they have a simple (possibly constant) difference.
+                 * For now, here's an option to visualise their data structures.
+                 */
+                if (0) {
+                  fprintf(stderr, "debug width hi ");
+                  fslprint(stderr, $$->nhi);
+                  fprintf(stderr, "\n");
+                  sldump(4, $$->nhi);
+                  fprintf(stderr, "debug width lo ");
+                  fslprint(stderr, $$->nlo);
+                  fprintf(stderr, "\n");
+                  sldump(4, $$->nlo);
+                  fprintf(stderr, "\n");
+                }
                 size_expr1->sl = addwrap("(",$1->sl,")");
                 size_expr2->sl = addwrap("(",$3->sl,")");
                 plusone->op='t';
