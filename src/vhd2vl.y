@@ -2219,6 +2219,7 @@ expr : signal {
      | '+' expr %prec UPLUS {$$=addexpr(NULL,'p'," +",$2);}
      | expr '+' expr {$$=addexpr($1,'+'," + ",$3);}
      | expr '-' expr {$$=addexpr($1,'-'," - ",$3);}
+     | expr '*' '*' expr {$$=addexpr($1,'*'," ** ",$4);}
      | expr '*' expr {$$=addexpr($1,'*'," * ",$3);}
      | expr '/' expr {$$=addexpr($1,'/'," / ",$3);}
      | expr MOD expr {$$=addexpr($1,'%'," % ",$3);}
@@ -2414,6 +2415,9 @@ simple_expr : signal {
       }
      | simple_expr '-' simple_expr {
        $$=addexpr($1,'-'," - ",$3);
+      }
+     | simple_expr '*' '*' simple_expr {
+       $$=addexpr($1,'*'," ** ",$4);
       }
      | simple_expr '*' simple_expr {
        $$=addexpr($1,'*'," * ",$3);

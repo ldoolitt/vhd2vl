@@ -6,15 +6,18 @@ input wire sysclk,
 input wire ival
 );
 
+parameter [31:0] SIZE=2 ** 8 - 1;
 
 
 
+parameter SIZE_OF = 2 ** 8 - 1;
 reg [13:0] foo;
 wire [2:0] baz;
 reg [22:0] bam;
 wire [5:3] out_i;
 wire [8:0] input_status;
 wire enable; wire debug; wire aux; wire outy; wire dv; wire value;
+wire [2 ** 3 - 1:0] expo;
 
   // drive input status
   assign input_status = {foo[9:4],(baz[2:0] & foo[3:0]) | ( ~baz[2:0] & bam[3:0])};
@@ -30,5 +33,6 @@ wire enable; wire debug; wire aux; wire outy; wire dv; wire value;
     end
   end
 
+    //expo <= std_logic_vector(to_unsigned(2**4, 2**8));
 
 endmodule
