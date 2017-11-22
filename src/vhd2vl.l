@@ -122,6 +122,7 @@ void getbasedstring(unsigned skip);
 "xor" { return XOR; }
 "xnor" { return XNOR; }
 "mod" { return MOD; }
+"**" { return POW; }
 "event" { return EVENT; }
 "rising_edge" { return POSEDGE;}
 "falling_edge" { return NEGEDGE;}
