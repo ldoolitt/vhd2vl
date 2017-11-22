@@ -42,5 +42,5 @@ begin
     end if;
   end process;
 
-  --expo <= std_logic_vector(to_unsigned(2**4, 2**8));
+  expo <= std_logic_vector(to_unsigned(2**4, 2**8));
 end rtl;

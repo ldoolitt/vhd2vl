@@ -33,6 +33,6 @@ wire [2 ** 3 - 1:0] expo;
     end
   end
 
-    //expo <= std_logic_vector(to_unsigned(2**4, 2**8));
+  assign expo = 2 ** 4;
 
 endmodule
