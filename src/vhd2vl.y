@@ -740,7 +740,7 @@ slist *emit_io_list(slist *sl)
 %token <txt> SELECT OTHERS PROCESS VARIABLE CONSTANT
 %token <txt> IF THEN ELSIF ELSE CASE WHILE
 %token <txt> FOR LOOP GENERATE
-%token <txt> AFTER AND OR XOR MOD
+%token <txt> AFTER AND OR XOR MOD POW
 %token <txt> LASTVALUE EVENT POSEDGE NEGEDGE
 %token <txt> STRING NAME RANGE NULLV OPEN
 %token <txt> CONVFUNC_1 CONVFUNC_2 BASED FLOAT LEFT
@@ -784,6 +784,7 @@ slist *emit_io_list(slist *sl)
 %left '<'  '>'  BIGEQ  LESSEQ  NOTEQ  EQUAL
 %left  '+'  '-'  '&'
 %left  '*'  '/'
+%left  POW
 %right UMINUS  UPLUS  NOTL  NOT
 %error-verbose
 
@@ -2219,6 +2220,7 @@ expr : signal {
      | '+' expr %prec UPLUS {$$=addexpr(NULL,'p'," +",$2);}
      | expr '+' expr {$$=addexpr($1,'+'," + ",$3);}
      | expr '-' expr {$$=addexpr($1,'-'," - ",$3);}
+     | expr POW expr {$$=addexpr($1,'*'," ** ",$3);}
      | expr '*' expr {$$=addexpr($1,'*'," * ",$3);}
      | expr '/' expr {$$=addexpr($1,'/'," / ",$3);}
      | expr MOD expr {$$=addexpr($1,'%'," % ",$3);}
@@ -2414,6 +2416,9 @@ simple_expr : signal {
       }
      | simple_expr '-' simple_expr {
        $$=addexpr($1,'-'," - ",$3);
+      }
+     | simple_expr POW simple_expr {
+       $$=addexpr($1,'*'," ** ",$3);
       }
      | simple_expr '*' simple_expr {
        $$=addexpr($1,'*'," * ",$3);
