@@ -121,6 +121,40 @@ void sldump(int ind, slist *sl){
   }
 }
 
+size_t limlen(char *p, size_t l){
+  size_t r = strlen(p);
+  if (l < r) r = l;
+  return r;
+}
+
+char *sslprint(char *p, size_t l, slist *sl){
+  char *o = p;
+  if(sl){
+    assert(sl != sl->slst);
+    o = sslprint(o, l, sl->slst);
+    l = p+l-o;
+    switch(sl->type){
+    case tSLIST : case tOTHERS :
+      assert(sl != sl->data.sl);
+      o = sslprint(o, l, sl->data.sl);
+      break;
+    case tTXT :
+      strncpy(o, sl->data.txt, l);
+      o += limlen(sl->data.txt, l);
+      break;
+    case tVAL :
+      snprintf(o, l, "%d", sl->data.val);
+      o += strlen(o);
+      break;
+    case tPTXT :
+      strncpy(o, *(sl->data.ptxt), l);
+      o += limlen(*(sl->data.ptxt), l);
+      break;
+    }
+  }
+  return o;
+}
+
 void fslprint(FILE *fp,slist *sl){
   if(sl){
     assert(sl != sl->slst);
@@ -374,6 +408,56 @@ char *sbottom(slist *sl){
   while(sl->slst != NULL)
     sl=sl->slst;
   return sl->data.txt;
+}
+
+/* kind of like strdup, but with specified len */
+char *strgrab(char*s, size_t len)
+{
+  char *r = malloc(len+1);
+  if (r) {
+    memcpy(r, s, len);
+    r[len] = 0;
+  }
+  return r;
+}
+
+/* s1 is the longer string, s2 is the shorter string */
+char *string_check_diff(char *s1, char *s2)
+{
+  size_t llen = strlen(s1);
+  size_t slen = strlen(s2);
+  char *rv=0;
+  if (memcmp(s1, s2, slen)==0) {
+    fprintf(stderr, "first %lu chars match\n", slen);
+    if (llen>slen+3 && memcmp(s1+slen," + ",3)==0) {
+      fprintf(stderr, "followed by valid \" + \"\n");
+      rv=strgrab(s1+slen+3,llen-slen-3);
+    }
+  } else if (memcmp(s1+llen-slen, s2, slen)==0) {
+    fprintf(stderr, "last %lu chars match\n", slen);
+    if (llen>slen+3 && memcmp(s1+llen-slen-3," + ",3)==0) {
+      fprintf(stderr, "preceded by valid \" + \"\n");
+      rv=strgrab(s1,llen-slen-3);
+    }
+  }
+  return rv;
+}
+
+/* look for common beginning or end of a string,
+ * needed for creating indexed part selects */
+void slist_check_diff(slist *shi, slist *slo)
+{
+  char t1[200], t2[200];
+  char *diff = 0;
+  size_t t1len, t2len;
+  sslprint(t1, sizeof(t1), shi);  t1len = strlen(t1);
+  sslprint(t2, sizeof(t2), slo);  t2len = strlen(t2);
+  if (t2len < t1len) {
+    diff = string_check_diff(t1, t2);
+  } else {
+    diff = string_check_diff(t2, t1);
+  }
+  if (diff) fprintf(stderr, "difference: %s\n", diff);
 }
 
 const char *inout_string(int type)
@@ -1131,15 +1215,16 @@ vec_range : simple_expr updown simple_expr {
                  * see if they have a simple (possibly constant) difference.
                  * For now, here's an option to visualise their data structures.
                  */
-                if (0) {
-                  fprintf(stderr, "debug width hi ");
+                if (1) {
+                  fprintf(stderr, "debug width hi: ");
                   fslprint(stderr, $$->nhi);
                   fprintf(stderr, "\n");
-                  sldump(4, $$->nhi);
-                  fprintf(stderr, "debug width lo ");
+                  /* sldump(4, $$->nhi); */
+                  fprintf(stderr, "debug width lo: ");
                   fslprint(stderr, $$->nlo);
                   fprintf(stderr, "\n");
-                  sldump(4, $$->nlo);
+                  /* sldump(4, $$->nlo); */
+                  slist_check_diff($$->nhi, $$->nlo);
                   fprintf(stderr, "\n");
                 }
                 size_expr1->sl = addwrap("(",$1->sl,")");
