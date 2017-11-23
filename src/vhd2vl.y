@@ -422,21 +422,22 @@ char *strgrab(char*s, size_t len)
 }
 
 /* s1 is the longer string, s2 is the shorter string */
+#define DEBUG_RANGE 1
 char *string_check_diff(char *s1, char *s2)
 {
   size_t llen = strlen(s1);
   size_t slen = strlen(s2);
   char *rv=0;
   if (memcmp(s1, s2, slen)==0) {
-    fprintf(stderr, "first %lu chars match\n", slen);
+    if (DEBUG_RANGE) fprintf(stderr, "first %lu chars match\n", slen);
     if (llen>slen+3 && memcmp(s1+slen," + ",3)==0) {
-      fprintf(stderr, "followed by valid \" + \"\n");
+      if (DEBUG_RANGE) fprintf(stderr, "followed by valid \" + \"\n");
       rv=strgrab(s1+slen+3,llen-slen-3);
     }
   } else if (memcmp(s1+llen-slen, s2, slen)==0) {
-    fprintf(stderr, "last %lu chars match\n", slen);
+    if (DEBUG_RANGE) fprintf(stderr, "last %lu chars match\n", slen);
     if (llen>slen+3 && memcmp(s1+llen-slen-3," + ",3)==0) {
-      fprintf(stderr, "preceded by valid \" + \"\n");
+      if (DEBUG_RANGE) fprintf(stderr, "preceded by valid \" + \"\n");
       rv=strgrab(s1,llen-slen-3);
     }
   }
@@ -445,7 +446,7 @@ char *string_check_diff(char *s1, char *s2)
 
 /* look for common beginning or end of a string,
  * needed for creating indexed part selects */
-void slist_check_diff(slist *shi, slist *slo)
+char *slist_check_diff(slist *shi, slist *slo)
 {
   char t1[200], t2[200];
   char *diff = 0;
@@ -457,7 +458,7 @@ void slist_check_diff(slist *shi, slist *slo)
   } else {
     diff = string_check_diff(t2, t1);
   }
-  if (diff) fprintf(stderr, "difference: %s\n", diff);
+  return diff;
 }
 
 const char *inout_string(int type)
@@ -1194,6 +1195,21 @@ vec_range : simple_expr updown simple_expr {
               $$->nhi=$1->sl;
               $$->nlo=$3->sl;
               $$->sizeval = -1; /* undefined size */
+              char *range_diff = 0;
+              /* Here is where we may want to analyze the two expressions to
+               * see if they have a simple (possibly constant) difference.
+               * For now, here's an option to visualise their data structures.
+               */
+              if (DEBUG_RANGE) {
+                fprintf(stderr, "debug width hi: ");
+                fslprint(stderr, $$->nhi);
+                fprintf(stderr, "\n");
+                if (0) sldump(4, $$->nhi);
+                fprintf(stderr, "debug width lo: ");
+                fslprint(stderr, $$->nlo);
+                fprintf(stderr, "\n");
+                if (0) sldump(4, $$->nlo);
+              }
               /* calculate the width of this vrange */
               if ($1->op == 'n' && $3->op == 'n') {
                 if ($2==-1) { /* (nhi:natural downto nlo:natural) */
@@ -1201,6 +1217,9 @@ vec_range : simple_expr updown simple_expr {
                 } else {      /* (nhi:natural to     nlo:natural) */
                   $$->sizeval = $3->value - $1->value + 1;
                 }
+              } else if ((range_diff = slist_check_diff($$->nhi, $$->nlo))) {
+                if (DEBUG_RANGE) fprintf(stderr, "difference: %s\n", range_diff);
+                $$->size_expr = addtxt(NULL, range_diff);
               } else {
                 /* make an expression to calculate the width of this vrange:
                  * create an expression that calculates:
@@ -1211,22 +1230,6 @@ vec_range : simple_expr updown simple_expr {
                 expdata *diff12  = xmalloc(sizeof(expdata));
                 expdata *plusone = xmalloc(sizeof(expdata));
                 expdata *finalexpr = xmalloc(sizeof(expdata));
-                /* Here is where we may want to analyze the two expressions to
-                 * see if they have a simple (possibly constant) difference.
-                 * For now, here's an option to visualise their data structures.
-                 */
-                if (1) {
-                  fprintf(stderr, "debug width hi: ");
-                  fslprint(stderr, $$->nhi);
-                  fprintf(stderr, "\n");
-                  /* sldump(4, $$->nhi); */
-                  fprintf(stderr, "debug width lo: ");
-                  fslprint(stderr, $$->nlo);
-                  fprintf(stderr, "\n");
-                  /* sldump(4, $$->nlo); */
-                  slist_check_diff($$->nhi, $$->nlo);
-                  fprintf(stderr, "\n");
-                }
                 size_expr1->sl = addwrap("(",$1->sl,")");
                 size_expr2->sl = addwrap("(",$3->sl,")");
                 plusone->op='t';
@@ -1242,6 +1245,7 @@ vec_range : simple_expr updown simple_expr {
                 finalexpr->sl = addwrap("(",finalexpr->sl,")");
                 $$->size_expr = finalexpr->sl;
               }
+              if (DEBUG_RANGE) fprintf(stderr, "\n");
             }
           | simple_expr {
               $$=new_vrange(tSUBSCRIPT);
