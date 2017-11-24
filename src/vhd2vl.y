@@ -2328,6 +2328,9 @@ expr : signal {
        /* single argument type conversion function e.g. std_logic_vector(x) */
        $$ = addnest($3);
       }
+     | CONVFUNC_1 '(' expr ')' {
+       $$ = addnest($3);
+      }
      | CONVFUNC_2 '(' expr ',' expr ')' {
        /* two argument type conversion e.g. to_unsigned(x, 3) */
        $$ = addnest($3);

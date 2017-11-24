@@ -28,7 +28,7 @@ architecture rtl of dsp is
     signal sr  : std_logic_vector(63 downto 0);
     signal iparam : integer;
 begin
-    --iparam <= to_integer(unsigned(param));
+    iparam <= to_integer(unsigned(param));
     process(clk) begin
        -- dout <= std_logic_vector(to_unsigned(1,bus_width));
        if rising_edge(clk) then
