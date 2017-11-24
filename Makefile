@@ -9,11 +9,11 @@ EXCLUDE := $(addsuffix .vhd,$(EXCLUDE))
 VHDLS    = $(wildcard examples/*.vhd)
 VHDLS   := $(notdir $(VHDLS))
 
+DIFFOPT  = --exclude=Makefile
+
 ifndef WIP
 VHDLS   := $(filter-out $(EXCLUDE),$(VHDLS))
-DIFFOPT  = --exclude-from=examples/.exclude
-else
-DIFFOPT  = --exclude=Makefile
+DIFFOPT := $(DIFFOPT) --exclude-from=examples/.exclude
 endif
 
 all: diff
