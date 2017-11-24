@@ -302,10 +302,13 @@ slist *addind(slist *sl){
   return sl;
 }
 
+#define DEBUG_RANGE 0
 slist *addpar_snug(slist *sl, vrange *v){
-  fprintf(stderr,"addpar_snug %d: ", v->sizeval);
-  fslprint(stderr, v->size_expr);
-  fprintf(stderr,"\n");
+  if (DEBUG_RANGE) {
+    fprintf(stderr,"addpar_snug %d: ", v->sizeval);
+    fslprint(stderr, v->size_expr);
+    fprintf(stderr,"\n");
+  }
   if(v->nlo != NULL) {   /* indexes are simple expressions */
     sl=addtxt(sl,"[");
     if(v->nhi != NULL){
@@ -425,7 +428,6 @@ char *strgrab(char*s, size_t len)
 }
 
 /* s1 is the longer string, s2 is the shorter string */
-#define DEBUG_RANGE 1
 char *string_check_diff(char *s1, char *s2)
 {
   size_t llen = strlen(s1);
@@ -1194,11 +1196,11 @@ type        : BIT {
 
 /* using expr instead of simple_expr here makes the grammar ambiguous (why?) */
 vec_range : simple_expr updown simple_expr {
+              char *range_diff = 0;
               $$=new_vrange(tVRANGE);
               $$->nhi=$1->sl;
               $$->nlo=$3->sl;
               $$->sizeval = -1; /* undefined size */
-              char *range_diff = 0;
               /* Here is where we may want to analyze the two expressions to
                * see if they have a simple (possibly constant) difference.
                * For now, here's an option to visualise their data structures.

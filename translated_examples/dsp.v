@@ -17,7 +17,7 @@ output wire [13:0] memdout
 );
 
 parameter rst_val=1'b0;
-parameter [31:0] thing_size=201;
+parameter [31:0] thing_size=51;
 parameter [31:0] bus_width=24;
 // Inputs
 // Outputs
