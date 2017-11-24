@@ -227,7 +227,7 @@ begin
               -- set
               g_dout_w0x0f_v := g_dout_w0x0f(4 downto 1) & '1';
             else
-              exit;
+              -- XXX not ready for exit;
             end if;
           --vnavigatoroff
           else

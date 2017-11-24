@@ -25,9 +25,14 @@ parameter [31:0] bus_width=24;
 
 
 wire foo;
+reg [63:0] sr;
 
-  always @(clk) begin
-    dout <= 1;
+  always @(posedge clk) begin
+      // dout <= std_logic_vector(to_unsigned(1,bus_width));
+    if(we == 1'b1) begin
+      sr <= {sr[thing_size - bus_width - 1:0],din};
+    end
+    dout <= sr[param * bus_width + bus_width - 1+:bus_width - 1 + 1];
   end
 
 

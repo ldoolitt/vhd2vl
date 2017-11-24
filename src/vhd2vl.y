@@ -302,30 +302,33 @@ slist *addind(slist *sl){
   return sl;
 }
 
-slist *addpar(slist *sl, vrange *v){
-  if(v->nlo != NULL) {   /* indexes are simple expressions */
-    sl=addtxt(sl," [");
-    if(v->nhi != NULL){
-      sl=addsl(sl,v->nhi);
-      sl=addtxt(sl,":");
-    }
-    sl=addsl(sl,v->nlo);
-    sl=addtxt(sl,"] ");
-  } else {
-    sl=addtxt(sl," ");
-  }
-  return sl;
-}
-
 slist *addpar_snug(slist *sl, vrange *v){
+  fprintf(stderr,"addpar_snug %d: ", v->sizeval);
+  fslprint(stderr, v->size_expr);
+  fprintf(stderr,"\n");
   if(v->nlo != NULL) {   /* indexes are simple expressions */
     sl=addtxt(sl,"[");
     if(v->nhi != NULL){
       sl=addsl(sl,v->nhi);
+      if(v->sizeval==-2) sl=addtxt(sl,"+");
       sl=addtxt(sl,":");
     }
-    sl=addsl(sl,v->nlo);
+    if(v->sizeval==-2){
+      sl=addsl(sl,v->size_expr);
+      sl=addtxt(sl," + 1");
+    } else {
+      sl=addsl(sl,v->nlo);
+    }
     sl=addtxt(sl,"]");
+  }
+  return sl;
+}
+
+slist *addpar(slist *sl, vrange *v){
+  sl=addtxt(sl," ");
+  if(v->nlo != NULL) {   /* indexes are simple expressions */
+    sl=addpar_snug(sl, v);
+    sl=addtxt(sl," ");
   }
   return sl;
 }
@@ -1219,6 +1222,7 @@ vec_range : simple_expr updown simple_expr {
                 }
               } else if ((range_diff = slist_check_diff($$->nhi, $$->nlo))) {
                 if (DEBUG_RANGE) fprintf(stderr, "difference: %s\n", range_diff);
+                $$->sizeval = -2;  /* special */
                 $$->size_expr = addtxt(NULL, range_diff);
               } else {
                 /* make an expression to calculate the width of this vrange:

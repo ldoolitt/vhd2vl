@@ -15,14 +15,14 @@ begin
 
    test_i: process(clk_i)
       variable big_var : std_logic_vector(31 downto 0);
-      variable j       : integer:=8;
+      variable j       : integer; -- XXX not ready for :=8;
    begin
       if rising_edge(clk_i) then
          big_sig(31 downto 24) <= big_sig(7 downto 0);
          big_var(31 downto 24) := big_var(7 downto 0);
          lit_sig(24 to 31)     <= lit_sig(0 to 7);
          --
-         big_sig(i*3+8 downto i*3) <= big_sig(i-1 downto 0);
+         big_sig(i*3+8 downto i*3) <= big_sig(8 downto 0);
          big_var(j*3+8 downto j*3) := big_var(j*0+8 downto j*0);
       end if;
    end process test_i;

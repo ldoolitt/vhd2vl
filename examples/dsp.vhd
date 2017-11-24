@@ -25,8 +25,15 @@ end;
 
 architecture rtl of dsp is
     signal foo : std_logic;
+    signal sr : std_logic_vector(63 downto 0);
 begin
     process(clk) begin
-       dout <= std_logic_vector(to_unsigned(1,bus_width));
+       -- dout <= std_logic_vector(to_unsigned(1,bus_width));
+       if rising_edge(clk) then
+           if we = '1' then
+               sr <= sr(thing_size-bus_width-1 downto 0) & din;
+           end if;
+           dout <= sr(param*bus_width+bus_width-1 downto param*bus_width);
+       end if;
     end process;
 end rtl;
