@@ -2,14 +2,14 @@ LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
 USE IEEE.numeric_std.all;
 
-entity ifchain is port(
+entity ifchain2 is port(
   clk, rstn : in std_logic;
   enable: in std_logic;
   result: out std_logic
 );
-end ifchain;
+end ifchain2;
 
-architecture rtl of ifchain is
+architecture rtl of ifchain2 is
   signal counter : unsigned(3 downto 0);
   constant CLK_DIV_VAL : unsigned(3 downto 0) := to_unsigned(11,4);
 begin
