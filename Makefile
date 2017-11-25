@@ -2,7 +2,7 @@
 
 TEMP     = temp
 
-EXCLUDE  = $(shell cat examples/.exclude)
+EXCLUDE  = $(shell cat examples/exclude)
 EXCLUDE := $(basename $(EXCLUDE))
 EXCLUDE := $(addsuffix .vhd,$(EXCLUDE))
 
@@ -13,7 +13,7 @@ DIFFOPT  = --exclude=Makefile
 
 ifndef WIP
 VHDLS   := $(filter-out $(EXCLUDE),$(VHDLS))
-DIFFOPT := $(DIFFOPT) --exclude-from=examples/.exclude
+DIFFOPT := $(DIFFOPT) --exclude-from=examples/exclude
 endif
 
 all: diff
