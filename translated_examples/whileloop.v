@@ -1,6 +1,6 @@
 // no timescale needed
 
-module whilep(
+module whileloop(
 input wire [31:0] A,
 output reg [3:0] Z
 );

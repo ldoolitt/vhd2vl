@@ -2,15 +2,14 @@ library IEEE;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity whilep is port(
+entity whileloop is port(
   A : in integer;
   Z : out std_logic_vector(3 downto 0)
 );
-end whilep;
+end whileloop;
 
-architecture rtl of whilep is
+architecture rtl of whileloop is
 begin
-
 
 process (A)
     variable I : integer range 0 to 4;
