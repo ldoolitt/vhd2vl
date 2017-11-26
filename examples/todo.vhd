@@ -19,10 +19,7 @@ begin
    --**************************************************************************
    -- Wrong translations
    --**************************************************************************
-   -- to_integer not always work (probably the same with conv_integer)
-   uns <= "10101001";
-   int <= mem(to_integer(uns)); -- here work
-   int <= to_integer(uns);      -- here fail
+
    --**************************************************************************
    -- Translations which abort with syntax error (uncomment to test)
    --**************************************************************************
