@@ -1,6 +1,6 @@
 // no timescale needed
 
-module generic1(
+module withselect(
 input wire reset,
 input wire sysclk,
 input wire [bus_width:0] a,
