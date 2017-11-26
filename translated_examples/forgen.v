@@ -1,6 +1,6 @@
 // no timescale needed
 
-module gen(
+module forgen(
 input wire sysclk,
 input wire reset,
 input wire wrb,

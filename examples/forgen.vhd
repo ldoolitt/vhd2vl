@@ -1,16 +1,19 @@
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
-entity gen is   generic(
-  bus_width : integer := 15;
-  TOP_GP2 : integer:= 0
+
+entity forgen is
+  generic(
+    bus_width : integer := 15;
+    TOP_GP2 : integer:= 0
   );
-                port(
-                  sysclk, reset, wrb : in std_logic;
-                  din : in std_logic_vector(bus_width downto 0);
-                  rdout: out std_logic_vector(bus_width downto 0)
-);
-end gen;
-architecture rtl of gen is
+  port(
+    sysclk, reset, wrb : in std_logic;
+    din : in std_logic_vector(bus_width downto 0);
+    rdout: out std_logic_vector(bus_width downto 0)
+  );
+end forgen;
+
+architecture rtl of forgen is
   component wbit1                       -- register bit default 1
     port(
       clk   : in  std_logic;

@@ -1,12 +1,13 @@
 library IEEE;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-entity forp is port(
+
+entity forloop is port(
   reset, sysclk : in std_logic
 );
-end forp;
-architecture rtl of forp is
+end forloop;
 
+architecture rtl of forloop is
   signal selection : std_logic;
   signal egg_timer : std_logic_vector(6 downto 0);
 begin
@@ -33,5 +34,4 @@ begin
       end loop;  -- i
     end if;
   end process;
-
 end rtl;
