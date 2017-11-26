@@ -187,7 +187,7 @@ wire [31:0] g_dout_i;
           //vnavigatoron
           case(g_dout_w0x0f_v)
           g_t_klim_w0x0f : begin
-            g_t_klim_dout <= din[i * 32 + 31+:31 + 1];
+            g_t_klim_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           g_t_u_w0x0f : begin
             // output klim
@@ -198,68 +198,68 @@ wire [31:0] g_dout_i;
             end
           end
           g_t_l_w0x0f : begin
-            g_t_l_dout <= din[i * 32 + 31+:31 + 1];
+            g_t_l_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           g_t_hhh_l_w0x0f : begin
-            g_t_hhh_l_dout <= din[i * 32 + 31+:31 + 1];
+            g_t_hhh_l_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           g_t_jkl_sink_l_w0x0f : begin
-            g_t_jkl_sink_l_dout <= din[i * 32 + 31+:31 + 1];
+            g_t_jkl_sink_l_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           g_secondary_t_l_w0x0f : begin
-            g_secondary_t_l_dout <= din[i * 32 + 31+:31 + 1];
+            g_secondary_t_l_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           g_style_c_l_w0x0f : begin
-            g_style_c_l_dout[3:0] <= din[3 + i * 32+:3 + 1];
+            g_style_c_l_dout[3:0] <= din[3 + i * 32 -: 3 + 1];
           end
           g_e_z_w0x0f : begin
-            g_e_z_dout <= din[i * 32 + 31+:31 + 1];
+            g_e_z_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           g_n_both_qbars_l_w0x0f : begin
-            g_n_both_qbars_l_dout <= din[i * 32 + 31+:31 + 1];
+            g_n_both_qbars_l_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           g_style_vfr_w0x0f : begin
             // read-only register
           end
           g_style_klim_w0x0f : begin
-            g_style_klim_dout <= din[i * 32 + 31+:31 + 1];
+            g_style_klim_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           g_unklimed_style_vfr_w0x0f : begin
             // read-only register
           end
           g_style_t_y_w0x0f : begin
-            g_style_t_y_dout <= din[i * 32 + 31+:31 + 1];
+            g_style_t_y_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           g_n_l_w0x0f : begin
-            g_n_l_dout <= din[i * 32 + 31+:31 + 1];
+            g_n_l_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           g_n_vfr_w0x0f : begin
             // writes
           end
           g_e_n_r_w0x0f : begin
-            g_e_n_r_dout <= din[i * 32 + 31+:31 + 1];
+            g_e_n_r_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           g_n_r_bne_w0x0f : begin
             g_n_r_bne_dout <= din[i * 32];
           end
           g_n_div_rebeq_w0x0f : begin
-            g_n_div_rebeq_dout <= din[i * 32 + 31+:31 + 1] | g_n_div_rebeq_dout;
+            g_n_div_rebeq_dout <= din[i * 32 + 31 -: 31 + 1] | g_n_div_rebeq_dout;
             // a '1' writes
           end
           g_alu_l_w0x0f : begin
-            g_alu_l_dout <= din[i * 32 + 31+:31 + 1];
+            g_alu_l_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           g_t_qaz_mult_low_w0x0f : begin
-            g_t_qaz_mult_low_dout <= din[i * 32 + 31+:31 + 1];
+            g_t_qaz_mult_low_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           g_t_qaz_mult_high_w0x0f : begin
-            g_t_qaz_mult_high_dout <= din[i * 32 + 31+:31 + 1];
+            g_t_qaz_mult_high_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           gwerthernal_style_u_w0x0f : begin
-            gwerthernal_style_u_dout <= din[i * 32 + 31+:31 + 1];
+            gwerthernal_style_u_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           gwerthernal_style_l_w0x0f : begin
-            gwerthernal_style_l_dout <= din[i * 32 + 31+:31 + 1];
+            gwerthernal_style_l_dout <= din[i * 32 + 31 -: 31 + 1];
             //vnavigatoroff                                                          
           end
           default : begin
@@ -404,15 +404,15 @@ wire [31:0] g_dout_i;
       idiv8 = i / 8;
       if((g_n_r_bne_dout == 1'b0)) begin
         // non-unique
-        g_vector[8 * i + 7+:7 + 1] <= g_e_n_r_dout[8 * idiv8 + 7+:7 + 1];
+        g_vector[8 * i + 7 -: 7 + 1] <= g_e_n_r_dout[8 * idiv8 + 7 -: 7 + 1];
       end
       else begin
         // unique
         if((imod8 == 0)) begin
-          g_vector[8 * i + 7+:7 + 1] <= g_e_n_r_dout[8 * idiv8 + 7+:7 + 1];
+          g_vector[8 * i + 7 -: 7 + 1] <= g_e_n_r_dout[8 * idiv8 + 7 -: 7 + 1];
         end
         else begin
-          g_vector[8 * i + 7+:7 + 1] <= (g_e_n_r_dout[8 * idiv8 + 7+:7 + 1]) + (imod8);
+          g_vector[8 * i + 7 -: 7 + 1] <= (g_e_n_r_dout[8 * idiv8 + 7 -: 7 + 1]) + (imod8);
         end
       end
     end

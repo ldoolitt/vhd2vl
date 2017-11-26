@@ -29,7 +29,7 @@ reg [6:0] egg_timer;
       for (i=0; i <= j * k; i = i + 1) begin
         a = a + i;
         for (k=a - 9; k >=  -14; k = k - 1) begin
-          zz5 = zz[31 + k+:31 + 1];
+          zz5 = zz[31 + k -: 31 + 1];
         end
         // k
       end

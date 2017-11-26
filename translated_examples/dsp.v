@@ -34,7 +34,7 @@ wire [31:0] iparam;
     if(we == 1'b1) begin
       sr <= {sr[thing_size - bus_width - 1:0],din};
     end
-    dout <= sr[iparam * bus_width + bus_width - 1+:bus_width - 1 + 1];
+    dout <= sr[iparam * bus_width + bus_width - 1 -: bus_width - 1 + 1];
   end
 
 

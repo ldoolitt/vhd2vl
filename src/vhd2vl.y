@@ -313,10 +313,10 @@ slist *addpar_snug(slist *sl, vrange *v){
     sl=addtxt(sl,"[");
     if(v->nhi != NULL){
       sl=addsl(sl,v->nhi);
-      if(v->sizeval==-2) sl=addtxt(sl,"+");
-      sl=addtxt(sl,":");
+      if(v->updown) sl=addtxt(sl,v->updown==1 ? " +: " : " -: ");
+      else sl=addtxt(sl,":");
     }
-    if(v->sizeval==-2){
+    if(v->updown){
       sl=addsl(sl,v->size_expr);
       sl=addtxt(sl," + 1");
     } else {
@@ -449,20 +449,21 @@ char *string_check_diff(char *s1, char *s2)
   return rv;
 }
 
-/* look for common beginning or end of a string,
- * needed for creating indexed part selects */
-char *slist_check_diff(slist *shi, slist *slo)
+/* Look for common beginning or end of a string,
+ * as needed for creating indexed part selects.
+ * updown key:  DOWNTO = -1, TO = 1 */
+char *slist_check_diff(slist *shi, slist *slo, int updown)
 {
   char t1[200], t2[200];
   char *diff = 0;
   size_t t1len, t2len;
   sslprint(t1, sizeof(t1), shi);  t1len = strlen(t1);
   sslprint(t2, sizeof(t2), slo);  t2len = strlen(t2);
-  if (t2len < t1len) {
+  if (updown == -1 && t2len < t1len) {
     diff = string_check_diff(t1, t2);
-  } else {
+  } else if (updown == 1 && t1len < t2len) {
     diff = string_check_diff(t2, t1);
-  }
+  } /* I don't have sane test cases for the other possibilities */
   return diff;
 }
 
@@ -1201,6 +1202,7 @@ vec_range : simple_expr updown simple_expr {
               $$->nhi=$1->sl;
               $$->nlo=$3->sl;
               $$->sizeval = -1; /* undefined size */
+              $$->updown = 0; /* not relevant */
               /* Here is where we may want to analyze the two expressions to
                * see if they have a simple (possibly constant) difference.
                * For now, here's an option to visualise their data structures.
@@ -1222,9 +1224,9 @@ vec_range : simple_expr updown simple_expr {
                 } else {      /* (nhi:natural to     nlo:natural) */
                   $$->sizeval = $3->value - $1->value + 1;
                 }
-              } else if ((range_diff = slist_check_diff($$->nhi, $$->nlo))) {
+              } else if ((range_diff = slist_check_diff($$->nhi, $$->nlo, $2))) {
                 if (DEBUG_RANGE) fprintf(stderr, "difference: %s\n", range_diff);
-                $$->sizeval = -2;  /* special */
+                $$->updown = $2;  /* triggers use of range_diff in addpar_snug */
                 $$->size_expr = addtxt(NULL, range_diff);
               } else {
                 /* make an expression to calculate the width of this vrange:
