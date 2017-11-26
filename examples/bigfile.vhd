@@ -100,7 +100,6 @@ architecture rtl of bigfile is
   signal q_g_zaq_in_cd : std_logic_vector(3 downto 0);
   signal q_g_style_vfr_dout : std_logic_vector(31 downto 0);
   signal q_g_unzq : std_logic_vector(3 downto 0);
-  -- i
   signal g_n_active : std_logic_vector(31 downto 0);
 
   -- inter
@@ -192,6 +191,8 @@ begin
   g_doutister_proc :
   process(reset, sysclk)
     variable g_dout_w0x0f_v : std_logic_vector(4 downto 0);
+    variable i : integer;
+    variable j : integer;
   begin
     if( reset /= '0' ) then
       g_t_klim_dout                  <= (others => '0');
@@ -227,7 +228,7 @@ begin
               -- set
               g_dout_w0x0f_v := g_dout_w0x0f(4 downto 1) & '1';
             else
-              exit;
+              -- XXX not ready for exit;
             end if;
           --vnavigatoroff
           else
@@ -323,6 +324,7 @@ begin
  
   lpq_proc :
   process(reset, sysclk)
+    variable i : integer;
   begin
     if( reset /= '0' ) then
       q_g_zaq_in_cd      <= (others => '0');
@@ -383,6 +385,7 @@ begin
   -- also clear
   n_proc :
   process(reset, sysclk)
+    variable i : integer;
   begin
     if( reset /= '0' ) then
       g_n_vfr_dout <= (others => '0');
@@ -424,6 +427,7 @@ begin
   createwerth_vec_proc :
   process( g_n_r_bne_dout, g_e_n_r_dout)
     variable imod8, idiv8 : integer;
+    variable i : integer;
   begin
     for i in 0 to 31 loop
       imod8 := i mod 8;
@@ -451,6 +455,7 @@ begin
   
   create_g_ack_bne_proc :
   process( swe_ed,swe_lv,g_e_z_dout)
+    variable i : integer;
   begin
     for i in 0 to 31 loop
       if( g_e_z_dout(i) = '1') then

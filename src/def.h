@@ -54,6 +54,7 @@ typedef struct vrange {
   struct slist *nhi, *nlo; /* MAG index is a simple expression */
   slist *size_expr;        /* expression that calculates size (width) of this vrange */
   int    sizeval;          /* precalculated size value */
+  int    updown;           /* only used for indext part select case */
   struct slist *xhi, *xlo; /* array index range; 0,0 for normal scalars */
 } vrange;
 

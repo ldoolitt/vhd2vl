@@ -12,7 +12,7 @@ architecture rtl of forp is
 begin
   TIMERS :
   process(reset, sysclk)
-    variable timer_var : integer:= 0;
+    variable timer_var : integer; -- XXX unhandled := 0;
     variable a, i, j, k : integer;
     variable zz5 : std_logic_vector(31 downto 0);
     variable zz : std_logic_vector(511 downto 0);

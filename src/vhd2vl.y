@@ -121,6 +121,40 @@ void sldump(int ind, slist *sl){
   }
 }
 
+size_t limlen(char *p, size_t l){
+  size_t r = strlen(p);
+  if (l < r) r = l;
+  return r;
+}
+
+char *sslprint(char *p, size_t l, slist *sl){
+  char *o = p;
+  if(sl){
+    assert(sl != sl->slst);
+    o = sslprint(o, l, sl->slst);
+    l = p+l-o;
+    switch(sl->type){
+    case tSLIST : case tOTHERS :
+      assert(sl != sl->data.sl);
+      o = sslprint(o, l, sl->data.sl);
+      break;
+    case tTXT :
+      strncpy(o, sl->data.txt, l);
+      o += limlen(sl->data.txt, l);
+      break;
+    case tVAL :
+      snprintf(o, l, "%d", sl->data.val);
+      o += strlen(o);
+      break;
+    case tPTXT :
+      strncpy(o, *(sl->data.ptxt), l);
+      o += limlen(*(sl->data.ptxt), l);
+      break;
+    }
+  }
+  return o;
+}
+
 void fslprint(FILE *fp,slist *sl){
   if(sl){
     assert(sl != sl->slst);
@@ -268,30 +302,36 @@ slist *addind(slist *sl){
   return sl;
 }
 
-slist *addpar(slist *sl, vrange *v){
-  if(v->nlo != NULL) {   /* indexes are simple expressions */
-    sl=addtxt(sl," [");
-    if(v->nhi != NULL){
-      sl=addsl(sl,v->nhi);
-      sl=addtxt(sl,":");
-    }
-    sl=addsl(sl,v->nlo);
-    sl=addtxt(sl,"] ");
-  } else {
-    sl=addtxt(sl," ");
-  }
-  return sl;
-}
-
+#define DEBUG_RANGE 0
 slist *addpar_snug(slist *sl, vrange *v){
+  if (DEBUG_RANGE) {
+    fprintf(stderr,"addpar_snug %d: ", v->sizeval);
+    fslprint(stderr, v->size_expr);
+    fprintf(stderr,"\n");
+  }
   if(v->nlo != NULL) {   /* indexes are simple expressions */
     sl=addtxt(sl,"[");
     if(v->nhi != NULL){
       sl=addsl(sl,v->nhi);
-      sl=addtxt(sl,":");
+      if(v->updown) sl=addtxt(sl,v->updown==1 ? " +: " : " -: ");
+      else sl=addtxt(sl,":");
     }
-    sl=addsl(sl,v->nlo);
+    if(v->updown){
+      sl=addsl(sl,v->size_expr);
+      sl=addtxt(sl," + 1");
+    } else {
+      sl=addsl(sl,v->nlo);
+    }
     sl=addtxt(sl,"]");
+  }
+  return sl;
+}
+
+slist *addpar(slist *sl, vrange *v){
+  sl=addtxt(sl," ");
+  if(v->nlo != NULL) {   /* indexes are simple expressions */
+    sl=addpar_snug(sl, v);
+    sl=addtxt(sl," ");
   }
   return sl;
 }
@@ -374,6 +414,57 @@ char *sbottom(slist *sl){
   while(sl->slst != NULL)
     sl=sl->slst;
   return sl->data.txt;
+}
+
+/* kind of like strdup, but with specified len */
+char *strgrab(char*s, size_t len)
+{
+  char *r = malloc(len+1);
+  if (r) {
+    memcpy(r, s, len);
+    r[len] = 0;
+  }
+  return r;
+}
+
+/* s1 is the longer string, s2 is the shorter string */
+char *string_check_diff(char *s1, char *s2)
+{
+  size_t llen = strlen(s1);
+  size_t slen = strlen(s2);
+  char *rv=0;
+  if (memcmp(s1, s2, slen)==0) {
+    if (DEBUG_RANGE) fprintf(stderr, "first %lu chars match\n", slen);
+    if (llen>slen+3 && memcmp(s1+slen," + ",3)==0) {
+      if (DEBUG_RANGE) fprintf(stderr, "followed by valid \" + \"\n");
+      rv=strgrab(s1+slen+3,llen-slen-3);
+    }
+  } else if (memcmp(s1+llen-slen, s2, slen)==0) {
+    if (DEBUG_RANGE) fprintf(stderr, "last %lu chars match\n", slen);
+    if (llen>slen+3 && memcmp(s1+llen-slen-3," + ",3)==0) {
+      if (DEBUG_RANGE) fprintf(stderr, "preceded by valid \" + \"\n");
+      rv=strgrab(s1,llen-slen-3);
+    }
+  }
+  return rv;
+}
+
+/* Look for common beginning or end of a string,
+ * as needed for creating indexed part selects.
+ * updown key:  DOWNTO = -1, TO = 1 */
+char *slist_check_diff(slist *shi, slist *slo, int updown)
+{
+  char t1[200], t2[200];
+  char *diff = 0;
+  size_t t1len, t2len;
+  sslprint(t1, sizeof(t1), shi);  t1len = strlen(t1);
+  sslprint(t2, sizeof(t2), slo);  t2len = strlen(t2);
+  if (updown == -1 && t2len < t1len) {
+    diff = string_check_diff(t1, t2);
+  } else if (updown == 1 && t1len < t2len) {
+    diff = string_check_diff(t2, t1);
+  } /* I don't have sane test cases for the other possibilities */
+  return diff;
 }
 
 const char *inout_string(int type)
@@ -1106,10 +1197,26 @@ type        : BIT {
 
 /* using expr instead of simple_expr here makes the grammar ambiguous (why?) */
 vec_range : simple_expr updown simple_expr {
+              char *range_diff = 0;
               $$=new_vrange(tVRANGE);
               $$->nhi=$1->sl;
               $$->nlo=$3->sl;
               $$->sizeval = -1; /* undefined size */
+              $$->updown = 0; /* not relevant */
+              /* Here is where we may want to analyze the two expressions to
+               * see if they have a simple (possibly constant) difference.
+               * For now, here's an option to visualise their data structures.
+               */
+              if (DEBUG_RANGE) {
+                fprintf(stderr, "debug width hi: ");
+                fslprint(stderr, $$->nhi);
+                fprintf(stderr, "\n");
+                if (0) sldump(4, $$->nhi);
+                fprintf(stderr, "debug width lo: ");
+                fslprint(stderr, $$->nlo);
+                fprintf(stderr, "\n");
+                if (0) sldump(4, $$->nlo);
+              }
               /* calculate the width of this vrange */
               if ($1->op == 'n' && $3->op == 'n') {
                 if ($2==-1) { /* (nhi:natural downto nlo:natural) */
@@ -1117,6 +1224,10 @@ vec_range : simple_expr updown simple_expr {
                 } else {      /* (nhi:natural to     nlo:natural) */
                   $$->sizeval = $3->value - $1->value + 1;
                 }
+              } else if ((range_diff = slist_check_diff($$->nhi, $$->nlo, $2))) {
+                if (DEBUG_RANGE) fprintf(stderr, "difference: %s\n", range_diff);
+                $$->updown = $2;  /* triggers use of range_diff in addpar_snug */
+                $$->size_expr = addtxt(NULL, range_diff);
               } else {
                 /* make an expression to calculate the width of this vrange:
                  * create an expression that calculates:
@@ -1127,21 +1238,6 @@ vec_range : simple_expr updown simple_expr {
                 expdata *diff12  = xmalloc(sizeof(expdata));
                 expdata *plusone = xmalloc(sizeof(expdata));
                 expdata *finalexpr = xmalloc(sizeof(expdata));
-                /* Here is where we may want to analyze the two expressions to
-                 * see if they have a simple (possibly constant) difference.
-                 * For now, here's an option to visualise their data structures.
-                 */
-                if (0) {
-                  fprintf(stderr, "debug width hi ");
-                  fslprint(stderr, $$->nhi);
-                  fprintf(stderr, "\n");
-                  sldump(4, $$->nhi);
-                  fprintf(stderr, "debug width lo ");
-                  fslprint(stderr, $$->nlo);
-                  fprintf(stderr, "\n");
-                  sldump(4, $$->nlo);
-                  fprintf(stderr, "\n");
-                }
                 size_expr1->sl = addwrap("(",$1->sl,")");
                 size_expr2->sl = addwrap("(",$3->sl,")");
                 plusone->op='t';
@@ -1157,6 +1253,7 @@ vec_range : simple_expr updown simple_expr {
                 finalexpr->sl = addwrap("(",finalexpr->sl,")");
                 $$->size_expr = finalexpr->sl;
               }
+              if (DEBUG_RANGE) fprintf(stderr, "\n");
             }
           | simple_expr {
               $$=new_vrange(tSUBSCRIPT);
@@ -2231,6 +2328,9 @@ expr : signal {
      | expr XNOR expr {$$=addexpr(NULL,'~'," ~",addexpr($1,'^'," ^ ",$3));}
      | BITVECT '(' expr ')' {
        /* single argument type conversion function e.g. std_logic_vector(x) */
+       $$ = addnest($3);
+      }
+     | CONVFUNC_1 '(' expr ')' {
        $$ = addnest($3);
       }
      | CONVFUNC_2 '(' expr ',' expr ')' {

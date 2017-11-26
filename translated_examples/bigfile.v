@@ -91,7 +91,7 @@ reg [31:0] q2_g_zaq_in;
 reg [31:0] q3_g_zaq_in;
 reg [3:0] q_g_zaq_in_cd;
 reg [31:0] q_g_style_vfr_dout;
-reg [3:0] q_g_unzq;  // i
+reg [3:0] q_g_unzq;
 wire [31:0] g_n_active;  // inter
 wire [31:0] g_zaq_in_y;
 wire [31:0] g_zaq_in_y_no_dout;
@@ -135,8 +135,10 @@ wire [31:0] g_dout_i;
   // qaz
   assign g_zaq_in_rst_hold = g_style_main_reset_hold_dout;
   // Din 
-  always @(posedge reset, posedge sysclk) begin : P2
+  always @(posedge reset, posedge sysclk) begin : P5
     reg [4:0] g_dout_w0x0f_v;
+    reg [31:0] i;
+    reg [31:0] j;
 
     if((reset != 1'b0)) begin
       g_t_klim_dout <= {32{1'b0}};
@@ -175,7 +177,7 @@ wire [31:0] g_dout_i;
               g_dout_w0x0f_v = {g_dout_w0x0f[4:1],1'b1};
             end
             else begin
-              disable;  //VHD2VL: add block name here
+              // XXX not ready for exit;
             end
             //vnavigatoroff
           end
@@ -185,7 +187,7 @@ wire [31:0] g_dout_i;
           //vnavigatoron
           case(g_dout_w0x0f_v)
           g_t_klim_w0x0f : begin
-            g_t_klim_dout <= din[i * 32 + 31:i * 32];
+            g_t_klim_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           g_t_u_w0x0f : begin
             // output klim
@@ -196,68 +198,68 @@ wire [31:0] g_dout_i;
             end
           end
           g_t_l_w0x0f : begin
-            g_t_l_dout <= din[i * 32 + 31:i * 32];
+            g_t_l_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           g_t_hhh_l_w0x0f : begin
-            g_t_hhh_l_dout <= din[i * 32 + 31:i * 32];
+            g_t_hhh_l_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           g_t_jkl_sink_l_w0x0f : begin
-            g_t_jkl_sink_l_dout <= din[i * 32 + 31:i * 32];
+            g_t_jkl_sink_l_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           g_secondary_t_l_w0x0f : begin
-            g_secondary_t_l_dout <= din[i * 32 + 31:i * 32];
+            g_secondary_t_l_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           g_style_c_l_w0x0f : begin
-            g_style_c_l_dout[3:0] <= din[3 + i * 32:i * 32];
+            g_style_c_l_dout[3:0] <= din[3 + i * 32 -: 3 + 1];
           end
           g_e_z_w0x0f : begin
-            g_e_z_dout <= din[i * 32 + 31:i * 32];
+            g_e_z_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           g_n_both_qbars_l_w0x0f : begin
-            g_n_both_qbars_l_dout <= din[i * 32 + 31:i * 32];
+            g_n_both_qbars_l_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           g_style_vfr_w0x0f : begin
             // read-only register
           end
           g_style_klim_w0x0f : begin
-            g_style_klim_dout <= din[i * 32 + 31:i * 32];
+            g_style_klim_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           g_unklimed_style_vfr_w0x0f : begin
             // read-only register
           end
           g_style_t_y_w0x0f : begin
-            g_style_t_y_dout <= din[i * 32 + 31:i * 32];
+            g_style_t_y_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           g_n_l_w0x0f : begin
-            g_n_l_dout <= din[i * 32 + 31:i * 32];
+            g_n_l_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           g_n_vfr_w0x0f : begin
             // writes
           end
           g_e_n_r_w0x0f : begin
-            g_e_n_r_dout <= din[i * 32 + 31:i * 32];
+            g_e_n_r_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           g_n_r_bne_w0x0f : begin
             g_n_r_bne_dout <= din[i * 32];
           end
           g_n_div_rebeq_w0x0f : begin
-            g_n_div_rebeq_dout <= din[i * 32 + 31:i * 32] | g_n_div_rebeq_dout;
+            g_n_div_rebeq_dout <= din[i * 32 + 31 -: 31 + 1] | g_n_div_rebeq_dout;
             // a '1' writes
           end
           g_alu_l_w0x0f : begin
-            g_alu_l_dout <= din[i * 32 + 31:i * 32];
+            g_alu_l_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           g_t_qaz_mult_low_w0x0f : begin
-            g_t_qaz_mult_low_dout <= din[i * 32 + 31:i * 32];
+            g_t_qaz_mult_low_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           g_t_qaz_mult_high_w0x0f : begin
-            g_t_qaz_mult_high_dout <= din[i * 32 + 31:i * 32];
+            g_t_qaz_mult_high_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           gwerthernal_style_u_w0x0f : begin
-            gwerthernal_style_u_dout <= din[i * 32 + 31:i * 32];
+            gwerthernal_style_u_dout <= din[i * 32 + 31 -: 31 + 1];
           end
           gwerthernal_style_l_w0x0f : begin
-            gwerthernal_style_l_dout <= din[i * 32 + 31:i * 32];
+            gwerthernal_style_l_dout <= din[i * 32 + 31 -: 31 + 1];
             //vnavigatoroff                                                          
           end
           default : begin
@@ -294,7 +296,9 @@ wire [31:0] g_dout_i;
   assign g_sys_in_i = {g_zaq_in_y_no_dout[31:4],(g_style_c_l_dout[3:0] & q_g_zaq_in_cd) | ( ~g_style_c_l_dout[3:0] & g_zaq_in_y_no_dout[3:0])};
   assign g_sys_in_ii = (g_sys_in_i &  ~gwerthernal_style_l_dout) | (gwerthernal_style_u_dout & gwerthernal_style_l_dout);
   assign g_sys_in = g_sys_in_ii;
-  always @(posedge reset, posedge sysclk) begin
+  always @(posedge reset, posedge sysclk) begin : P4
+    reg [31:0] i;
+
     if((reset != 1'b0)) begin
       q_g_zaq_in_cd <= {4{1'b0}};
       q_g_unzq <= {4{1'b1}};
@@ -347,7 +351,9 @@ wire [31:0] g_dout_i;
   assign g_n_active = ((q_g_style_vfr_dout &  ~g_style_vfr_dout) | ( ~q_g_style_vfr_dout & g_style_vfr_dout & g_n_both_qbars_l_dout)) & g_n_l_dout;
   // check for lqq active and set lqq vfr register
   // also clear
-  always @(posedge reset, posedge sysclk) begin
+  always @(posedge reset, posedge sysclk) begin : P3
+    reg [31:0] i;
+
     if((reset != 1'b0)) begin
       g_n_vfr_dout <= {32{1'b0}};
       gwerth <= {32{1'b0}};
@@ -389,23 +395,24 @@ wire [31:0] g_dout_i;
 
   //--
   // Create the Lqq
-  always @(g_n_r_bne_dout, g_e_n_r_dout) begin : P1
+  always @(g_n_r_bne_dout, g_e_n_r_dout) begin : P2
     reg [31:0] imod8, idiv8;
+    reg [31:0] i;
 
     for (i=0; i <= 31; i = i + 1) begin
       imod8 = i % 8;
       idiv8 = i / 8;
       if((g_n_r_bne_dout == 1'b0)) begin
         // non-unique
-        g_vector[8 * i + 7:8 * i] <= g_e_n_r_dout[8 * idiv8 + 7:8 * idiv8];
+        g_vector[8 * i + 7 -: 7 + 1] <= g_e_n_r_dout[8 * idiv8 + 7 -: 7 + 1];
       end
       else begin
         // unique
         if((imod8 == 0)) begin
-          g_vector[8 * i + 7:8 * i] <= g_e_n_r_dout[8 * idiv8 + 7:8 * idiv8];
+          g_vector[8 * i + 7 -: 7 + 1] <= g_e_n_r_dout[8 * idiv8 + 7 -: 7 + 1];
         end
         else begin
-          g_vector[8 * i + 7:8 * i] <= (g_e_n_r_dout[8 * idiv8 + 7:8 * idiv8]) + (imod8);
+          g_vector[8 * i + 7 -: 7 + 1] <= (g_e_n_r_dout[8 * idiv8 + 7 -: 7 + 1]) + (imod8);
         end
       end
     end
@@ -414,7 +421,9 @@ wire [31:0] g_dout_i;
   //--
   // Qaz
   assign g_noop = g_n_div_rebeq_dout;
-  always @(swe_ed, swe_lv, g_e_z_dout) begin
+  always @(swe_ed, swe_lv, g_e_z_dout) begin : P1
+    reg [31:0] i;
+
     for (i=0; i <= 31; i = i + 1) begin
       if((g_e_z_dout[i] == 1'b1)) begin
         swe_qaz1[i] <= swe_ed;
