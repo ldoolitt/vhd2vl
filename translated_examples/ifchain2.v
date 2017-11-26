@@ -1,6 +1,6 @@
 // no timescale needed
 
-module ifchain(
+module ifchain2(
 input wire clk,
 input wire rstn,
 input wire enable,
