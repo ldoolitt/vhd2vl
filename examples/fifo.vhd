@@ -1,28 +1,27 @@
 ---------------------------------------------------------------------
 --	Filename:	gh_fifo_async16_sr.vhd
 --
---			
 --	Description:
 --		an Asynchronous FIFO 
---              
+--
 --	Copyright (c) 2006 by George Huber 
 --		an OpenCores.org Project
---		free to use, but see documentation for conditions 								 
+--		free to use, but see documentation for conditions
 --
 --	Revision	History:
 --	Revision	Date      	Author   	Comment
 --	--------	----------	---------	-----------
 --	1.0     	12/17/06  	h lefevre	Initial revision
---	
+--
 --------------------------------------------------------
 
 library IEEE;
 use IEEE.std_logic_1164.all;
 USE ieee.numeric_std.all;
 
-entity gh_fifo_async16_sr is
+entity fifo is
 	GENERIC (data_width: INTEGER :=8 ); -- size of data bus
-	port (					
+	port (
 		clk_WR : in STD_LOGIC; -- write clock
 		clk_RD : in STD_LOGIC; -- read clock
 		rst    : in STD_LOGIC; -- resets counters
@@ -35,7 +34,7 @@ entity gh_fifo_async16_sr is
 		full   : out STD_LOGIC);
 end entity;
 
-architecture a of gh_fifo_async16_sr is
+architecture rtl of fifo is
 
 	type ram_mem_type is array (15 downto 0) 
 	        of STD_LOGIC_VECTOR (data_width-1 downto 0);
@@ -65,12 +64,12 @@ begin
 --------------------------------------------
 
 process (clk_WR)
-begin			  
+begin
 	if (rising_edge(clk_WR)) then
 		if ((WR = '1') and (ifull = '0')) then
 			--ram_mem(to_integer(unsigned(add_WR(3 downto 0)))) <= D;
 		end if;
-	end if;		
+	end if;
 end process;
 
 	--Q <= ram_mem(to_integer(unsigned(add_RD(3 downto 0))));
@@ -84,7 +83,7 @@ end process;
 	             '1';
 
 	n_add_WR <= std_logic_vector(unsigned(add_WR) + x"1");
-				 
+
 process (clk_WR,rst)
 begin 
 	if (rst = '1') then
@@ -109,28 +108,27 @@ begin
 		end if;
 	end if;
 end process;
-				 
+
 	full <= ifull;
 
 	ifull <= '0' when (iempty = '1') else -- just in case add_RD_WS is reset to "00000"
 	         '0' when (add_RD_WS /= add_WR_GC) else ---- instend of "11000"
 	         '1';
-			 
+
 -----------------------------------------
 ----- Read address counter --------------
 -----------------------------------------
 
-
 	add_RD_CE <= '0' when (iempty = '1') else
 	             '0' when (RD = '0') else
 	             '1';
-				 
+
 	n_add_RD <= std_logic_vector(unsigned(add_RD) + x"1");
-				 
+
 process (clk_RD,rst)
 begin 
 	if (rst = '1') then
-		add_RD <= (others => '0');	
+		add_RD <= (others => '0');
 		add_WR_RS <= (others => '0');
 		add_RD_GC <= (others => '0');
 		add_RD_GCwc <= "11000";
@@ -174,8 +172,8 @@ end process;
 process (clk_WR,rst)
 begin 
 	if (rst = '1') then
-		srst_w <= '0';	
-		isrst_r <= '0';	
+		srst_w <= '0';
+		isrst_r <= '0';
 	elsif (rising_edge(clk_WR)) then
 		isrst_r <= srst_r;
 		if (srst = '1') then

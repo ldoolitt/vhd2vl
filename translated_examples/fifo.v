@@ -1,23 +1,22 @@
 //-------------------------------------------------------------------
 //	Filename:	gh_fifo_async16_sr.vhd
 //
-//			
 //	Description:
 //		an Asynchronous FIFO 
-//              
+//
 //	Copyright (c) 2006 by George Huber 
 //		an OpenCores.org Project
-//		free to use, but see documentation for conditions 								 
+//		free to use, but see documentation for conditions
 //
 //	Revision	History:
 //	Revision	Date      	Author   	Comment
 //	--------	----------	---------	-----------
 //	1.0     	12/17/06  	h lefevre	Initial revision
-//	
+//
 //------------------------------------------------------
 // no timescale needed
 
-module gh_fifo_async16_sr(
+module fifo(
 input wire clk_WR,
 input wire clk_RD,
 input wire rst,
