@@ -15,7 +15,6 @@ wire [31:0] i = 8;
     reg [31:0] big_var;
     reg [0:31] lit_var;
     reg [31:0] j;
-  // XXX not ready for :=8;
 
     big_sig[31:24] <= big_sig[7:0];
     big_var[31:24] = big_var[7:0];

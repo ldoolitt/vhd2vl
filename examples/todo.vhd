@@ -4,6 +4,7 @@ use IEEE.numeric_std.all;
 
 entity todo is
    port (
+      clk_i  : in  std_logic;
       data_i : in  std_logic_vector(7 downto 0);
       data_o : out std_logic_vector(7 downto 0)
    );
@@ -19,6 +20,17 @@ begin
    --**************************************************************************
    -- Wrong translations
    --**************************************************************************
+   --
+   test_i: process(clk_i)
+      -- iverilog: variable declaration assignments are only allowed at the module level.
+      variable i : integer:=8;
+   begin
+      for i in 0 to 7 loop
+          if i=4 then
+             exit; -- iverilog: error: malformed statement
+          end if;
+      end loop;
+   end process test_i;
 
    --**************************************************************************
    -- Translations which abort with syntax error (uncomment to test)

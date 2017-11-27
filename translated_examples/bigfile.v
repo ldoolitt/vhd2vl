@@ -176,9 +176,6 @@ wire [31:0] g_dout_i;
               // set
               g_dout_w0x0f_v = {g_dout_w0x0f[4:1],1'b1};
             end
-            else begin
-              // XXX not ready for exit;
-            end
             //vnavigatoroff
           end
           else begin

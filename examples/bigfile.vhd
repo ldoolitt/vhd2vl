@@ -227,8 +227,6 @@ begin
             if( n9_bit_write = '1' ) then
               -- set
               g_dout_w0x0f_v := g_dout_w0x0f(4 downto 1) & '1';
-            else
-              -- XXX not ready for exit;
             end if;
           --vnavigatoroff
           else

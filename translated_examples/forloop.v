@@ -13,7 +13,6 @@ reg [6:0] egg_timer;
 
   always @(posedge reset, posedge sysclk) begin : P1
     reg [31:0] timer_var;
-  // XXX unhandled := 0;
     reg [31:0] a, i, j, k;
     reg [31:0] zz5;
     reg [511:0] zz;

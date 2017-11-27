@@ -16,7 +16,7 @@ begin
    test_i: process(clk_i)
       variable big_var : std_logic_vector(31 downto 0);
       variable lit_var : std_logic_vector(0 to 31);
-      variable j       : integer; -- XXX not ready for :=8;
+      variable j       : integer;
    begin
       if rising_edge(clk_i) then
          big_sig(31 downto 24) <= big_sig(7 downto 0);
