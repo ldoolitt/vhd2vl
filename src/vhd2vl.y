@@ -4,7 +4,7 @@
     Copyright (C) 2001 Vincenzo Liguori - Ocean Logic Pty Ltd - http://www.ocean-logic.com
     Modifications (C) 2006 Mark Gonzales - PMC Sierra Inc
     Modifications (C) 2010 Shankar Giri
-    Modifications (C) 2002, 2005, 2008-2010, 2015 Larry Doolittle - LBNL
+    Modifications (C) 2002-2017 Larry Doolittle
     Modifications (C) 2017 Rodrigo A. Melo
 
     This program is free software; you can redistribute it and/or modify
@@ -2633,7 +2633,7 @@ static int quiet;
 "//     http://www.ocean-logic.com\n"
 "//   Modifications Copyright (C) 2006 Mark Gonzales - PMC Sierra Inc\n"
 "//   Modifications (C) 2010 Shankar Giri\n"
-"//   Modifications Copyright (C) 2002, 2005, 2008-2010, 2015 Larry Doolittle - LBNL\n"
+"//   Modifications Copyright (C) 2002-2017 Larry Doolittle\n"
 "//     http://doolittle.icarus.com/~larry/vhd2vl/\n"
 "//   Modifications (C) 2017 Rodrigo A. Melo\n"
 "//\n", stdout);
