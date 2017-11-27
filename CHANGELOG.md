@@ -1,10 +1,13 @@
 Changes 3.0 to (unreleased):
   * Clean up examples to yield better Verilog output
+  * Fewer stupid parentheses in Verilog output
   * Improved WARNING messages
   * Use ',' to separate sensitivity list in Verilog 2001 output
+  * Support ** as exponentiation operator
+  * Partial support for while and assert, contributed by jeinstei
 
 
-Changes 2.5 to 3.0 (Rodrigo Melo, February 2017):
+Changes 2.5 to 3.0 (Rodrigo A. Melo, February 2017):
   * Github-ization, inlcuding converting text to markdown
   * Better Verilog standard selection, and make 2001 the default
   * New --quiet option
