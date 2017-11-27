@@ -86,15 +86,9 @@ Multiple actions in one process, as used in DDR logic?
 Exit statement incompletely converted to disable statement
 (see examples/bigfile.vhd)
 
-Part select expression zz(31+k downto k) should convert to zz[31+k+:32]
-(see examples/for.vhd)
-
-variables not handled right, show up as declarations within always blocks
-(see examples/for.vhd)
-
 Conversion functions (resize, to_unsigned, conv_integer) are parsed, but
 their semantics are ignored: resize(foo,n), to_unsigned(foo,n), and
-conv_integer(foo) are treated as equivalent to (foo).
+conv_integer(foo) are treated as equivalent to foo.
 
 VHDL is case insensitive, vhd2vl is case retentive, and Verilog is case
 sensitive. If you're sloppy with case in the original VHDL, the
