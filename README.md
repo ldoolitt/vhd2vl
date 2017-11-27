@@ -66,17 +66,14 @@ complain about a clock'event expression in a process. If this
 happens, a minor rewrite of that process will let you work around the
 problem.
 
-If you need to look at the VHDL grammar, make puts a copy of it in
-vhd2vl.output. If you need to change the grammar, then running vhd2vl
-with the `--debug` option will cause vhd2vl to trace how it is parsing the
-input file. See the bison documentation for more details.
-
 To test a copy of vhd2vl for regressions against the example code shipped,
-run `make` from this directory using a Bourne-style shell.
+run `make` from this directory using a Bourne-style shell.  If you have
+GHDL and/or iverilog installed, the example VHDL and Verilog code will be
+compiled -- and therefore syntax-checked -- with those tools.
 
 ## 4.0 MISSING FEATURES AND KNOWN INCORRECT OUTPUT:
 
-String types: awkward, because Verilog strings need predefined length
+String types: awkward, because Verilog strings need predefined length.
 
 Attribute: easy to parse, but I'm not sure what Verilog construct
 to turn it into. It smells like a parameter, not an (* attribute *).
@@ -95,8 +92,12 @@ sensitive. If you're sloppy with case in the original VHDL, the
 resulting Verilog will have compile-time warnings or errors. See
 the comments about vhd2vl-2.1 in the changes file.
 
+Doesn't handle functions, procedures, or packages.
+
 Doesn't necessarily get clock edge sensitivities right if there is more
-than one clock in the list
+than one clock in the list.
 
 Totally broken handling of text in generic mappings, as Xilinx is wont to
-use for their primitives and wrappers
+use for their primitives and wrappers.
+
+Broken (invalid Verilog syntax for) initialization of process variables.
