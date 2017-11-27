@@ -6,7 +6,7 @@ EXCLUDE  = $(shell cat examples/exclude)
 EXCLUDE := $(basename $(EXCLUDE))
 EXCLUDE := $(addsuffix .vhd,$(EXCLUDE))
 
-VHDLS    = $(wildcard examples/*.vhd)
+VHDLS    = $(sort $(wildcard examples/*.vhd))
 VHDLS   := $(notdir $(VHDLS))
 
 DIFFOPT  = --exclude=Makefile
