@@ -22,7 +22,7 @@ translate:
 	@make -C src
 	@make -C examples
 	@rm -fr $(TEMP)/verilog
-	@mkdir $(TEMP)/verilog
+	@mkdir -p $(TEMP)/verilog
 	@echo "##### Translating Examples #####################################"
 	@cd examples; $(foreach VHDL,$(VHDLS), echo "Translating: $(VHDL)";\
 	../src/vhd2vl --quiet $(VHDL) ../$(TEMP)/verilog/$(basename $(VHDL)).v;)
