@@ -24,9 +24,12 @@ http://doolittle.icarus.com/~larry/vhd2vl/
 
 To build, just type `make` in the src directory.
 
-This version of vhd2vl has been tested with GNU Bison versions 2.5 and
-3.0.2, and GNU Flex versions 2.5.35 and 2.5.39. No problems have been
-reported with other fairly recent versions.
+This version of vhd2vl has been tested with
+*  Debian 7 (Wheezy): gcc-4.7.2, bison-2.5, flex-2.5.35, glibc-2.13
+*  Debian 8 (Jessie): gcc-4.9.2, bison-3.0.2, flex-2.5.39, glibc-2.19
+*  Debian 9 (Stretch): gcc-6.3.0, bison-3.0.4, flex-2.6.1, glibc-2.24
+This is portable C89/C99 code.  It can be expected to work with any
+fairly recent version of the required tools.
 
 To install, copy the resulting src/vhd2vl file to someplace in
 your *$PATH*, like *$HOME/bin* or */usr/local/bin*.
