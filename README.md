@@ -1,4 +1,4 @@
-# VHD2VL v3.0 README.txt
+# VHD2VL v3.0
 
 Vhd2vl is designed to translate synthesizable VHDL into Verilog 2001.
 It does not support the full VHDL grammar - most of the testbench
@@ -15,8 +15,9 @@ as vhdlpp, mostly by Maciej Suminski. If hands-free use of VHDL in a
 If you want to convert a bit of VHDL to Verilog, and will then maintain
 that Verilog as source, vhd2vl probably makes more sense, if for no other
 reason than it conserves comments. It's good that both options exist!
+You may find that your VHDL style is better accepted by one tool or the other.
 
-The home page for (at least for this version of) vhd2vl is
+The home page for (at least this version of) vhd2vl is
 http://doolittle.icarus.com/~larry/vhd2vl/
 
 ## 1.0 HOW TO BUILD AND INSTALL vhd2vl:
@@ -80,8 +81,7 @@ to turn it into. It smells like a parameter, not an (* attribute *).
 
 Multiple actions in one process, as used in DDR logic?
 
-Exit statement incompletely converted to disable statement
-(see examples/bigfile.vhd)
+Exit statement incompletely converted to disable statement.
 
 Conversion functions (resize, to_unsigned, conv_integer) are parsed, but
 their semantics are ignored: resize(foo,n), to_unsigned(foo,n), and
@@ -90,7 +90,7 @@ conv_integer(foo) are treated as equivalent to foo.
 VHDL is case insensitive, vhd2vl is case retentive, and Verilog is case
 sensitive. If you're sloppy with case in the original VHDL, the
 resulting Verilog will have compile-time warnings or errors. See
-the comments about vhd2vl-2.1 in the changes file.
+the comments about vhd2vl-2.1 in the changelog file.
 
 Doesn't handle functions, procedures, or packages.
 
@@ -100,4 +100,4 @@ than one clock in the list.
 Totally broken handling of text in generic mappings, as Xilinx is wont to
 use for their primitives and wrappers.
 
-Broken (invalid Verilog syntax for) initialization of process variables.
+Broken (invalid Verilog syntax for) initialization of process-scope variables.
