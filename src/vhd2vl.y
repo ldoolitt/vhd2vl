@@ -989,7 +989,7 @@ yesrem : /*Empty*/ {skipRem = 0;}
 
 /* Beginning support for assertions. Currently parsed but not translated. */
 vhdassert : ASSERT exprc REPORT STRING SEVERITY sevlevel ';' {
-              fprintf(stderr,"WARNING (line %d): Ignoring assertion.\n",lineno);
+              fprintf(stderr,"WARNING (line %d): assertion ignored.\n",lineno);
               $$=NULL;
             }
 
