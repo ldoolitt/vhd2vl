@@ -28,6 +28,7 @@ This version of vhd2vl has been tested with
 *  Debian 7 (Wheezy): gcc-4.7.2, bison-2.5, flex-2.5.35, glibc-2.13
 *  Debian 8 (Jessie): gcc-4.9.2, bison-3.0.2, flex-2.5.39, glibc-2.19
 *  Debian 9 (Stretch): gcc-6.3.0, bison-3.0.4, flex-2.6.1, glibc-2.24
+
 This is portable C89/C99 code.  It can be expected to work with any
 fairly recent version of the required tools.
 
