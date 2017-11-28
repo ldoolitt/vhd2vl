@@ -18,7 +18,7 @@ STANDARD = --std=c99 -D_DEFAULT_SOURCE
 # instead of -D_DEFAULT_SOURCE
 
 vhd2vl : lex.yy.c vhd2vl.tab.c
-	$(CC) ${STANDARD} ${WARNS} -O2 -g -o vhd2vl lex.yy.c vhd2vl.tab.c -lfl
+	$(CC) ${STANDARD} ${WARNS} -O2 -g -o vhd2vl lex.yy.c vhd2vl.tab.c
 
 vhd2vl.tab.c : vhd2vl.y def.h
 	bison -d -v -t vhd2vl.y

@@ -22,6 +22,7 @@
 
 %option noinput
 %option nounput
+%option noyywrap
 
 %{
 #include <stdio.h>
