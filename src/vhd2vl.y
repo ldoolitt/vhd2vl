@@ -121,39 +121,74 @@ void sldump(int ind, slist *sl){
   }
 }
 
-size_t limlen(char *p, size_t l){
-  size_t r = strlen(p);
-  if (l < r) r = l;
-  return r;
+/* I'd really rather not write the following astring support routines,
+ * it seems like giving up compared to just using the slist structure.
+ * But I couldn't find an effective way of comparing two slists without
+ * this step.  Thus slist_check_diff() will convert two slists to strings
+ * so they can be compared.
+ * Keep it short and correct, (almost) forget about efficiency */
+#define ASTRING_CHUNK 512
+struct astring {
+  char *s;
+  size_t space, used;
+};
+
+void ainit(struct astring *a)
+{
+  a->used = 0;
+  if (!a->s) {
+    a->space = ASTRING_CHUNK;
+    a->s = malloc(a->space);
+    if (!a->s) {
+      fprintf(stderr, "Out of memory asking for %lu in ainit\n", a->space);
+      exit(2);
+    }
+  }
 }
 
-char *sslprint(char *p, size_t l, slist *sl){
-  char *o = p;
+void astring_addc(struct astring *a, char c) {
+  if (a->used+1 >= a->space) {
+    a->space += ASTRING_CHUNK;
+    a->s = realloc(a->s, a->space);
+    if (!(a->s)) {
+      fprintf(stderr, "Out of memory asking for %lu in astring_add\n", a->space);
+      exit(2);
+    }
+  }
+  a->s[a->used++] = c;
+}
+
+void astring_adds(struct astring *a, char *s) {
+  char c;
+  while ((c=*s++)) astring_addc(a, c);
+}
+
+void sslprint(struct astring *a, slist *sl){
+  char decimal[30];
   if(sl){
     assert(sl != sl->slst);
-    o = sslprint(o, l, sl->slst);
-    l = p+l-o;
+    sslprint(a, sl->slst);
     switch(sl->type){
     case tSLIST : case tOTHERS :
       assert(sl != sl->data.sl);
-      o = sslprint(o, l, sl->data.sl);
+      sslprint(a, sl->data.sl);
       break;
     case tTXT :
-      strncpy(o, sl->data.txt, l);
-      o += limlen(sl->data.txt, l);
+      astring_adds(a, sl->data.txt);
       break;
     case tVAL :
-      snprintf(o, l, "%d", sl->data.val);
-      o += strlen(o);
+      snprintf(decimal, sizeof(decimal), "%d", sl->data.val);
+      astring_adds(a, decimal);
       break;
     case tPTXT :
-      strncpy(o, *(sl->data.ptxt), l);
-      o += limlen(*(sl->data.ptxt), l);
+      astring_adds(a, (sl->data.txt));
       break;
     }
   }
-  return o;
+  a->s[a->used] = '\0';
+  if (0) fprintf(stderr, "sslprint %lu/%lu \"%s\"\n", a->used, a->space, a->s);
 }
+/* end astring complaint zone */
 
 void fslprint(FILE *fp,slist *sl){
   if(sl){
@@ -454,15 +489,15 @@ char *string_check_diff(char *s1, char *s2)
  * updown key:  DOWNTO = -1, TO = 1 */
 char *slist_check_diff(slist *shi, slist *slo, int updown)
 {
-  char t1[200], t2[200];
   char *diff = 0;
   size_t t1len, t2len;
-  sslprint(t1, sizeof(t1), shi);  t1len = strlen(t1);
-  sslprint(t2, sizeof(t2), slo);  t2len = strlen(t2);
+  static struct astring a1={0,0,0}, a2={0,0,0};
+  ainit(&a1);  sslprint(&a1, shi);  t1len = a1.used;
+  ainit(&a2);  sslprint(&a2, slo);  t2len = a2.used;
   if (updown == -1 && t2len < t1len) {
-    diff = string_check_diff(t1, t2);
+    diff = string_check_diff(a1.s, a2.s);
   } else if (updown == 1 && t1len < t2len) {
-    diff = string_check_diff(t2, t1);
+    diff = string_check_diff(a2.s, a1.s);
   } /* I don't have sane test cases for the other possibilities */
   return diff;
 }
