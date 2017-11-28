@@ -24,11 +24,6 @@
 
 #define MAXINDENT 36
 #define MAXEDGES  1000  /* maximum number of @(edge) processes supported in a source file */
-typedef struct signal {
-  char *name; /* Signal name */
-  int reg; /* Verilog reg */
-  struct signal *next;
-} signal;
 
 typedef struct nlist {
   char *name; /* Name */
