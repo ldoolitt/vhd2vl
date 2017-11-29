@@ -2582,7 +2582,7 @@ simple_expr : signal {
 const char *outfile;    /* Output file */
 const char *sourcefile; /* Input file */
 
-void print_usage() {
+void print_usage(void) {
    printf(
       "Usage: vhd2vl [--debug] [--quiet] [--std 1995|2001] source_file.vhd > target_file.v\n"
       "   or  vhd2vl [--debug] [--quiet] [--std 1995|2001] source_file.vhd target_file.v\n"
