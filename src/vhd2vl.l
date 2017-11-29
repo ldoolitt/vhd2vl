@@ -36,6 +36,7 @@ extern int skipRem;
 
 void getstring(unsigned skip);
 void getbasedstring(unsigned skip);
+int scan_int(char *s);
 
 %}
 %%
@@ -157,8 +158,8 @@ void getbasedstring(unsigned skip);
   return NAME;
 }
 
-[0-9]+ {
-  sscanf(yytext, "%d", &yylval.n);
+[0-9][0-9_]* {
+  yylval.n = scan_int(yytext);
   return NATURAL;
 }
 
@@ -194,6 +195,17 @@ void getbasedstring(unsigned skip){
   yytext[i]=0;
   yylval.txt=malloc(i+1);
   strcpy(yylval.txt, yytext+skip);
+}
+
+int scan_int(char *s){
+  char c;
+  int nn = 0;
+  while ((c=*s++)) {
+    if (c>='0' && c<='9') nn = nn*10 + (c-'0');
+    /* ignore underscores and any other non-digit; depend on
+     * the lex pattern to only feed us digits and underscores */
+  }
+  return nn;
 }
 
 void yyerror(char *s){
