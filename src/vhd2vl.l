@@ -66,6 +66,8 @@ void getbasedstring(unsigned skip);
 "\x0d\n" |
 \n { lineno++;}
 
+"entity ".*\. {; /* to remove entity instantiation */}
+
 "entity" { return ENTITY; }
 "is" { return IS; }
 "port" { return PORT; }

@@ -74,5 +74,9 @@ wire [1:0] colour;
     .memaddr(memaddr),
     .memdout(memdout));
 
+  signextend signextend_inst2(
+      .i(16'b0000000000000000),
+    .o(/* open */));
+
 
 endmodule

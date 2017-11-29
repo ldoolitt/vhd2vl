@@ -37,16 +37,10 @@ begin
    --**************************************************************************
    -- Concatenation in port assignament fail
 --   uns <= "0000" & X"1"; -- It is supported
---   dut1_i: signextend
+--   dut1_i: entity work.signextend
 --      port map (
 --        i => "00000000" & X"11", -- But here fail
 --        o => open
 --      );
-   -- Unsupported type of instantiation
---   dut2_i: entity work.signextend
---   port map (
---      i => (others => '0'),
---      o => open
---   );
 
 end rtl;

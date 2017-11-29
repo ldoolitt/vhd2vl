@@ -95,4 +95,11 @@ begin
     memaddr => memaddr,
     memdout => memdout
   );
+
+  signextend_inst2 : entity work.signextend
+   port map (
+      i => "0000000000000000",
+      o => open
+   );
+
 end rtl;
