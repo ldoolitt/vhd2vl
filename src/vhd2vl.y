@@ -917,7 +917,7 @@ slist *emit_io_list(slist *sl)
 
 /* rule for "...ELSE IF edge THEN..." causes 1 shift/reduce conflict */
 /* rule for opt_begin causes 1 shift/reduce conflict */
-%expect 3
+%expect 2
 
 /* glr-parser is needed because processes can start with if statements, but
  * not have edges in them - more than one level of look-ahead is needed in that case
@@ -2371,9 +2371,6 @@ expr : signal {
       }
      | CONVFUNC_2 '(' expr ',' expr ')' {
        /* two argument type conversion e.g. to_unsigned(x, 3) */
-       $$ = addnest($3);
-      }
-     | CONVFUNC_2 '(' expr ',' NAME ')' {
        $$ = addnest($3);
       }
      | '(' expr ')' {
