@@ -36,13 +36,22 @@ void yyerror(const char *s);
 
 int vlog_ver=2001;
 
-/* You will of course want to tinker with this if you use a debugging
+/* You will of course want to tinker with these if you use a debugging
  * malloc(), otherwise all the line numbers will point here.
  */
 void *xmalloc(size_t size) {
 	void *p = malloc(size);
 	if (!p) {
 		perror("malloc");
+		exit(2);
+	}
+	return p;
+}
+void *xrealloc(void *ptr, size_t size) {
+
+	void *p = realloc(ptr, size);
+	if (!p) {
+		perror("realloc");
 		exit(2);
 	}
 	return p;
@@ -138,22 +147,14 @@ void ainit(struct astring *a)
   a->used = 0;
   if (!a->s) {
     a->space = ASTRING_CHUNK;
-    a->s = malloc(a->space);
-    if (!a->s) {
-      fprintf(stderr, "Out of memory asking for %lu in ainit\n", a->space);
-      exit(2);
-    }
+    a->s = xmalloc(a->space);
   }
 }
 
 void astring_addc(struct astring *a, char c) {
   if (a->used+1 >= a->space) {
     a->space += ASTRING_CHUNK;
-    a->s = realloc(a->s, a->space);
-    if (!(a->s)) {
-      fprintf(stderr, "Out of memory asking for %lu in astring_add\n", a->space);
-      exit(2);
-    }
+    a->s = xrealloc(a->s, a->space);
   }
   a->s[a->used++] = c;
 }
