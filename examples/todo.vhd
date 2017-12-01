@@ -3,6 +3,10 @@ use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
 entity todo is
+   generic(
+      INBYLEVEL : boolean:=FALSE
+      --DEB_TIME  : real:=50.0e-3 -- unexpected NAME, expecting ')' at "e"
+   );
    port (
       clk_i  : in  std_logic;
       data_i : in  std_logic_vector(7 downto 0);
@@ -16,6 +20,19 @@ architecture rtl of todo is
 
    signal int : integer;
    signal uns : unsigned(7 downto 0);
+
+   -- unexpected NAME at "rem"
+   --constant VALUE : positive := 9 rem 2;
+
+   constant BYTES  : positive:=4;
+   constant WIDTH  : positive:=BYTES*8;
+   signal index    : natural range 0 to BYTES-1;
+   signal comma    : std_logic_vector(BYTES*3-1 downto 0);
+
+   -- (others => (others => '0')) must be replaced by an initial block with a for
+   -- or something similar.
+   type ff_array is array (0 to 255) of std_logic_vector(7 downto 0);
+   signal data_r : ff_array :=(others => (others => '0'));
 begin
    --**************************************************************************
    -- Wrong translations
@@ -31,7 +48,18 @@ begin
           end if;
       end loop;
    end process test_i;
-
+   -- indexed part-select not applied
+   do_boundary: process (clk_i)
+   begin
+      if rising_edge(clk_i) then
+         for i in 0 to BYTES-1 loop
+             if comma(BYTES*2+i-1 downto BYTES+i)=comma(3 downto 0) then
+                index <= i;
+             end if;
+         end loop;
+      end if;
+   end process;
+   comma <= comma(BYTES+index-1 downto index);
    --**************************************************************************
    -- Translations which abort with syntax error (uncomment to test)
    --**************************************************************************
@@ -42,5 +70,11 @@ begin
 --        i => "00000000" & X"11", -- But here fail
 --        o => open
 --      );
-
+   -- unexpected NAME, expecting WHEN or ';'
+   --int <= 9 rem 2;
+   -- Unsupported generate with boolean?
+--   in_by_level:
+--   if INBYLEVEL generate
+--      int <= 9;
+--   end generate in_by_level;
 end rtl;
