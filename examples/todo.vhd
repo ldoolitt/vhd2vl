@@ -5,7 +5,6 @@ use IEEE.numeric_std.all;
 entity todo is
    generic(
       INBYLEVEL : boolean:=FALSE
-      --DEB_TIME  : real:=50.0e-3 -- unexpected NAME, expecting ')' at "e"
    );
    port (
       clk_i  : in  std_logic;

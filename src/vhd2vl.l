@@ -163,8 +163,8 @@ int scan_int(char *s);
   return NATURAL;
 }
 
-[0-9]+e[0-9]+ |
-[0-9]+\.[0-9]+e[0-9]+ {
+[0-9]+e[-+]?[0-9]+ |
+[0-9]+\.[0-9]+e[-+]?[0-9]+ {
   yylval.txt=malloc(strlen(yytext)+1);
   strcpy(yylval.txt, yytext);
   return SCIENTIFIC;
