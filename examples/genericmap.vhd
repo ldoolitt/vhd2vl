@@ -3,7 +3,7 @@ USE IEEE.std_logic_1164.all;
 entity genericmap is
 generic(
   rst_val   : std_logic := '0';
-  thing_size: integer := 201;
+  thing_size: integer := 201 rem 2;
   bus_width : integer := 201 mod 32);
 port(
   clk, rstn : in std_logic;

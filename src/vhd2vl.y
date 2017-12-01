@@ -867,7 +867,7 @@ slist *emit_io_list(slist *sl)
 %token <txt> SELECT OTHERS PROCESS VARIABLE CONSTANT
 %token <txt> IF THEN ELSIF ELSE CASE WHILE
 %token <txt> FOR LOOP GENERATE
-%token <txt> AFTER AND OR XOR MOD POW
+%token <txt> AFTER AND OR XOR MOD RW_REM POW
 %token <txt> LASTVALUE EVENT POSEDGE NEGEDGE
 %token <txt> STRING NAME RANGE NULLV OPEN
 %token <txt> CONVFUNC_1 CONVFUNC_2 BASED FLOAT LEFT
@@ -906,7 +906,7 @@ slist *emit_io_list(slist *sl)
 %left XOR
 %left XNOR
 %left AND
-%left MOD
+%left MOD RW_REM
 /* Comparison: */
 %left '<'  '>'  BIGEQ  LESSEQ  NOTEQ  EQUAL
 %left  '+'  '-'  '&'
@@ -2357,6 +2357,7 @@ expr : signal {
      | expr '*' expr {$$=addexpr($1,'*'," * ",$3);}
      | expr '/' expr {$$=addexpr($1,'/'," / ",$3);}
      | expr MOD expr {$$=addexpr($1,'%'," % ",$3);}
+     | expr RW_REM expr {$$=addexpr($1,'%'," % ",$3);}
      | NOT expr {$$=addexpr(NULL,'~'," ~",$2);}
      | expr AND expr {$$=addexpr($1,'&'," & ",$3);}
      | expr OR expr {$$=addexpr($1,'|'," | ",$3);}

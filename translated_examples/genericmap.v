@@ -27,7 +27,7 @@ output wire eno
 );
 
 parameter rst_val=1'b0;
-parameter [31:0] thing_size=201;
+parameter [31:0] thing_size=201 % 2;
 parameter [31:0] bus_width=201 % 32;
 // Outputs
 

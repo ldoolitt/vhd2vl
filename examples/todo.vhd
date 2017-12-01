@@ -20,9 +20,6 @@ architecture rtl of todo is
    signal int : integer;
    signal uns : unsigned(7 downto 0);
 
-   -- unexpected NAME at "rem"
-   --constant VALUE : positive := 9 rem 2;
-
    constant BYTES  : positive:=4;
    constant WIDTH  : positive:=BYTES*8;
    signal index    : natural range 0 to BYTES-1;
@@ -30,8 +27,8 @@ architecture rtl of todo is
 
    -- (others => (others => '0')) must be replaced by an initial block with a for
    -- or something similar.
-   type ff_array is array (0 to 255) of std_logic_vector(7 downto 0);
-   signal data_r : ff_array :=(others => (others => '0'));
+   --type ff_array is array (0 to 255) of std_logic_vector(7 downto 0);
+   --signal data_r : ff_array :=(others => (others => '0'));
 begin
    --**************************************************************************
    -- Wrong translations
@@ -69,8 +66,6 @@ begin
 --        i => "00000000" & X"11", -- But here fail
 --        o => open
 --      );
-   -- unexpected NAME, expecting WHEN or ';'
-   --int <= 9 rem 2;
    -- Unsupported generate with boolean?
 --   in_by_level:
 --   if INBYLEVEL generate

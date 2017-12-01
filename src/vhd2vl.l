@@ -126,6 +126,7 @@ int scan_int(char *s);
 "xor" { return XOR; }
 "xnor" { return XNOR; }
 "mod" { return MOD; }
+"rem" { return RW_REM; }
 "**" { return POW; }
 "event" { return EVENT; }
 "rising_edge" { return POSEDGE;}
