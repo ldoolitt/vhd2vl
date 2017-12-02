@@ -61,92 +61,99 @@ int scan_int(char *s);
     return REM;
   }
 }
-"library ".*\n {lineno++;}
-"use ".*\n {lineno++;}
 
 "\x0d\n" |
-\n { lineno++;}
+\n                                { lineno++; }
 
-"entity ".*\. {; /* to remove entity instantiation */}
+"after"                           { return AFTER; }
+"and"                             { return AND; }
+"architecture"                    { return ARCHITECTURE; }
+"array"                           { return ARRAY; }
+"assert"                          { return ASSERT; }
+"begin"                           { return BEGN; }
+"case"                            { return CASE; }
+"component"                       { return COMPONENT; }
+"constant"                        { return CONSTANT; }
+"downto"                          { return DOWNTO; }
+"else"                            { return ELSE; }
+"elsif"                           { return ELSIF; }
+"end"                             { return END; }
+"entity"                          { return ENTITY; }
+"entity ".*\.                     { ; /* to remove entity instantiation */ }
+"exit"                            { return EXIT; }
+"for"                             { return FOR; }
+"generate"                        { return GENERATE; }
+"generic"                         { return GENERIC; }
+"if"                              { return IF; }
+"in"                              { return IN; }
+"inout"                           { return INOUT; }
+"is"                              { return IS; }
+"library ".*\n                    { lineno++; }
+"loop"                            { return LOOP; }
+"map"                             { return MAP; }
+"mod"                             { return MOD; }
+"not"                             { return NOT; }
+"null"                            { return NULLV; }
+"of"                              { return OF; }
+"open"                            { return OPEN; }
+"out"                             { return OUT; }
+"or"                              { return OR; }
+"others"                          { return OTHERS; }
+"port"                            { return PORT; }
+"process"                         { return PROCESS; }
+"range"                           { return RANGE; }
+"rem"                             { return RW_REM; }
+"report"                          { return REPORT;}
+"select"                          { return SELECT; }
+"severity"                        { return SEVERITY;}
+"signal"                          { return SIGNAL; }
+"then"                            { return THEN; }
+"to"                              { return TO; }
+"type"                            { return TYPE; }
+"use ".*\n                        { lineno++; }
+"variable"                        { return VARIABLE; }
+"when"                            { return WHEN; }
+"while"                           { return WHILE; }
+"with"                            { return WITH; }
+"xnor"                            { return XNOR; }
+"xor"                             { return XOR; }
 
-"entity" { return ENTITY; }
-"is" { return IS; }
-"port" { return PORT; }
-"generic" { return GENERIC; }
-"map" { return MAP; }
-"in" { return IN; }
-"out" { return OUT; }
-"inout" { return INOUT; }
 "time" |
 "natural" |
 "positive" |
-"integer" { return INTEGER; }
+"integer"                         { return INTEGER; }
 "boolean" |
 "std_logic" |
-"std_ulogic" { return BIT; }
+"std_ulogic"                      { return BIT; }
 "signed" |
 "unsigned" |
 "std_logic_vector" |
-"std_ulogic_vector" { return BITVECT; }
-"real" { return REAL; }
-"downto" { return DOWNTO; }
-"to" { return TO; }
-"type" {return TYPE; }
-"end" { return END; }
-"for" { return FOR; }
-"loop" { return LOOP; }
-"generate" { return GENERATE; }
-"architecture" { return ARCHITECTURE; }
-"component" { return COMPONENT; }
-"of" { return OF; }
-"array" {return ARRAY; }
-"signal" { return SIGNAL; }
-"begin" { return BEGN; }
-"not" { return NOT; }
-"when" { return WHEN; }
-"exit" { return EXIT; }
-"with" { return WITH; }
-"select" { return SELECT; }
-"others" { return OTHERS; }
-"range" { return RANGE; }
-"process" { return PROCESS; }
-"variable" { return VARIABLE; }
-"constant" { return CONSTANT; }
-"null" { return NULLV; }
-"open" { return OPEN; }
-"if" { return IF; }
-"then" { return THEN; }
-"elsif" { return ELSIF; }
-"else" { return ELSE; }
-"while" { return WHILE; }
-"case" { return CASE; }
-"after" { return AFTER; }
-"and" { return AND; }
-"or" { return OR; }
-"xor" { return XOR; }
-"xnor" { return XNOR; }
-"mod" { return MOD; }
-"rem" { return RW_REM; }
-"**" { return POW; }
-"event" { return EVENT; }
-"rising_edge" { return POSEDGE;}
-"falling_edge" { return NEGEDGE;}
-"resize" { return CONVFUNC_2;}
-"to_unsigned" { return CONVFUNC_2;}
+"std_ulogic_vector"               { return BITVECT; }
+"real"                            { return REAL; }
+"resize" |
+"to_unsigned"                     { return CONVFUNC_2; }
 "to_integer" |
-"conv_integer" { return CONVFUNC_1;}
-"left" { return LEFT;}
-"high" { return LEFT;}
-"assert" {return ASSERT;}
-"report" {return REPORT;}
-"severity" {return SEVERITY;}
-"failure" {return FAILURE;}
-"error" {return ERROR;}
-"warning" {return WARNING;}
-"note" {return NOTE;}
+"conv_integer"                    { return CONVFUNC_1; }
+
+"event"                           { return EVENT; }
+"rising_edge"                     { return POSEDGE; }
+"falling_edge"                    { return NEGEDGE; }
+
+"left" |
+"high"                            { return LEFT; }
+
+"failure"                         { return FAILURE; }
+"error"                           { return ERROR; }
+"warning"                         { return WARNING; }
+"note"                            { return NOTE; }
+
+"**"                              { return POW; }
 
 \"[ \!#-~]*\" |
-\'[01xz]\' { getstring(1); return STRING;}
+\'[01xz]\' {
+  getstring(1);
+  return STRING;
+}
 
 #[0-9a-f]*# {
   getbasedstring(1); /* skip leading # */
