@@ -867,7 +867,7 @@ slist *emit_io_list(slist *sl)
 %token <txt> SELECT OTHERS PROCESS VARIABLE CONSTANT
 %token <txt> IF THEN ELSIF ELSE CASE WHILE
 %token <txt> FOR LOOP GENERATE
-%token <txt> AFTER AND OR XOR MOD RW_REM POW
+%token <txt> AFTER AND OR NAND NOR XOR XNOR MOD RW_REM POW
 %token <txt> LASTVALUE EVENT POSEDGE NEGEDGE
 %token <txt> STRING NAME RANGE NULLV OPEN
 %token <txt> CONVFUNC_1 CONVFUNC_2 BASED FLOAT LEFT
@@ -899,13 +899,13 @@ slist *emit_io_list(slist *sl)
 
 %right '='
 /* Logic operators: */
-%left ORL
-%left ANDL
+%left ORL NORL
+%left ANDL NANDL
 /* Binary operators: */
-%left OR
+%left OR NOR
 %left XOR
 %left XNOR
-%left AND
+%left AND NAND
 %left MOD RW_REM
 /* Comparison: */
 %left '<'  '>'  BIGEQ  LESSEQ  NOTEQ  EQUAL
@@ -2361,6 +2361,8 @@ expr : signal {
      | NOT expr {$$=addexpr(NULL,'~'," ~",$2);}
      | expr AND expr {$$=addexpr($1,'&'," & ",$3);}
      | expr OR expr {$$=addexpr($1,'|'," | ",$3);}
+     | expr NAND expr {$$=addexpr($1,'&'," & ",$3);}
+     | expr NOR expr {$$=addexpr($1,'|'," | ",$3);}
      | expr XOR expr {$$=addexpr($1,'^'," ^ ",$3);}
      | expr XNOR expr {$$=addexpr(NULL,'~'," ~",addexpr($1,'^'," ^ ",$3));}
      | BITVECT '(' expr ')' {
@@ -2389,7 +2391,17 @@ exprc : conf { $$=$1; }
           sl=addtxt($1," && ");
           $$=addsl(sl,$3);
         }
+      | exprc NAND exprc %prec NANDL {
+        slist *sl;
+          sl=addtxt($1," && ");
+          $$=addsl(sl,$3);
+        }
       | exprc OR exprc %prec ORL {
+        slist *sl;
+          sl=addtxt($1," || ");
+          $$=addsl(sl,$3);
+        }
+      | exprc NOR exprc %prec NORL {
         slist *sl;
           sl=addtxt($1," || ");
           $$=addsl(sl,$3);

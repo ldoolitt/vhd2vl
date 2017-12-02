@@ -92,6 +92,8 @@ int scan_int(char *s);
 "loop"                            { return LOOP; }
 "map"                             { return MAP; }
 "mod"                             { return MOD; }
+"nand"                            { return NAND; }
+"nor"                             { return NOR; }
 "not"                             { return NOT; }
 "null"                            { return NULLV; }
 "of"                              { return OF; }
