@@ -28,8 +28,9 @@ architecture rtl of operators is
    signal   s_op1  : std_logic_vector(1 downto 0);
    signal   s_op2  : std_logic_vector(1 downto 0);
    signal   s_res  : std_logic_vector(1 downto 0);
-   signal   absint : integer;
-   signal   abssig : signed(7 downto 0);
+   signal   s_int  : integer;
+   signal   s_sig  : signed(7 downto 0);
+   signal   s_uns  : unsigned(7 downto 0);
 begin
 
    test_i: process(clk_i)
@@ -52,8 +53,14 @@ begin
             s_res <= s_op1 xor  s_op2;
             v_res := v_op1 xnor v_op2;
             s_res <= not s_op1;
-            absint<= abs(absint);
-            abssig<= abs(abssig);
+            s_int <= abs(s_int);
+            s_sig <= abs(s_sig);
+            s_uns <= s_uns sll 2;
+            s_uns <= s_uns srl to_integer(s_uns);
+            -- s_sig <= s_sig sla 6; -- Unsupported by GHDL?
+            -- s_sig <= s_sig sra 8; -- Unsupported by GHDL?
+            -- s_uns <= s_uns ror 3; -- Not yet implemented
+            -- s_uns <= s_uns rol to_integer(s_uns); -- Not yet implemented
          end if;
       end if;
    end process test_i;

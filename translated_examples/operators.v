@@ -24,8 +24,9 @@ parameter c_not =  ~2'b10;
 wire [1:0] s_op1;
 wire [1:0] s_op2;
 reg [1:0] s_res;
-reg [31:0] absint;
-reg [7:0] abssig;
+reg [31:0] s_int;
+reg [7:0] s_sig;
+reg [7:0] s_uns;
 
   always @(posedge clk_i) begin : P1
     reg [1:0] v_op1;
@@ -40,8 +41,14 @@ reg [7:0] abssig;
       s_res <= s_op1 ^ s_op2;
       v_res =  ~(v_op1 ^ v_op2);
       s_res <=  ~s_op1;
-      absint <= ( ( absint < 0 ) ? -absint : absint );
-      abssig <= ( ( abssig < 0 ) ? -abssig : abssig );
+      s_int <= ( ( s_int < 0 ) ? -s_int : s_int );
+      s_sig <= ( ( s_sig < 0 ) ? -s_sig : s_sig );
+      s_uns <= s_uns << 2;
+      s_uns <= s_uns >> (s_uns);
+      // s_sig <= s_sig sla 6; -- Unsupported by GHDL?
+      // s_sig <= s_sig sra 8; -- Unsupported by GHDL?
+      // s_uns <= s_uns ror 3; -- Not yet implemented
+      // s_uns <= s_uns rol to_integer(s_uns); -- Not yet implemented
     end
   end
 

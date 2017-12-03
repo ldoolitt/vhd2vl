@@ -873,6 +873,7 @@ slist *emit_io_list(slist *sl)
 %token <txt> CONVFUNC_1 CONVFUNC_2 BASED FLOAT LEFT
 %token <txt> SCIENTIFIC REAL
 %token <txt> ASSERT REPORT SEVERITY WARNING ERROR FAILURE NOTE
+%token <txt> ROL ROR SLA SLL SRA SRL
 %token <n> NATURAL
 
 %type <n> trad
@@ -901,6 +902,8 @@ slist *emit_io_list(slist *sl)
 /* Logic operators: */
 %left ORL NORL
 %left ANDL NANDL
+/* Shift/rotate operators */
+%left ROL ROR SLA SLL SRA SRL
 /* Binary operators: */
 %left OR NOR
 %left XOR
@@ -2376,6 +2379,30 @@ expr : signal {
      | expr NOR expr {$$=addexpr(NULL,'~'," ~",addexpr($1,'|'," | ",$3));}
      | expr XOR expr {$$=addexpr($1,'^'," ^ ",$3);}
      | expr XNOR expr {$$=addexpr(NULL,'~'," ~",addexpr($1,'^'," ^ ",$3));}
+     | expr SLL expr {
+         $$=addexpr($1,'*'," << ",$3);
+         fprintf(stderr,"WARNING (line %d): shifts/rotates must be done with functions in VHDL, not operators.\n", lineno);
+       }
+     | expr SRL expr {
+         $$=addexpr($1,'*'," >> ",$3);
+         fprintf(stderr,"WARNING (line %d): shifts/rotates must be done with functions in VHDL, not operators.\n", lineno);
+       }
+     | expr SLA expr {
+         $$=addexpr($1,'*'," <<< ",$3);
+         fprintf(stderr,"WARNING (line %d): shifts/rotates must be done with functions in VHDL, not operators.\n", lineno);
+       }
+     | expr SRA expr {
+         $$=addexpr($1,'*'," >>> ",$3);
+         fprintf(stderr,"WARNING (line %d): shifts/rotates must be done with functions in VHDL, not operators.\n", lineno);
+       }
+     | expr ROR expr {
+         fprintf(stderr,"ERROR (line %d): ROR is not implemented yet.\n", lineno);
+         YYABORT;
+       }
+     | expr ROL expr {
+         fprintf(stderr,"ERROR (line %d): ROL is not implemented yet.\n", lineno);
+         YYABORT;
+       }
      | BITVECT '(' expr ')' {
        /* single argument type conversion function e.g. std_logic_vector(x) */
        $$ = addnest($3);

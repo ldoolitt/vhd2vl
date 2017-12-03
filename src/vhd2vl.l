@@ -107,9 +107,15 @@ int scan_int(char *s);
 "range"                           { return RANGE; }
 "rem"                             { return RW_REM; }
 "report"                          { return REPORT;}
+"rol"                             { return ROL; }
+"ror"                             { return ROR; }
 "select"                          { return SELECT; }
 "severity"                        { return SEVERITY;}
 "signal"                          { return SIGNAL; }
+"sla"                             { return SLA; }
+"sll"                             { return SLL; }
+"sra"                             { return SRA; }
+"srl"                             { return SRL; }
 "then"                            { return THEN; }
 "to"                              { return TO; }
 "type"                            { return TYPE; }
