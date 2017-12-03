@@ -1,6 +1,6 @@
 # VHD2VL v3.0
 
-Vhd2vl is designed to translate synthesizable VHDL into Verilog 2001.
+Vhd2vl is designed to translate synthesizable VHDL into Verilog 1995 or 2001.
 It does not support the full VHDL grammar - most of the testbench
 related features have been left out. See the examples and
 translated_examples directories for examples of what vhd2vl can do.
@@ -29,7 +29,7 @@ This version of vhd2vl has been tested with
 *  Debian 8 (Jessie): gcc-4.9.2 or clang-3.5.0, bison-3.0.2, flex-2.5.39, glibc-2.19
 *  Debian 9 (Stretch): gcc-6.3.0 or clang-3.8.1, bison-3.0.4, flex-2.6.1, glibc-2.24
 
-Also recent tcc from git mob.
+It is also verified to work with recent tinycc from its git mob.
 This is portable C89/C99 code.  It can be expected to work with any
 fairly recent version of the required tools.
 
@@ -116,8 +116,8 @@ sensitive. If you're sloppy with case in the original VHDL, the
 resulting Verilog will have compile-time warnings or errors. See
 the comments about vhd2vl-2.1 in the changelog file.
 
-Doesn't handle functions procedures, or packages.  See above for possible
-ways to handle packages.
+Doesn't handle functions, procedures, or packages.  See above for a possible
+way to handle packages.
 
 Doesn't necessarily get clock edge sensitivities right if there is more
 than one clock in the list.
