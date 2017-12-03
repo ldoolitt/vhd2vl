@@ -2361,8 +2361,8 @@ expr : signal {
      | NOT expr {$$=addexpr(NULL,'~'," ~",$2);}
      | expr AND expr {$$=addexpr($1,'&'," & ",$3);}
      | expr OR expr {$$=addexpr($1,'|'," | ",$3);}
-     | expr NAND expr {$$=addexpr($1,'&'," & ",$3);}
-     | expr NOR expr {$$=addexpr($1,'|'," | ",$3);}
+     | expr NAND expr {$$=addexpr(NULL,'~'," ~",addexpr($1,'&'," & ",$3));}
+     | expr NOR expr {$$=addexpr(NULL,'~'," ~",addexpr($1,'|'," | ",$3));}
      | expr XOR expr {$$=addexpr($1,'^'," ^ ",$3);}
      | expr XNOR expr {$$=addexpr(NULL,'~'," ~",addexpr($1,'^'," ^ ",$3));}
      | BITVECT '(' expr ')' {
@@ -2393,8 +2393,11 @@ exprc : conf { $$=$1; }
         }
       | exprc NAND exprc %prec NANDL {
         slist *sl;
-          sl=addtxt($1," && ");
-          $$=addsl(sl,$3);
+          sl=addtxt(NULL,"!(");
+          sl= addsl(sl,$1);
+          sl=addtxt(sl," && ");
+          sl= addsl(sl,$3);
+          $$=addtxt(sl,")");
         }
       | exprc OR exprc %prec ORL {
         slist *sl;
@@ -2403,8 +2406,11 @@ exprc : conf { $$=$1; }
         }
       | exprc NOR exprc %prec NORL {
         slist *sl;
-          sl=addtxt($1," || ");
-          $$=addsl(sl,$3);
+          sl=addtxt(NULL,"!(");
+          sl= addsl(sl,$1);
+          sl=addtxt(sl," || ");
+          sl= addsl(sl,$3);
+          $$=addtxt(sl,")");
         }
       | NOT exprc %prec NOTL {
         slist *sl;
