@@ -77,7 +77,19 @@ run `make` from this directory using a Bourne-style shell.  If you have
 GHDL and/or iverilog installed, the example VHDL and Verilog code will be
 compiled -- and therefore syntax-checked -- with those tools.
 
-## 4.0 MISSING FEATURES AND KNOWN INCORRECT OUTPUT:
+## 4.0 VHDL PACKAGES
+
+Vhd2vl does not understand VHDL package files.  You might be able to work
+around that limitation with the following strategy:
+
+* Either by hand, or with a stupid script (I wrote mine in awk), break the
+package file into individual VHDL files, each named after the entity.
+* Use vhd2vl to convert each of those to Verilog.
+Test to make sure the conversions went OK.
+* Use iverilog's -y switch (or the eqivalent in your tool) to "find" those
+files as needed.
+
+## 5.0 MISSING FEATURES AND KNOWN INCORRECT OUTPUT:
 
 String types: awkward, because Verilog strings need predefined length.
 
@@ -88,6 +100,13 @@ Multiple actions in one process, as used in DDR logic?
 
 Exit statement incompletely converted to disable statement.
 
+Detection of indexed part select is limited.  While it can correctly convert
+`data(index*8+WIDTH-1 downto index*8)` to `data[index*8+WIDTH-1 -: WIDTH-1+1]`
+it gets tripped on slightly more complex cases.  The rule is that the
+larger expression must take the form `smaller + offset` or `offset + smaller`.
+Otherwise the output will be a direct transcription of the VHDL, which is not
+standard-conforming unless both ends of the range are constant.
+
 Conversion functions (resize, to_unsigned, conv_integer) are parsed, but
 their semantics are ignored: resize(foo,n), to_unsigned(foo,n), and
 conv_integer(foo) are treated as equivalent to foo.
@@ -97,7 +116,8 @@ sensitive. If you're sloppy with case in the original VHDL, the
 resulting Verilog will have compile-time warnings or errors. See
 the comments about vhd2vl-2.1 in the changelog file.
 
-Doesn't handle functions, procedures, or packages.
+Doesn't handle functions procedures, or packages.  See above for possible
+ways to handle packages.
 
 Doesn't necessarily get clock edge sensitivities right if there is more
 than one clock in the list.
