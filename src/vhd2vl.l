@@ -65,6 +65,7 @@ int scan_int(char *s);
 "\x0d\n" |
 \n                                { lineno++; }
 
+"abs"                             { return ABS; }
 "after"                           { return AFTER; }
 "and"                             { return AND; }
 "architecture"                    { return ARCHITECTURE; }

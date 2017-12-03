@@ -860,7 +860,7 @@ slist *emit_io_list(slist *sl)
   slval *ss;  /* Signal structure */
 }
 
-%token <txt> REM ENTITY IS PORT GENERIC IN OUT INOUT MAP
+%token <txt> ABS REM ENTITY IS PORT GENERIC IN OUT INOUT MAP
 %token <txt> INTEGER BIT BITVECT DOWNTO TO TYPE END
 %token <txt> ARCHITECTURE COMPONENT OF ARRAY
 %token <txt> SIGNAL BEGN NOT WHEN WITH EXIT
@@ -912,7 +912,7 @@ slist *emit_io_list(slist *sl)
 %left  '+'  '-'  '&'
 %left  '*'  '/'
 %left  POW
-%right UMINUS  UPLUS  NOTL  NOT
+%right UMINUS  UPLUS  NOTL  NOT  ABS
 %error-verbose
 
 /* rule for "...ELSE IF edge THEN..." causes 1 shift/reduce conflict */
@@ -1919,7 +1919,6 @@ p_body : rem {$$=$1;}
          slist *sl;
          sglist *sg;
          char *s;
-
            s=sbottom($2->sl);
            if((sg=lookup(io_list,s))==NULL)
              sg=lookup(sig_list,s);
@@ -2359,6 +2358,18 @@ expr : signal {
      | expr MOD expr {$$=addexpr($1,'%'," % ",$3);}
      | expr RW_REM expr {$$=addexpr($1,'%'," % ",$3);}
      | NOT expr {$$=addexpr(NULL,'~'," ~",$2);}
+     | ABS expr {
+        slist *sl;
+          sl=addtxt(NULL,"( ( ");
+          sl= addsl(sl,$2->sl);
+          sl=addtxt(sl," < 0 ) ? -");
+          sl= addsl(sl,$2->sl);
+          sl=addtxt(sl," : ");
+          sl= addsl(sl,$2->sl);
+          sl=addtxt(sl," )");
+          $2->sl=sl;
+          $$=$2;
+       }
      | expr AND expr {$$=addexpr($1,'&'," & ",$3);}
      | expr OR expr {$$=addexpr($1,'|'," | ",$3);}
      | expr NAND expr {$$=addexpr(NULL,'~'," ~",addexpr($1,'&'," & ",$3));}

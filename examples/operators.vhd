@@ -1,5 +1,6 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
 
 entity operators is
    generic (
@@ -8,7 +9,8 @@ entity operators is
       g_nand : std_logic_vector(1 downto 0) := "11" nand "10";
       g_nor  : std_logic_vector(1 downto 0) := "11" nor  "10";
       g_xor  : std_logic_vector(1 downto 0) := "11" xor  "10";
-      g_xnor : std_logic_vector(1 downto 0) := "11" xnor "10"
+      g_xnor : std_logic_vector(1 downto 0) := "11" xnor "10";
+      g_not  : std_logic_vector(1 downto 0) := not "10"
    );
    port (
       clk_i : in std_logic
@@ -22,9 +24,12 @@ architecture rtl of operators is
    constant c_nor  : std_logic_vector(1 downto 0) := "11" nor  "10";
    constant c_xor  : std_logic_vector(1 downto 0) := "11" xor  "10";
    constant c_xnor : std_logic_vector(1 downto 0) := "11" xnor "10";
+   constant c_not  : std_logic_vector(1 downto 0) := not "10";
    signal   s_op1  : std_logic_vector(1 downto 0);
    signal   s_op2  : std_logic_vector(1 downto 0);
    signal   s_res  : std_logic_vector(1 downto 0);
+   signal   absint : integer;
+   signal   abssig : signed(7 downto 0);
 begin
 
    test_i: process(clk_i)
@@ -37,7 +42,8 @@ begin
             (s_op1="11" and  s_op2="00") or
             (s_op1="11" or   s_op2="00") or
             (s_op1="11" nand s_op2="00") or
-            (s_op1="11" nor  s_op2="00")
+            (s_op1="11" nor  s_op2="00") or
+            (not (s_op1="11"))
          then
             s_res <= s_op1 and  s_op2;
             s_res <= s_op1 or   s_op2;
@@ -45,6 +51,9 @@ begin
             v_res := v_op1 nor  v_op2;
             s_res <= s_op1 xor  s_op2;
             v_res := v_op1 xnor v_op2;
+            s_res <= not s_op1;
+            absint<= abs(absint);
+            abssig<= abs(abssig);
          end if;
       end if;
    end process test_i;
