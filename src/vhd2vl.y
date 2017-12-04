@@ -2358,7 +2358,10 @@ expr : signal {
      | expr POW expr {$$=addexpr($1,'*'," ** ",$3);}
      | expr '*' expr {$$=addexpr($1,'*'," * ",$3);}
      | expr '/' expr {$$=addexpr($1,'/'," / ",$3);}
-     | expr MOD expr {$$=addexpr($1,'%'," % ",$3);}
+     | expr MOD expr {
+         $$=addexpr($1,'%'," % ",$3);
+         fprintf(stderr,"WARNING (line %d): MOD is wrong translated when arguments have different signs.\n", lineno);
+       }
      | expr RW_REM expr {$$=addexpr($1,'%'," % ",$3);}
      | NOT expr {$$=addexpr(NULL,'~'," ~",$2);}
      | ABS expr {
