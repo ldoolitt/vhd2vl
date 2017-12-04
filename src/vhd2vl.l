@@ -88,6 +88,7 @@ int scan_int(char *s);
 "unsigned" |
 "std_logic_vector" |
 "std_ulogic_vector" { return BITVECT; }
+"string" { return STRTYPE; }
 "real" { return REAL; }
 "downto" { return DOWNTO; }
 "to" { return TO; }

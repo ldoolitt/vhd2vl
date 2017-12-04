@@ -309,6 +309,17 @@ slist *addsl(slist *sl, slist *sl2){
   return p;
 }
 
+slist *addexprsl(slist *sl, expdata *ed, vrange *vr){
+  if (vr->vtype == tSTRING) {
+      sl=addtxt(sl,"\"");
+      sl=addtxt(sl,ed->sl->data.txt);
+      sl=addtxt(sl,"\"");
+  } else {
+      sl=addsl(sl,ed->sl);
+  }
+  return sl;
+}
+
 slist *addvec(slist *sl, char *s){
   sl=addval(sl,strlen(s));
   sl=addtxt(sl,"'b");
@@ -861,7 +872,7 @@ slist *emit_io_list(slist *sl)
 }
 
 %token <txt> REM ENTITY IS PORT GENERIC IN OUT INOUT MAP
-%token <txt> INTEGER BIT BITVECT DOWNTO TO TYPE END
+%token <txt> INTEGER BIT BITVECT DOWNTO TO TYPE END STRTYPE
 %token <txt> ARCHITECTURE COMPONENT OF ARRAY
 %token <txt> SIGNAL BEGN NOT WHEN WITH EXIT
 %token <txt> SELECT OTHERS PROCESS VARIABLE CONSTANT
@@ -1068,7 +1079,7 @@ genlist  : s_list ':' type ':' '=' expr rem {
             for(;;){
               sl=addtxt(sl,p->name);
               sl=addtxt(sl,"=");
-              sl=addsl(sl, $6->sl); /* expr */
+              sl=addexprsl(sl, $6, $3);
               sl=addtxt(sl,";\n");
               p=p->next;
               if(p==NULL) break;
@@ -1089,7 +1100,7 @@ genlist  : s_list ':' type ':' '=' expr rem {
             for(;;){
               sl=addtxt(sl,p->name);
               sl=addtxt(sl,"=");
-              sl=addsl(sl, $6->sl); /* expr */
+              sl=addexprsl(sl, $6, $3);
               sl=addtxt(sl,";\n");
               p=p->next;
               if(p==NULL) break;
@@ -1218,6 +1229,12 @@ type        : BIT {
                 $$=new_vrange(tSCALAR);
               }
             | BITVECT '(' vec_range ')' {$$=$3;}
+            | STRTYPE {
+                $$=new_vrange(tSTRING);
+                $$->nhi=addtxt(NULL,"63*8");
+                $$->nlo=addtxt(NULL,"0");
+                fprintf(stderr,"WARNING (line %d): string type treated as 64 byte vector.\n", lineno);
+              }
             | NAME {
               sglist *sg;
 
@@ -1369,7 +1386,7 @@ a_decl    : {$$=NULL;}
                 sl=addtxt(sl,sg->name);
                 sl=addpost(sl,$5);
                 sl=addtxt(sl," = ");
-                sl=addsl(sl,$8->sl);
+                sl=addexprsl(sl, $8, sg->range);
                 sl=addtxt(sl,";");
                 if(sg->next == NULL)
                   break;
@@ -1385,7 +1402,7 @@ a_decl    : {$$=NULL;}
               sl=addtxt($1,"parameter ");
               sl=addtxt(sl,$3);
               sl=addtxt(sl," = ");
-              sl=addsl(sl,$8->sl);
+              sl=addexprsl(sl, $8, $5);
               sl=addtxt(sl,";");
               $$=addrem(sl,$10);
             }
@@ -1893,7 +1910,7 @@ p_decl : rem {$$=$1;}
                break;
            }
            sl=addtxt(sl," = ");
-           sl=addsl(sl,$8->sl);
+           sl=addexprsl(sl, $8, $5);
            sl=addtxt(sl,";\n");
            $$=addsl(sl,$10);
          }
