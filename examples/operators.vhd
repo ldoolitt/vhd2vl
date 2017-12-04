@@ -61,12 +61,23 @@ begin
             s_uns <= s_uns srl 9;
             s_sig <= shift_left(s_sig,2);
             s_sig <= shift_right(s_sig,to_integer(s_sig));
-            -- s_uns <= s_uns ror 3; -- Not yet implemented
-            -- s_uns <= s_uns rol to_integer(s_uns); -- Not yet implemented
-            -- s_uns <= rotate_right(s_uns,3); -- Not yet implemented
+            -- s_uns <= s_uns ror 3;                          -- Not yet implemented
+            -- s_uns <= s_uns rol to_integer(s_uns);          -- Not yet implemented
+            -- s_uns <= rotate_right(s_uns,3);                -- Not yet implemented
             -- s_uns <= rotate_left(s_uns,to_integer(s_uns)); -- Not yet implemented
             s_sig <= s_sig rem s_int;
             s_sig <= s_sig mod s_int;
+         end if;
+         if
+            s_sig = signed(s_uns) or unsigned(s_sig) /= s_uns or s_sig < "101010101" or
+            s_sig <= signed(s_uns) or unsigned(s_sig) > s_uns or s_sig >= "00000101"
+         then
+            s_sig <= s_sig + s_sig;
+            s_sig <= s_sig - s_sig;
+            s_sig <= s_sig * s_sig;
+            s_sig <= s_sig / s_sig;
+            s_sig <= s_sig(7 downto 4) & "10" & signed(s_uns(1 downto 0));
+            s_int <= 2 ** 3;
          end if;
       end if;
    end process test_i;

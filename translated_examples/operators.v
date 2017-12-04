@@ -49,12 +49,20 @@ reg [7:0] s_uns;
       s_uns <= s_uns >> 9;
       s_sig <= s_sig << 2;
       s_sig <= s_sig >> (s_sig);
-      // s_uns <= s_uns ror 3; -- Not yet implemented
-      // s_uns <= s_uns rol to_integer(s_uns); -- Not yet implemented
-      // s_uns <= rotate_right(s_uns,3); -- Not yet implemented
+      // s_uns <= s_uns ror 3;                          -- Not yet implemented
+      // s_uns <= s_uns rol to_integer(s_uns);          -- Not yet implemented
+      // s_uns <= rotate_right(s_uns,3);                -- Not yet implemented
       // s_uns <= rotate_left(s_uns,to_integer(s_uns)); -- Not yet implemented
       s_sig <= s_sig % s_int;
       s_sig <= s_sig % s_int;
+    end
+    if(s_sig == (s_uns) || (s_sig) != s_uns || s_sig < 9'b101010101 || s_sig <= (s_uns) || (s_sig) > s_uns || s_sig >= 8'b00000101) begin
+      s_sig <= s_sig + s_sig;
+      s_sig <= s_sig - s_sig;
+      s_sig <= s_sig * s_sig;
+      s_sig <= s_sig / s_sig;
+      s_sig <= {s_sig[7:4],2'b10,s_uns[1:0]};
+      s_int <= 2 ** 3;
     end
   end
 
