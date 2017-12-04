@@ -47,7 +47,7 @@ typedef struct slist {
   } data;
 } slist;
 
-enum vrangeType {tSCALAR, tSUBSCRIPT, tVRANGE};
+enum vrangeType {tSCALAR, tSUBSCRIPT, tVRANGE, tSTRING};
 typedef struct vrange {
   /*  int hi, lo; */
   enum vrangeType vtype;
