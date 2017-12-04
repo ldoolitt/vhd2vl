@@ -57,8 +57,10 @@ begin
             s_sig <= abs(s_sig);
             s_sig <= s_sig sll 2;
             s_sig <= s_sig srl to_integer(s_sig);
-            s_uns <= s_uns sll 9;
-            s_uns <= s_uns srl to_integer(s_uns);
+            s_uns <= s_uns sll to_integer(s_uns);
+            s_uns <= s_uns srl 9;
+            s_sig <= shift_left(s_sig,2);
+            s_sig <= shift_right(s_sig,to_integer(s_sig));
             -- s_uns <= s_uns ror 3; -- Not yet implemented
             -- s_uns <= s_uns rol to_integer(s_uns); -- Not yet implemented
          end if;

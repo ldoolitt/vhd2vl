@@ -144,6 +144,9 @@ int scan_int(char *s);
 "to_integer" |
 "conv_integer"                    { return CONVFUNC_1; }
 
+"shift_left"                      { return SHIFT_LEFT; }
+"shift_right"                     { return SHIFT_RIGHT; }
+
 "event"                           { return EVENT; }
 "rising_edge"                     { return POSEDGE; }
 "falling_edge"                    { return NEGEDGE; }

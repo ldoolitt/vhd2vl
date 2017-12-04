@@ -873,7 +873,7 @@ slist *emit_io_list(slist *sl)
 %token <txt> CONVFUNC_1 CONVFUNC_2 BASED FLOAT LEFT
 %token <txt> SCIENTIFIC REAL
 %token <txt> ASSERT REPORT SEVERITY WARNING ERROR FAILURE NOTE
-%token <txt> ROL ROR SLA SLL SRA SRL
+%token <txt> ROL ROR SLA SLL SRA SRL SHIFT_LEFT SHIFT_RIGHT
 %token <n> NATURAL
 
 %type <n> trad
@@ -2381,12 +2381,22 @@ expr : signal {
      | expr XNOR expr {$$=addexpr(NULL,'~'," ~",addexpr($1,'^'," ^ ",$3));}
      | expr SLL expr {
          $$=addexpr($1,'*'," << ",$3);
-         fprintf(stderr,"WARNING (line %d): SLL translated as logical shift.\n", lineno);
+         fprintf(stderr,"WARNING (line %d): translated as logical shift.\n", lineno);
+         fprintf(stderr,"Change << by <<< in the resulting Verilog for the arithmetic version.\n");
+       }
+     | SHIFT_LEFT '(' expr ',' expr ')' {
+         $$=addexpr($3,'*'," << ",$5);
+         fprintf(stderr,"WARNING (line %d): translated as logical shift.\n", lineno);
          fprintf(stderr,"Change << by <<< in the resulting Verilog for the arithmetic version.\n");
        }
      | expr SRL expr {
          $$=addexpr($1,'*'," >> ",$3);
-         fprintf(stderr,"WARNING (line %d): SRL translated as logical shift.\n", lineno);
+         fprintf(stderr,"WARNING (line %d): translated as logical shift.\n", lineno);
+         fprintf(stderr,"Change >> by >>> in the resulting Verilog for the arithmetic version.\n");
+       }
+     | SHIFT_RIGHT '(' expr ',' expr ')' {
+         $$=addexpr($3,'*'," >> ",$5);
+         fprintf(stderr,"WARNING (line %d): translated as logical shift.\n", lineno);
          fprintf(stderr,"Change >> by >>> in the resulting Verilog for the arithmetic version.\n");
        }
      | expr SLA expr {
@@ -2396,7 +2406,7 @@ expr : signal {
        }
      | expr SRA expr {
          fprintf(stderr,"ERROR (line %d): SRA must not be used.\n", lineno);
-         fprintf(stderr,"Use instead SHIFT_RIGTH/SRL from NUMERIC_STD with type SIGNED.\n");
+         fprintf(stderr,"Use instead SHIFT_RIGHT/SRL from NUMERIC_STD with type SIGNED.\n");
          YYABORT;
        }
      | expr ROR expr {
