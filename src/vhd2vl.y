@@ -2363,11 +2363,11 @@ expr : signal {
      | NOT expr {$$=addexpr(NULL,'~'," ~",$2);}
      | ABS expr {
         slist *sl;
-          sl=addtxt(NULL,"( ( ");
+          sl=addtxt(NULL,"( ( $signed(");
           sl= addsl(sl,$2->sl);
-          sl=addtxt(sl," < 0 ) ? -");
+          sl=addtxt(sl,") < 0 ) ? -$signed(");
           sl= addsl(sl,$2->sl);
-          sl=addtxt(sl," : ");
+          sl=addtxt(sl,") : ");
           sl= addsl(sl,$2->sl);
           sl=addtxt(sl," )");
           $2->sl=sl;
