@@ -55,10 +55,10 @@ begin
             s_res <= not s_op1;
             s_int <= abs(s_int);
             s_sig <= abs(s_sig);
-            s_uns <= s_uns sll 2;
+            s_sig <= s_sig sll 2;
+            s_sig <= s_sig srl to_integer(s_sig);
+            s_uns <= s_uns sll 9;
             s_uns <= s_uns srl to_integer(s_uns);
-            -- s_sig <= s_sig sla 6; -- Unsupported by GHDL?
-            -- s_sig <= s_sig sra 8; -- Unsupported by GHDL?
             -- s_uns <= s_uns ror 3; -- Not yet implemented
             -- s_uns <= s_uns rol to_integer(s_uns); -- Not yet implemented
          end if;

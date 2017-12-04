@@ -2381,19 +2381,23 @@ expr : signal {
      | expr XNOR expr {$$=addexpr(NULL,'~'," ~",addexpr($1,'^'," ^ ",$3));}
      | expr SLL expr {
          $$=addexpr($1,'*'," << ",$3);
-         fprintf(stderr,"WARNING (line %d): shifts/rotates must be done with functions in VHDL, not operators.\n", lineno);
+         fprintf(stderr,"WARNING (line %d): SLL translated as logical shift.\n", lineno);
+         fprintf(stderr,"Change << by <<< in the resulting Verilog for the arithmetic version.\n");
        }
      | expr SRL expr {
          $$=addexpr($1,'*'," >> ",$3);
-         fprintf(stderr,"WARNING (line %d): shifts/rotates must be done with functions in VHDL, not operators.\n", lineno);
+         fprintf(stderr,"WARNING (line %d): SRL translated as logical shift.\n", lineno);
+         fprintf(stderr,"Change >> by >>> in the resulting Verilog for the arithmetic version.\n");
        }
      | expr SLA expr {
-         $$=addexpr($1,'*'," <<< ",$3);
-         fprintf(stderr,"WARNING (line %d): shifts/rotates must be done with functions in VHDL, not operators.\n", lineno);
+         fprintf(stderr,"ERROR (line %d): SLA must not be used.\n", lineno);
+         fprintf(stderr,"Use instead SHIFT_LEFT/SLL from NUMERIC_STD with type SIGNED.\n");
+         YYABORT;
        }
      | expr SRA expr {
-         $$=addexpr($1,'*'," >>> ",$3);
-         fprintf(stderr,"WARNING (line %d): shifts/rotates must be done with functions in VHDL, not operators.\n", lineno);
+         fprintf(stderr,"ERROR (line %d): SRA must not be used.\n", lineno);
+         fprintf(stderr,"Use instead SHIFT_RIGTH/SRL from NUMERIC_STD with type SIGNED.\n");
+         YYABORT;
        }
      | expr ROR expr {
          fprintf(stderr,"ERROR (line %d): ROR is not implemented yet.\n", lineno);

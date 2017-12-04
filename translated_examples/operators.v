@@ -43,10 +43,10 @@ reg [7:0] s_uns;
       s_res <=  ~s_op1;
       s_int <= ( ( s_int < 0 ) ? -s_int : s_int );
       s_sig <= ( ( s_sig < 0 ) ? -s_sig : s_sig );
-      s_uns <= s_uns << 2;
+      s_sig <= s_sig << 2;
+      s_sig <= s_sig >> (s_sig);
+      s_uns <= s_uns << 9;
       s_uns <= s_uns >> (s_uns);
-      // s_sig <= s_sig sla 6; -- Unsupported by GHDL?
-      // s_sig <= s_sig sra 8; -- Unsupported by GHDL?
       // s_uns <= s_uns ror 3; -- Not yet implemented
       // s_uns <= s_uns rol to_integer(s_uns); -- Not yet implemented
     end
