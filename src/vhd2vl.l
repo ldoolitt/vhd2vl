@@ -146,6 +146,8 @@ int scan_int(char *s);
 
 "shift_left"                      { return SHIFT_LEFT; }
 "shift_right"                     { return SHIFT_RIGHT; }
+"rotate_left"                     { return ROTATE_LEFT; }
+"rotate_right"                    { return ROTATE_RIGHT; }
 
 "event"                           { return EVENT; }
 "rising_edge"                     { return POSEDGE; }

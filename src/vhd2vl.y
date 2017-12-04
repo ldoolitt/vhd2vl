@@ -873,7 +873,8 @@ slist *emit_io_list(slist *sl)
 %token <txt> CONVFUNC_1 CONVFUNC_2 BASED FLOAT LEFT
 %token <txt> SCIENTIFIC REAL
 %token <txt> ASSERT REPORT SEVERITY WARNING ERROR FAILURE NOTE
-%token <txt> ROL ROR SLA SLL SRA SRL SHIFT_LEFT SHIFT_RIGHT
+%token <txt> ROL ROR SLA SLL SRA SRL
+%token ROTATE_LEFT ROTATE_RIGHT SHIFT_LEFT SHIFT_RIGHT
 %token <n> NATURAL
 
 %type <n> trad
@@ -2416,8 +2417,16 @@ expr : signal {
          fprintf(stderr,"ERROR (line %d): ROR is not implemented yet.\n", lineno);
          YYABORT;
        }
+     | ROTATE_RIGHT '(' expr ',' expr ')' {
+         fprintf(stderr,"ERROR (line %d): ROTATE_RIGHT is not implemented yet.\n", lineno);
+         YYABORT;
+       }
      | expr ROL expr {
          fprintf(stderr,"ERROR (line %d): ROL is not implemented yet.\n", lineno);
+         YYABORT;
+       }
+     | ROTATE_LEFT '(' expr ',' expr ')' {
+         fprintf(stderr,"ERROR (line %d): ROTATE_LEFT is not implemented yet.\n", lineno);
          YYABORT;
        }
      | BITVECT '(' expr ')' {

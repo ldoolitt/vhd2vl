@@ -63,6 +63,8 @@ begin
             s_sig <= shift_right(s_sig,to_integer(s_sig));
             -- s_uns <= s_uns ror 3; -- Not yet implemented
             -- s_uns <= s_uns rol to_integer(s_uns); -- Not yet implemented
+            -- s_uns <= rotate_right(s_uns,3); -- Not yet implemented
+            -- s_uns <= rotate_left(s_uns,to_integer(s_uns)); -- Not yet implemented
             s_sig <= s_sig rem s_int;
             s_sig <= s_sig mod s_int;
          end if;

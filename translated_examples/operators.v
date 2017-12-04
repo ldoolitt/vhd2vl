@@ -51,6 +51,8 @@ reg [7:0] s_uns;
       s_sig <= s_sig >> (s_sig);
       // s_uns <= s_uns ror 3; -- Not yet implemented
       // s_uns <= s_uns rol to_integer(s_uns); -- Not yet implemented
+      // s_uns <= rotate_right(s_uns,3); -- Not yet implemented
+      // s_uns <= rotate_left(s_uns,to_integer(s_uns)); -- Not yet implemented
       s_sig <= s_sig % s_int;
       s_sig <= s_sig % s_int;
     end
