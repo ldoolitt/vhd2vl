@@ -2361,7 +2361,7 @@ expr : signal {
      | expr '/' expr {$$=addexpr($1,'/'," / ",$3);}
      | expr MOD expr {
          $$=addexpr($1,'%'," % ",$3);
-         fprintf(stderr,"WARNING (line %d): MOD is wrong translated when arguments have different signs.\n", lineno);
+         fprintf(stderr,"WARNING (line %d): MOD translation as %% is wrong when args have different signs.\n", lineno);
        }
      | expr RW_REM expr {$$=addexpr($1,'%'," % ",$3);}
      | NOT expr {$$=addexpr(NULL,'~'," ~",$2);}
@@ -2385,32 +2385,32 @@ expr : signal {
      | expr XNOR expr {$$=addexpr(NULL,'~'," ~",addexpr($1,'^'," ^ ",$3));}
      | expr SLL expr {
          $$=addexpr($1,'*'," << ",$3);
-         fprintf(stderr,"WARNING (line %d): translated as logical shift.\n", lineno);
-         fprintf(stderr,"Change << by <<< in the resulting Verilog for the arithmetic version.\n");
+         fprintf(stderr,"WARNING (line %d): SLL translated as logical shift.\n", lineno);
+         fprintf(stderr," Replace << by <<< in the resulting Verilog for the arithmetic version.\n");
        }
      | SHIFT_LEFT '(' expr ',' expr ')' {
          $$=addexpr($3,'*'," << ",$5);
-         fprintf(stderr,"WARNING (line %d): translated as logical shift.\n", lineno);
-         fprintf(stderr,"Change << by <<< in the resulting Verilog for the arithmetic version.\n");
+         fprintf(stderr,"WARNING (line %d): SHIFT_LEFT() translated as logical shift.\n", lineno);
+         fprintf(stderr," Replace << by <<< in the resulting Verilog for the arithmetic version.\n");
        }
      | expr SRL expr {
          $$=addexpr($1,'*'," >> ",$3);
-         fprintf(stderr,"WARNING (line %d): translated as logical shift.\n", lineno);
-         fprintf(stderr,"Change >> by >>> in the resulting Verilog for the arithmetic version.\n");
+         fprintf(stderr,"WARNING (line %d): SRL translated as logical shift.\n", lineno);
+         fprintf(stderr," Replace >> by >>> in the resulting Verilog for the arithmetic version.\n");
        }
      | SHIFT_RIGHT '(' expr ',' expr ')' {
          $$=addexpr($3,'*'," >> ",$5);
-         fprintf(stderr,"WARNING (line %d): translated as logical shift.\n", lineno);
-         fprintf(stderr,"Change >> by >>> in the resulting Verilog for the arithmetic version.\n");
+         fprintf(stderr,"WARNING (line %d): SHIFT_RIGHT() translated as logical shift.\n", lineno);
+         fprintf(stderr," Replace >> by >>> in the resulting Verilog for the arithmetic version.\n");
        }
      | expr SLA expr {
          fprintf(stderr,"ERROR (line %d): SLA must not be used.\n", lineno);
-         fprintf(stderr,"Use instead SHIFT_LEFT/SLL from NUMERIC_STD with type SIGNED.\n");
+         fprintf(stderr,"Use SHIFT_LEFT/SLL from NUMERIC_STD with type SIGNED.\n");
          YYABORT;
        }
      | expr SRA expr {
          fprintf(stderr,"ERROR (line %d): SRA must not be used.\n", lineno);
-         fprintf(stderr,"Use instead SHIFT_RIGHT/SRL from NUMERIC_STD with type SIGNED.\n");
+         fprintf(stderr," Use SHIFT_RIGHT/SRL from NUMERIC_STD with type SIGNED.\n");
          YYABORT;
        }
      | expr ROR expr {
