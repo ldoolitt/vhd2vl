@@ -863,7 +863,7 @@ slist *emit_io_list(slist *sl)
 %token <txt> REM ENTITY IS PORT GENERIC IN OUT INOUT MAP
 %token <txt> INTEGER BIT BITVECT DOWNTO TO TYPE END
 %token <txt> ARCHITECTURE COMPONENT OF ARRAY
-%token <txt> SIGNAL BEGN NOT WHEN WITH EXIT
+%token <txt> SIGNAL ALIAS BEGN NOT WHEN WITH EXIT
 %token <txt> SELECT OTHERS PROCESS VARIABLE CONSTANT
 %token <txt> IF THEN ELSIF ELSE CASE WHILE
 %token <txt> FOR LOOP GENERATE
@@ -1428,6 +1428,15 @@ a_decl    : {$$=NULL;}
               }
               p->next=type_list;
               type_list=p;
+            }
+          | a_decl ALIAS NAME ':' type IS expr ';' rem {
+            slist * sl;
+              sl=addtxt($1,"alias ");
+              sl=addtxt(sl,$3);
+              sl=addtxt(sl," = ");
+              sl=addsl(sl,$7->sl);
+              sl=addtxt(sl,";\n");
+              $$=addsl(sl,$9);
             }
           | a_decl TYPE NAME IS ARRAY '(' vec_range ')' OF type ';' rem {
             slist *sl=NULL;

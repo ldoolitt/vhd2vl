@@ -101,6 +101,7 @@ int scan_int(char *s);
 "of" { return OF; }
 "array" {return ARRAY; }
 "signal" { return SIGNAL; }
+"alias" { return ALIAS; }
 "begin" { return BEGN; }
 "not" { return NOT; }
 "when" { return WHEN; }
