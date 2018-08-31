@@ -1,8 +1,8 @@
 #!/usr/bin/make
 
-all:
-ifneq ($(shell which iverilog),)
-	@echo "##### Checking resulting Verilog files with iverilog ###########"
-	@$(foreach VERILOG,$(sort $(wildcard *.v)), echo "Checking: $(VERILOG)";\
-	iverilog -Wall -y . -t null $(VERILOG);)
-endif
+IVERILOG = iverilog
+V_FILES = $(sort $(wildcard *.v))
+all: $(V_FILES:%.v=%_check)
+
+%_check: %.v
+	$(IVERILOG) -Wall -y . -t null $<
