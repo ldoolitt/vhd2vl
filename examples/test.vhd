@@ -74,7 +74,7 @@ end component;
   constant PARAM2 : std_logic_vector(7 downto 0):="11001101";
   constant PARAM3 : std_logic_vector(7 downto 0):="00010111";
   signal param : std_logic_vector(7 downto 0);
-  signal selection : std_logic;
+  signal selection : std_logic := 0;
   signal start, enf : std_logic; -- Start and enable signals
   signal memdin : std_logic_vector(13 downto 0);
   signal memaddr : std_logic_vector(5 downto 0);
