@@ -860,19 +860,21 @@ slist *emit_io_list(slist *sl)
   slval *ss;  /* Signal structure */
 }
 
-%token <txt> REM ENTITY IS PORT GENERIC IN OUT INOUT MAP
+%token <txt> ABS REM ENTITY IS PORT GENERIC IN OUT INOUT MAP
 %token <txt> INTEGER BIT BITVECT DOWNTO TO TYPE END
 %token <txt> ARCHITECTURE COMPONENT OF ARRAY
 %token <txt> SIGNAL BEGN NOT WHEN WITH EXIT
 %token <txt> SELECT OTHERS PROCESS VARIABLE CONSTANT
 %token <txt> IF THEN ELSIF ELSE CASE WHILE
 %token <txt> FOR LOOP GENERATE
-%token <txt> AFTER AND OR XOR MOD RW_REM POW
+%token <txt> AFTER AND OR NAND NOR XOR XNOR MOD RW_REM POW
 %token <txt> LASTVALUE EVENT POSEDGE NEGEDGE
 %token <txt> STRING NAME RANGE NULLV OPEN
 %token <txt> CONVFUNC_1 CONVFUNC_2 BASED FLOAT LEFT
 %token <txt> SCIENTIFIC REAL
 %token <txt> ASSERT REPORT SEVERITY WARNING ERROR FAILURE NOTE
+%token <txt> ROL ROR SLA SLL SRA SRL
+%token ROTATE_LEFT ROTATE_RIGHT SHIFT_LEFT SHIFT_RIGHT
 %token <n> NATURAL
 
 %type <n> trad
@@ -899,20 +901,22 @@ slist *emit_io_list(slist *sl)
 
 %right '='
 /* Logic operators: */
-%left ORL
-%left ANDL
+%left ORL NORL
+%left ANDL NANDL
+/* Shift/rotate operators */
+%left ROL ROR SLA SLL SRA SRL
 /* Binary operators: */
-%left OR
+%left OR NOR
 %left XOR
 %left XNOR
-%left AND
+%left AND NAND
 %left MOD RW_REM
 /* Comparison: */
 %left '<'  '>'  BIGEQ  LESSEQ  NOTEQ  EQUAL
 %left  '+'  '-'  '&'
 %left  '*'  '/'
 %left  POW
-%right UMINUS  UPLUS  NOTL  NOT
+%right UMINUS  UPLUS  NOTL  NOT  ABS
 %error-verbose
 
 /* rule for "...ELSE IF edge THEN..." causes 1 shift/reduce conflict */
@@ -1919,7 +1923,6 @@ p_body : rem {$$=$1;}
          slist *sl;
          sglist *sg;
          char *s;
-
            s=sbottom($2->sl);
            if((sg=lookup(io_list,s))==NULL)
              sg=lookup(sig_list,s);
@@ -2356,13 +2359,76 @@ expr : signal {
      | expr POW expr {$$=addexpr($1,'*'," ** ",$3);}
      | expr '*' expr {$$=addexpr($1,'*'," * ",$3);}
      | expr '/' expr {$$=addexpr($1,'/'," / ",$3);}
-     | expr MOD expr {$$=addexpr($1,'%'," % ",$3);}
+     | expr MOD expr {
+         $$=addexpr($1,'%'," % ",$3);
+         fprintf(stderr,"WARNING (line %d): MOD translation as %% is wrong when args have different signs.\n", lineno);
+       }
      | expr RW_REM expr {$$=addexpr($1,'%'," % ",$3);}
      | NOT expr {$$=addexpr(NULL,'~'," ~",$2);}
+     | ABS expr {
+        slist *sl;
+          sl=addtxt(NULL,"( ( $signed(");
+          sl= addsl(sl,$2->sl);
+          sl=addtxt(sl,") < 0 ) ? -$signed(");
+          sl= addsl(sl,$2->sl);
+          sl=addtxt(sl,") : ");
+          sl= addsl(sl,$2->sl);
+          sl=addtxt(sl," )");
+          $2->sl=sl;
+          $$=$2;
+       }
      | expr AND expr {$$=addexpr($1,'&'," & ",$3);}
      | expr OR expr {$$=addexpr($1,'|'," | ",$3);}
+     | expr NAND expr {$$=addexpr(NULL,'~'," ~",addexpr($1,'&'," & ",$3));}
+     | expr NOR expr {$$=addexpr(NULL,'~'," ~",addexpr($1,'|'," | ",$3));}
      | expr XOR expr {$$=addexpr($1,'^'," ^ ",$3);}
      | expr XNOR expr {$$=addexpr(NULL,'~'," ~",addexpr($1,'^'," ^ ",$3));}
+     | expr SLL expr {
+         $$=addexpr($1,'*'," << ",$3);
+         fprintf(stderr,"WARNING (line %d): SLL translated as logical shift.\n", lineno);
+         fprintf(stderr," Replace << by <<< in the resulting Verilog for the arithmetic version.\n");
+       }
+     | SHIFT_LEFT '(' expr ',' expr ')' {
+         $$=addexpr($3,'*'," << ",$5);
+         fprintf(stderr,"WARNING (line %d): SHIFT_LEFT() translated as logical shift.\n", lineno);
+         fprintf(stderr," Replace << by <<< in the resulting Verilog for the arithmetic version.\n");
+       }
+     | expr SRL expr {
+         $$=addexpr($1,'*'," >> ",$3);
+         fprintf(stderr,"WARNING (line %d): SRL translated as logical shift.\n", lineno);
+         fprintf(stderr," Replace >> by >>> in the resulting Verilog for the arithmetic version.\n");
+       }
+     | SHIFT_RIGHT '(' expr ',' expr ')' {
+         $$=addexpr($3,'*'," >> ",$5);
+         fprintf(stderr,"WARNING (line %d): SHIFT_RIGHT() translated as logical shift.\n", lineno);
+         fprintf(stderr," Replace >> by >>> in the resulting Verilog for the arithmetic version.\n");
+       }
+     | expr SLA expr {
+         fprintf(stderr,"ERROR (line %d): SLA must not be used.\n", lineno);
+         fprintf(stderr,"Use SHIFT_LEFT/SLL from NUMERIC_STD with type SIGNED.\n");
+         YYABORT;
+       }
+     | expr SRA expr {
+         fprintf(stderr,"ERROR (line %d): SRA must not be used.\n", lineno);
+         fprintf(stderr," Use SHIFT_RIGHT/SRL from NUMERIC_STD with type SIGNED.\n");
+         YYABORT;
+       }
+     | expr ROR expr {
+         fprintf(stderr,"ERROR (line %d): ROR is not implemented yet.\n", lineno);
+         YYABORT;
+       }
+     | ROTATE_RIGHT '(' expr ',' expr ')' {
+         fprintf(stderr,"ERROR (line %d): ROTATE_RIGHT is not implemented yet.\n", lineno);
+         YYABORT;
+       }
+     | expr ROL expr {
+         fprintf(stderr,"ERROR (line %d): ROL is not implemented yet.\n", lineno);
+         YYABORT;
+       }
+     | ROTATE_LEFT '(' expr ',' expr ')' {
+         fprintf(stderr,"ERROR (line %d): ROTATE_LEFT is not implemented yet.\n", lineno);
+         YYABORT;
+       }
      | BITVECT '(' expr ')' {
        /* single argument type conversion function e.g. std_logic_vector(x) */
        $$ = addnest($3);
@@ -2389,10 +2455,26 @@ exprc : conf { $$=$1; }
           sl=addtxt($1," && ");
           $$=addsl(sl,$3);
         }
+      | exprc NAND exprc %prec NANDL {
+        slist *sl;
+          sl=addtxt(NULL,"!(");
+          sl= addsl(sl,$1);
+          sl=addtxt(sl," && ");
+          sl= addsl(sl,$3);
+          $$=addtxt(sl,")");
+        }
       | exprc OR exprc %prec ORL {
         slist *sl;
           sl=addtxt($1," || ");
           $$=addsl(sl,$3);
+        }
+      | exprc NOR exprc %prec NORL {
+        slist *sl;
+          sl=addtxt(NULL,"!(");
+          sl= addsl(sl,$1);
+          sl=addtxt(sl," || ");
+          sl= addsl(sl,$3);
+          $$=addtxt(sl,")");
         }
       | NOT exprc %prec NOTL {
         slist *sl;
