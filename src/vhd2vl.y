@@ -1430,7 +1430,7 @@ a_decl    : {$$=NULL;}
               type_list=p;
             }
           | a_decl TYPE NAME IS ARRAY '(' vec_range ')' OF type ';' rem {
-            slist *sl=NULL;
+            slist *sl=$1;
             sglist *p;
               $$=addrem(sl,$12);
               p=xmalloc(sizeof(sglist));

@@ -19,9 +19,9 @@ generic(
 end entity;
 
 architecture rtl of mem is
+  signal al : unsigned(addr_width-1 downto 0) := X"00";
   type mem_Type is array (255 downto 0) of unsigned(bus_width-1 downto 0);
   signal mem : mem_Type;
-  signal al : unsigned(addr_width-1 downto 0) := X"00";
 begin
   dout <= mem(to_integer(al));
   process (clk) is
