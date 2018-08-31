@@ -102,7 +102,7 @@ void qindent(int ind){
   for (ix=0; ix<ind; ix++) fputc(' ', stderr);
 }
 
-/* Visualise an slist structures as an aid to debugging and development.
+/* Visualize an slist structure as an aid to debugging and development.
  * Will never be used for actual Verilog generation. */
 void sldump(int ind, slist *sl){
   if (sl){
@@ -618,7 +618,7 @@ int pull_clkedge(slist *sensitivities)
   assert(clkptr>0);
   clkedge = clkedges[--clkptr];
   if (0) {
-     fprintf(stderr,"clock event pull: value=%d, sensistivity list = ", clkedge);
+     fprintf(stderr,"clock event pull: value=%d, sensitivity list = ", clkedge);
      fslprint(stderr,sensitivities);
      fprintf(stderr,"\n");
   }
@@ -1243,9 +1243,9 @@ vec_range : simple_expr updown simple_expr {
               $$->nlo=$3->sl;
               $$->sizeval = -1; /* undefined size */
               $$->updown = 0; /* not relevant */
-              /* Here is where we may want to analyze the two expressions to
-               * see if they have a simple (possibly constant) difference.
-               * For now, here's an option to visualise their data structures.
+              /* slist_check_diff() is where we analyze the two expressions
+               * to see if they have a simple (possibly constant) difference.
+               * Start with an option to visualize their data structures.
                */
               if (DEBUG_RANGE) {
                 fprintf(stderr, "debug width hi: ");
@@ -1662,7 +1662,7 @@ a_body : rem {$$=addind($1);}
              $$=addsl(sl,$35); /* a_body */
          }
 
-       /* note vhdl does not allow an else in an if generate statement */
+       /* note VHDL does not allow an else in an if generate statement */
        /* 1       2   3          4       5       6        7     8        9   10   11  12 */
        | gen_optname IF exprc generate  doindent a_body  unindent endgenerate oname ';' a_body {
          slist *sl;
