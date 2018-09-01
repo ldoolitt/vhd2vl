@@ -96,7 +96,7 @@ begin
     if rising_edge(clk) then
       case status is
         when red => colour <= "00";
-        when green => colour <= "01";
+        when green => colour <= B"01";
         when blue => colour <= "10";
         when others => colour <= "11";
       end case;

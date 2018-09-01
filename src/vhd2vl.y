@@ -319,7 +319,9 @@ slist *addvec(slist *sl, char *s){
 slist *addvec_base(slist *sl, char *b, char *s){
   const char *base_str="'b";
   int base_mult=1;
-  if (strcasecmp(b,"X") == 0) {
+  if (strcasecmp(b,"B") == 0) {
+     /* nothing to do */
+  } else if (strcasecmp(b,"X") == 0) {
      base_str="'h"; base_mult=4;
   } else if (strcasecmp(b,"O") == 0) {
      base_str="'o"; base_mult=3;
