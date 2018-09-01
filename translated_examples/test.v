@@ -52,7 +52,7 @@ parameter PARAM1 = 8'b01101101;
 parameter PARAM2 = 8'b11001101;
 parameter PARAM3 = 8'b00010111;
 wire [7:0] param;
-reg selection = 0;
+reg selection = 1'b0;
 reg start; wire enf;  // Start and enable signals
 wire [13:0] memdin;
 wire [5:0] memaddr;
