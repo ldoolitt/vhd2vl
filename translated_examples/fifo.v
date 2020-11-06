@@ -74,7 +74,7 @@ reg isrst_r;
   //--- Write address counter -------------
   //---------------------------------------
   assign add_WR_CE = (ifull == 1'b1) ? 1'b0 : (WR == 1'b0) ? 1'b0 : 1'b1;
-  assign n_add_WR = (add_WR) + 4'h1;
+  assign n_add_WR = add_WR + 4'h1;
   always @(posedge clk_WR, posedge rst) begin
     if((rst == 1'b1)) begin
       add_WR <= {5{1'b0}};
@@ -107,7 +107,7 @@ reg isrst_r;
   //--- Read address counter --------------
   //---------------------------------------
   assign add_RD_CE = (iempty == 1'b1) ? 1'b0 : (RD == 1'b0) ? 1'b0 : 1'b1;
-  assign n_add_RD = (add_RD) + 4'h1;
+  assign n_add_RD = add_RD + 4'h1;
   always @(posedge clk_RD, posedge rst) begin
     if((rst == 1'b1)) begin
       add_RD <= {5{1'b0}};

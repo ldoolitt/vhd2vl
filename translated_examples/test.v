@@ -121,11 +121,11 @@ reg [1:0] colour;
       3'b101 : code[9:2] <= 8'b11100010;
       3'b010 : code[9:2] <= {8{1'b1}};
       3'b011 : code[9:2] <= {8{1'b0}};
-      default : code[9:2] <= (a) + (b);
+      default : code[9:2] <= a + b;
     endcase
   end
 
-  assign code1[1:0] = a[6:5] ^ ({a[4],b[6]});
+  assign code1[1:0] = a[6:5] ^ {a[4],b[6]};
   // Asynch process
   always @(we, addr, config1, bip) begin
     if(we == 1'b1) begin
