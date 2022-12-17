@@ -1785,7 +1785,7 @@ gen_optname : rem {$$=$1;}
         | rem NAME ':' {
            blknamelist *tname_list;
            tname_list = xmalloc (sizeof(blknamelist));
-           tname_list->name = xmalloc(strlen($2));
+           tname_list->name = xmalloc(strlen($2) + 1);
            strcpy(tname_list->name, $2);
            tname_list->next = blkname_list;
            blkname_list=tname_list;
