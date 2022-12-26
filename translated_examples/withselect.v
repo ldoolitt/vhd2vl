@@ -34,9 +34,9 @@ wire [31:0] complex;
   end
 
   assign code1[1:0] = a[6:5] ^ ({a[4],b[6]});
-  assign foo = {(((1 + 1))-((0))+1){1'b0}};
+  assign foo = {((1 + 1)-(0)+1){1'b0}};
   assign egg = {78{1'b0}};
-  assign baz = {(((bus_width * 4))-((bus_width * 3 - 1))+1){1'b1}};
+  assign baz = {((bus_width * 4)-(bus_width * 3 - 1)+1){1'b1}};
   assign complex = {enf,3'b110 * (load),qtd[3:0],base,5'b11001};
 
 endmodule

@@ -19,7 +19,7 @@ reg [4:7 - 1] egg;
 
   always @(posedge reset, posedge sysclk) begin
     if((reset != 1'b0)) begin
-      foo <= {(((10 + 3))-((0))+1){1'b1}};
+      foo <= {((10 + 3)-(0)+1){1'b1}};
     end else begin
       foo <= ival[31:31 - (10 + 3)];
     end
@@ -35,7 +35,7 @@ reg [4:7 - 1] egg;
 
   always @(negedge qreset, negedge esysclk) begin
     if((qreset != 1'b1)) begin
-      egg <= {(((7 - 1))-((4))+1){1'b0}};
+      egg <= {((7 - 1)-(4)+1){1'b0}};
     end else begin
       egg <= ival[6:4];
     end

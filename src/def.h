@@ -64,6 +64,16 @@ typedef struct expdata {
   int value;  /* only set for simple_expr */
   slist *sl;
 } expdata;
+/* Other people might use an enum for the op (operation).
+ * I use a mnemonic character.
+ *  'c'  Chain
+ *  'e'  Expression
+ *  'n'  Natural
+ *  't'  Terminal symbol
+ *  'o'  Others
+ * This is used to determine punctuation in the nesting process,
+ * reducing the number of useless parenthesis levels.
+ */
 
 typedef struct sglist {
   char *name; /* Signal name */

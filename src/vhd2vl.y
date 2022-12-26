@@ -426,6 +426,7 @@ expdata *addnest(struct expdata *inner)
   } else {
     e->sl=addsl(NULL,inner->sl);
   }
+  e->op='e';
   return e;
 }
 
@@ -1281,7 +1282,9 @@ vec_range : simple_expr updown simple_expr {
                 expdata *plusone = xmalloc(sizeof(expdata));
                 expdata *finalexpr = xmalloc(sizeof(expdata));
                 size_expr1->sl = addwrap("(",$1->sl,")");
+                size_expr1->op = 't';
                 size_expr2->sl = addwrap("(",$3->sl,")");
+                size_expr2->op = 't';
                 plusone->op='t';
                 plusone->sl=addtxt(NULL,"1");
                 if ($2==-1) {
@@ -2623,6 +2626,7 @@ simple_expr : signal {
                 expdata *e;
                 e=xmalloc(sizeof(expdata));
                 e->sl=addwrap("(",sg->range->nhi,")");  /* XXX left vs. high? */
+                e->op='t';
                 $$=e;
               } else {
                 fprintf(stderr,"ERROR (line %d): undefined left \"%s'left\".\n", lineno, $1);
@@ -2649,6 +2653,7 @@ simple_expr : signal {
        expdata *e;
        e=xmalloc(sizeof(expdata));
        e->sl=addsl(NULL,$3->sl);
+       e->op='e';
        $$=e;
       }
      | '(' simple_expr ')' {
@@ -2656,6 +2661,7 @@ simple_expr : signal {
        e=xmalloc(sizeof(expdata));
        /* e->sl=addwrap("(",$2->sl,")"); */
        e->sl=addsl(NULL,$2->sl);
+       e->op='e';
        $$=e;
       }
      ;
