@@ -92,6 +92,7 @@ struct vrange *new_vrange(enum vrangeType t)
   v->nhi = NULL;
   v->size_expr = NULL;
   v->sizeval = 0;
+  v->updown = 0;
   v->xlo = NULL;
   v->xhi = NULL;
   return v;
