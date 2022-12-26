@@ -919,7 +919,7 @@ slist *emit_io_list(slist *sl)
 %left  '*'  '/'
 %left  POW
 %right UMINUS  UPLUS  NOTL  NOT  ABS
-%error-verbose
+%define parse.error verbose
 
 /* rule for "...ELSE IF edge THEN..." causes 1 shift/reduce conflict */
 /* rule for opt_begin causes 1 shift/reduce conflict */
