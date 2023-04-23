@@ -88,4 +88,7 @@ typedef struct blknamelist {
   struct blknamelist *next;
 } blknamelist;
 
+/* Routine common between vhd2vl.l and vhd2vl.y */
+char *xstrdup(const char *s);
+
 #endif

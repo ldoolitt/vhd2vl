@@ -57,6 +57,13 @@ void *xrealloc(void *ptr, size_t size) {
 	return p;
 }
 
+char *xstrdup(const char *s) {
+	size_t l = strlen(s);
+	char *x = xmalloc(l+1);
+	memcpy(x, s, l+1);
+	return x;
+}
+
 int skipRem = 0;
 int lineno=1;
 
@@ -456,10 +463,17 @@ char *sbottom(slist *sl){
   return sl->data.txt;
 }
 
+slist *new_signal(const char *s){
+  slist *sl;
+  /* somewhat boring now, but will get more interesting later */
+  sl=addtxt(NULL,s);
+  return sl;
+}
+
 /* kind of like strdup, but with specified len */
 char *strgrab(char*s, size_t len)
 {
-  char *r = malloc(len+1);
+  char *r = xmalloc(len+1);
   if (r) {
     memcpy(r, s, len);
     r[len] = 0;
@@ -2221,7 +2235,8 @@ signal : NAME {
          slist *sl;
          slval *ss;
            ss=xmalloc(sizeof(slval));
-           sl=addtxt(NULL,$1);
+           sl=new_signal($1);
+           if (!sl) YYABORT;
            if(dowith){
              slwith=sl;
              dowith=0;
@@ -2235,7 +2250,8 @@ signal : NAME {
          slval *ss;
          slist *sl;
            ss=xmalloc(sizeof(slval));
-           sl=addtxt(NULL,$1);
+           sl=new_signal($1);
+           if (!sl) YYABORT;
            sl=addpar_snug(sl,$3);
            if(dowith){
              slwith=sl;
@@ -2259,7 +2275,8 @@ signal : NAME {
          slval *ss;
          slist *sl;
            ss=xmalloc(sizeof(slval));
-           sl=addtxt(NULL,$1);
+           sl=new_signal($1);
+           if (!sl) YYABORT;
            sl=addpar_snug2(sl,$3, $6);
            if(dowith){
              slwith=sl;

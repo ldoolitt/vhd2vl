@@ -50,8 +50,7 @@ int scan_int(char *s);
      * e.g. in expressions - this makes the grammar much simpler
      */
     size_t l=strlen(yytext);
-    yylval.txt=malloc(l+1);
-    strcpy(yylval.txt, yytext);
+    yylval.txt=xstrdup(yytext);
     yylval.txt[0]='/';
     yylval.txt[1]='/';
     if(yylval.txt[l-2]=='\r') {
@@ -175,8 +174,7 @@ int scan_int(char *s);
 }
 
 [a-zA-Z_$][a-zA-Z0-9_$.]* {
-  yylval.txt=malloc(strlen(yytext)+1);
-  strcpy(yylval.txt, yytext);
+  yylval.txt=xstrdup(yytext);
   return NAME;
 }
 
@@ -187,8 +185,7 @@ int scan_int(char *s);
 
 [0-9]+e[-+]?[0-9]+ |
 [0-9]+\.[0-9]+e[-+]?[0-9]+ {
-  yylval.txt=malloc(strlen(yytext)+1);
-  strcpy(yylval.txt, yytext);
+  yylval.txt=xstrdup(yytext);
   return SCIENTIFIC;
 }
 
