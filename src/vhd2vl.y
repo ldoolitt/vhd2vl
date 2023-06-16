@@ -4,7 +4,7 @@
     Copyright (C) 2001 Vincenzo Liguori - Ocean Logic Pty Ltd - http://www.ocean-logic.com
     Modifications (C) 2006 Mark Gonzales - PMC Sierra Inc
     Modifications (C) 2010 Shankar Giri
-    Modifications (C) 2002-2017 Larry Doolittle
+    Modifications (C) 2002-2023 Larry Doolittle
     Modifications (C) 2017 Rodrigo A. Melo
 
     This program is free software; you can redistribute it and/or modify
@@ -30,6 +30,8 @@
 #include <getopt.h>
 #include <assert.h>
 #include "def.h"
+
+#define VHD2VL_VER "3.0"
 
 int yylex(void);
 void yyerror(const char *s);
@@ -2691,8 +2693,8 @@ const char *sourcefile; /* Input file */
 
 void print_usage(void) {
    printf(
-      "Usage: vhd2vl [--debug] [--quiet] [--std 1995|2001] source_file.vhd > target_file.v\n"
-      "   or  vhd2vl [--debug] [--quiet] [--std 1995|2001] source_file.vhd target_file.v\n"
+      "Usage: vhd2vl [--debug] [--quiet] [--std 1995|2001] [--version] source_file.vhd > target_file.v\n"
+      "   or  vhd2vl [--debug] [--quiet] [--std 1995|2001] [--version] source_file.vhd target_file.v\n"
    );
 }
 
@@ -2709,6 +2711,7 @@ static int quiet;
     {"quiet",     no_argument,       &quiet,    1  },
     {"std",       required_argument, 0,        's' },
     {"help",      no_argument,       0,        'h' },
+    {"version",   no_argument,       0,        'v' },
     {0,           0,                 0,         0  }
   };
 
@@ -2735,6 +2738,13 @@ static int quiet;
            exit(EXIT_FAILURE);
         }
         break;
+      case 'v':
+#ifdef GIT_BASED_VERS
+        printf("vhd2vl version " VHD2VL_VER " (git commit " GIT_BASED_VERS ")\n");
+#else
+        printf("vhd2vl version " VHD2VL_VER "\n");
+#endif
+        exit(EXIT_SUCCESS);
       default:
         print_usage();
         exit(EXIT_SUCCESS);
@@ -2766,16 +2776,16 @@ static int quiet;
   }
 
   if (!quiet) {
-     printf("// File %s translated with vhd2vl v3.0 VHDL to Verilog RTL translator\n", sourcefile);
+     printf("// File %s translated with vhd2vl " VHD2VL_VER " VHDL to Verilog RTL translator\n", sourcefile);
      printf("// vhd2vl settings:\n"
             "//  * Verilog Module Declaration Style: %d\n\n", vlog_ver);
      fputs(
 "// vhd2vl is Free (libre) Software:\n"
-"//   Copyright (C) 2001 Vincenzo Liguori - Ocean Logic Pty Ltd\n"
+"//   Copyright (C) 2001-2023 Vincenzo Liguori - Ocean Logic Pty Ltd\n"
 "//     http://www.ocean-logic.com\n"
 "//   Modifications Copyright (C) 2006 Mark Gonzales - PMC Sierra Inc\n"
 "//   Modifications (C) 2010 Shankar Giri\n"
-"//   Modifications Copyright (C) 2002-2017 Larry Doolittle\n"
+"//   Modifications Copyright (C) 2002-2023 Larry Doolittle\n"
 "//     http://doolittle.icarus.com/~larry/vhd2vl/\n"
 "//   Modifications (C) 2017 Rodrigo A. Melo\n"
 "//\n", stdout);
