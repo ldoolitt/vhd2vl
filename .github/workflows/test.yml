@@ -4,14 +4,17 @@ on: [push]
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-24.04, ubuntu-22.04, ubuntu-20.04]
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Install dependencies
-      run: sudo apt update && sudo apt install -y build-essential flex bison iverilog
+      run: sudo apt-get update && sudo apt-get install -y build-essential flex bison iverilog
     - name: Build
-      run: make -j$(nproc)
+      run: make
     - name: Install and print version
       run: sudo make install && vhd2vl --version
     - name: Test
