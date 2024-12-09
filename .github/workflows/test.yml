@@ -1,0 +1,18 @@
+name: vhd2vl
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Install dependencies
+      run: sudo apt update && sudo apt install -y build-essential flex bison iverilog
+    - name: Build
+      run: make -j$(nproc)
+    - name: Install and print version
+      run: sudo make install && vhd2vl --version
+    - name: Test
+      run: make test
