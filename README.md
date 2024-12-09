@@ -52,6 +52,7 @@ There are a few options available on the command line:
 * `--debug` turn ON debugging within the yacc (bison) parser
 * `--src 1995|2001` to specify module declaration style
 * `--quiet` to avoid print vhd2vl header in translated_file.v
+* `--version` to print vhd2vl version and info from git, if available
 
 ## 3.0 TROUBLESHOOTING:
 
