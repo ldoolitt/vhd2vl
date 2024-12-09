@@ -22,6 +22,11 @@ http://doolittle.icarus.com/~larry/vhd2vl/
 
 ## 1.0 HOW TO BUILD AND INSTALL vhd2vl:
 
+Install the required dependencies for building and testing:
+```
+sudo apt install build-essential flex bison iverilog
+```
+
 To build, just type `make` in the src directory.
 
 This version of vhd2vl has been tested with
