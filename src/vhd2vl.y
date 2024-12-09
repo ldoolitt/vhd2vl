@@ -1092,7 +1092,7 @@ genlist  : s_list ':' type ':' '=' expr rem {
             for(;;){
               sl=addtxt(sl,p->name);
               sl=addtxt(sl,"=");
-              sl=addsl(sl, $6->sl); /* expr */
+              sl=addsl(sl, addnest($6)->sl); /* expr */
               sl=addtxt(sl,";\n");
               p=p->next;
               if(p==NULL) break;
@@ -1113,7 +1113,7 @@ genlist  : s_list ':' type ':' '=' expr rem {
             for(;;){
               sl=addtxt(sl,p->name);
               sl=addtxt(sl,"=");
-              sl=addsl(sl, $6->sl); /* expr */
+              sl=addsl(sl, addnest($6)->sl); /* expr */
               sl=addtxt(sl,";\n");
               p=p->next;
               if(p==NULL) break;
@@ -2368,7 +2368,7 @@ expr : signal {
            e->sl=addothers(NULL,$5->sl);
            $$=e;
          }
-     | expr '&' expr { /* Vector chaining */
+     | expr '&' expr { /* Vector chaining a.k.a. bit concatenation */
          slist *sl;
            sl=addtxt($1->sl,",");
            sl=addsl(sl,$3->sl);
