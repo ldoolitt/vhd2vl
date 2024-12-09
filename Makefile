@@ -16,19 +16,25 @@ VHDLS   := $(filter-out $(EXCLUDE),$(VHDLS))
 DIFFOPT := $(DIFFOPT) --exclude-from=examples/exclude
 endif
 
-all: diff
+PREFIX  ?= /usr/local
+BINDIR  ?= $(PREFIX)/bin
+BINARY   = src/vhd2vl
 
-translate:
-	@make -C src
+all: $(BINARY)
+
+build $(BINARY):
+	make -C src
+
+install: $(BINARY)
+	cp $< $(BINDIR)
+
+test: $(BINARY)
 	@make -C examples
-	@rm -fr $(TEMP)/verilog
-	@mkdir -p $(TEMP)/verilog
+	@rm -fr $(TEMP)/verilog && mkdir -p $(TEMP)/verilog
 	@echo "##### Translating Examples #####################################"
 	@cd examples; $(foreach VHDL,$(VHDLS), echo "Translating: $(VHDL)";\
-	../src/vhd2vl --quiet $(VHDL) ../$(TEMP)/verilog/$(basename $(VHDL)).v;)
+	../$(BINARY) --quiet $(VHDL) ../$(TEMP)/verilog/$(basename $(VHDL)).v;)
 	@make -C translated_examples
-
-diff: translate
 	@echo "##### Diff #####################################################"
 	diff -u $(DIFFOPT) translated_examples $(TEMP)/verilog
 	@echo "PASS"

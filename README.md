@@ -33,8 +33,9 @@ It is also verified to work with recent tinycc from its git mob.
 This is portable C89/C99 code.  It can be expected to work with any
 fairly recent version of the required tools.
 
-To install, copy the resulting src/vhd2vl file to someplace in
-your *$PATH*, like *$HOME/bin* or */usr/local/bin*.
+To install, you can either type `make install` to copy the resulting src/vhd2vl
+file to */usr/local/bin*, or copy it manually to someplace in your *$PATH*, like
+*$HOME/bin*.
 
 ## 2.0 HOW TO USE vhd2vl:
 
