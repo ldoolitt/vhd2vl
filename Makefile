@@ -16,6 +16,8 @@ VHDLS   := $(filter-out $(EXCLUDE),$(VHDLS))
 DIFFOPT := $(DIFFOPT) --exclude-from=examples/exclude
 endif
 
+PREFIX  ?= /usr/local
+BINDIR  ?= $(PREFIX)/bin
 BINARY   = src/vhd2vl
 
 all: $(BINARY)
@@ -24,7 +26,7 @@ build $(BINARY):
 	make -C src
 
 install: $(BINARY)
-	cp $< /usr/local/bin
+	cp $< $(BINDIR)
 
 test: $(BINARY)
 	@make -C examples
