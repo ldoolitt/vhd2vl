@@ -889,7 +889,7 @@ slist *emit_io_list(slist *sl)
 %token <txt> FOR LOOP GENERATE
 %token <txt> AFTER AND OR NAND NOR XOR XNOR MOD RW_REM POW
 %token <txt> LASTVALUE EVENT POSEDGE NEGEDGE
-%token <txt> STRING NAME RANGE NULLV OPEN
+%token <txt> STRING NAME RANGE LENGTH NULLV OPEN
 %token <txt> CONVFUNC_1 CONVFUNC_2 BASED FLOAT LEFT
 %token <txt> SCIENTIFIC REAL
 %token <txt> ASSERT REPORT SEVERITY WARNING ERROR FAILURE NOTE
@@ -2464,6 +2464,22 @@ expr : signal {
      | CONVFUNC_2 '(' expr ',' expr ')' {
        /* two argument type conversion e.g. to_unsigned(x, 3) */
        $$ = addnest($3);
+      }
+     | NAME '\'' LENGTH {
+      /* lookup NAME and copy its length */
+      sglist *sg = NULL;
+        if ((sg=lookup(io_list,$1))==NULL) {
+          sg=lookup(sig_list,$1);
+        }
+        if(sg) {
+          expdata *e=xmalloc(sizeof(expdata));
+            e->op='t'; /* Terminal symbol */
+            e->sl=addval(NULL,sg->range->sizeval);
+            $$ = e;
+        } else {
+          fprintf(stderr,"ERROR (line %d): undefined length \"%s'length\".\n", lineno, $1);
+          YYABORT;
+        }
       }
      | '(' expr ')' {
        $$ = addnest($2);
