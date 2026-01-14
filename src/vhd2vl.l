@@ -139,9 +139,7 @@ int scan_int(char *s);
 "std_ulogic_vector"               { return BITVECT; }
 "real"                            { return REAL; }
 "resize" |
-"to_unsigned" |
-"to_signed" |
-"conv_std_logic_vector"           { return CONVFUNC_2; }
+"to_unsigned"                     { return CONVFUNC_2; }
 "to_integer" |
 "conv_integer"                    { return CONVFUNC_1; }
 

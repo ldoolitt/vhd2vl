@@ -947,7 +947,7 @@ slist *emit_io_list(slist *sl)
 /* rule for "...ELSE IF edge THEN..." causes 1 shift/reduce conflict */
 /* rule for opt_begin causes 1 shift/reduce conflict */
 /* recursive design_units rule may cause additional conflicts */
-%expect 7
+%expect 3
 
 /* glr-parser is needed because processes can start with if statements, but
  * not have edges in them - more than one level of look-ahead is needed in that case
@@ -957,8 +957,10 @@ slist *emit_io_list(slist *sl)
 %%
 
 /* Input file can contain one or more entity-architecture pairs */
-trad  : design_units {
-          slprint($1);
+trad : design_units rem {
+        slist *sl;
+          sl=addsl($1,$2);
+          slprint(sl);
           $$=0;
         }
       ;
@@ -967,40 +969,37 @@ design_units : design_unit {
           $$=$1;
         }
       | design_units design_unit {
-          slist *sl;
-          sl=addsl($1,$2);
-          $$=sl;
-        }
-      ;
-
-design_unit : rem entity rem architecture rem {
         slist *sl;
-          sl=output_timescale($1);
-          sl=addsl(sl,$2);
-          sl=addsl(sl,$3);
-          sl=addsl(sl,$4);
-          sl=addtxt(sl,"\nendmodule\n");
-          sl=addsl(sl,$5);
+          sl=addsl($1,$2);
           $$=sl;
         }
 /* some people put entity declarations and architectures in separate files -
  * translate each piece - note that this will not make a legal Verilog file
  * - let them take care of that manually
  */
-      | rem entity rem  {
+      | rem entity {
         slist *sl;
           sl=output_timescale($1);
           sl=addsl(sl,$2);
-          sl=addtxt(sl,"\nendmodule\n");
-          sl=addsl(sl,$3);
+          sl=addtxt(sl,"\nendmodule  // incomplete: entity-only\n");
           $$=sl;
         }
-      | rem architecture rem {
+      | rem architecture {
         slist *sl;
           sl=output_timescale($1);
           sl=addsl(sl,$2);
-          sl=addtxt(sl,"\nendmodule\n");
+          sl=addtxt(sl,"\nendmodule  // incomplete: architecture-only\n");
+          $$=sl;
+        }
+      ;
+
+design_unit : rem entity rem architecture {
+        slist *sl;
+          sl=output_timescale($1);
+          sl=addsl(sl,$2);
           sl=addsl(sl,$3);
+          sl=addsl(sl,$4);
+          sl=addtxt(sl,"\nendmodule\n");
           $$=sl;
         }
       ;

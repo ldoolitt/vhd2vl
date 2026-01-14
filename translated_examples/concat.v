@@ -1,3 +1,4 @@
+// no timescale needed
 
 module concat_demo(
 input wire reset
@@ -9,4 +10,4 @@ parameter [31:0] xyz=8'hff;
 
 
 
-endmodule
+endmodule  // incomplete: entity-only

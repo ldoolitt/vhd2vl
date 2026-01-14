@@ -1,3 +1,4 @@
+// no timescale needed
 
 module Scientific(
 input wire clk
@@ -12,4 +13,4 @@ parameter exp5=50.0e-3;
 
 
 
-endmodule
+endmodule  // incomplete: entity-only

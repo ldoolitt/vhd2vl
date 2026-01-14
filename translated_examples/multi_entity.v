@@ -23,9 +23,9 @@ output reg [7:0] q
     end
   end
 
-// Second entity: Simple adder
 
 endmodule
+// Second entity: Simple adder
 
 module simple_adder(
 input wire [7:0] a,
