@@ -74,6 +74,7 @@ sglist *io_list=NULL;
 sglist *sig_list=NULL;
 sglist *type_list=NULL;
 blknamelist *blkname_list=NULL;
+slist *with_selector_expr=NULL;
 
 /* need a stack of clock-edges because all edges are processed before all processes are processed.
  * Edges are processed in source file order, processes are processed in reverse source file order.
@@ -1648,32 +1649,25 @@ a_body : rem {$$=addind($1);}
            $$=addsl(sl,$10);
          }
        /* 1   2     3    4    5   6       7       8   9     10     11 */
-       | rem WITH expr SELECT rem yeswith signal '<' '=' with_list a_body {
+       | rem WITH expr SELECT rem { with_selector_expr = $3->sl; } yeswith signal '<' '=' with_list a_body {
          slist *sl;
          sglist *sg;
          char *s;
            sl=addsl($1,indents[indent]);
-           sl=addtxt(sl,"always @(*) begin\n");
-           sl=addsl(sl,indents[indent]);
-           sl=addtxt(sl,"  case(");
-           sl=addsl(sl,$3->sl);
-           free($3);
-           sl=addtxt(sl,")\n");
-           if($5)
-             sl=addsl(sl,$5);
-           s=sbottom($7->sl);
+           sl=addtxt(sl,"assign ");
+           sl=addsl(sl,$8->sl);
+           s=sbottom($8->sl);
            if((sg=lookup(io_list,s))==NULL)
              sg=lookup(sig_list,s);
-           if(sg)
-             sg->type=reg;
-           findothers($7,$10);
-           free($7);
-           sl=addsl(sl,$10);
-           sl=addsl(sl,indents[indent]);
-           sl=addtxt(sl,"  endcase\n");
-           sl=addsl(sl,indents[indent]);
-           sl=addtxt(sl,"end\n\n");
-           $$=addsl(sl,$11);
+           /* keep wire type to avoid reg/assign conflicts */
+           findothers($8,$11);
+           free($8);
+           sl=addtxt(sl," = ");
+           sl=addsl(sl,$11);
+           sl=addtxt(sl,";\n");
+           with_selector_expr=NULL;
+           free($3);
+           $$=addsl(sl,$12);
          }
        /* 1   2   3     4  5   6    7    8   9         10     11  12  13  14       15 */
        | rem NAME ':' NAME rem PORT MAP '(' doindent map_list rem ')' ';' unindent a_body {
@@ -1934,7 +1928,11 @@ edge : '(' edge ')' {$$=addwrap("(",$2,")");}
 
 yeswith : {dowith=1;}
 
-with_list : with_item ';' {$$=$1;}
+with_list : with_item ';' {
+             /* terminate nested ternary with zero if no explicit others */
+             $$=addtxt($1,"1'b0");
+             with_selector_expr=NULL;
+           }
           | with_item ',' rem with_list {
             slist *sl;
               if($3){
@@ -1945,42 +1943,34 @@ with_list : with_item ';' {$$=$1;}
             }
           | expr delay WHEN OTHERS ';' {
             slist *sl;
-              sl=addtxt(indents[indent],"    default : ");
-              sl=addsl(sl,slwith);
-              sl=addtxt(sl," <= ");
-              if(delay && $2){
-                sl=addtxt(sl,"# ");
-                sl=addval(sl,$2);
-                sl=addtxt(sl," ");
+              if (delay && $2) {
+                fprintf(stderr,"WARNING (line %d): ignoring delay in WITH SELECT others clause.\n", lineno);
               }
               if($1->op == 'c')
-                sl=addsl(sl,addwrap("{",$1->sl,"}"));
+                sl=addsl(NULL,addwrap("{",$1->sl,"}"));
               else
-                sl=addsl(sl,$1->sl);
+                sl=addsl(NULL,$1->sl);
               free($1);
               delay=1;
-              $$=addtxt(sl,";\n");
+              $$=sl;
+              with_selector_expr=NULL;
             }
 
 with_item : expr delay WHEN wlist {
             slist *sl;
-              sl=addtxt(indents[indent],"    ");
-              sl=addsl(sl,$4);
-              sl=addtxt(sl," : ");
-              sl=addsl(sl,slwith);
-              sl=addtxt(sl," <= ");
-              if(delay && $2){
-                sl=addtxt(sl,"# ");
-                sl=addval(sl,$2);
-                sl=addtxt(sl," ");
+              if (delay && $2) {
+                fprintf(stderr,"WARNING (line %d): ignoring delay in WITH SELECT choice.\n", lineno);
               }
+              sl=addtxt(NULL,"(");
+              sl=addsl(sl,$4);
+              sl=addtxt(sl,") ? ");
               if($1->op == 'c')
                 sl=addsl(sl,addwrap("{",$1->sl,"}"));
               else
                 sl=addsl(sl,$1->sl);
               free($1);
               delay=1;
-              $$=addtxt(sl,";\n");
+              $$=addtxt(sl," : ");
             }
 
 p_decl : rem {$$=$1;}
@@ -2202,11 +2192,30 @@ cases : WHEN wlist '=' '>' doindent p_body unindent cases{
       | /* Empty */ { $$=NULL; }  /* List without WHEN OTHERS */
       ;
 
-wlist : wvalue {$$=$1;}
+wlist : wvalue {
+        if (with_selector_expr) {
+          slist *sl;
+          sl=addtxt(NULL,"(");
+          sl=addsl(sl,with_selector_expr);
+          sl=addtxt(sl," == ");
+          sl=addsl(sl,$1);
+          $$=addtxt(sl,")");
+        } else {
+          $$=$1;
+        }
+      }
       | wlist '|' wvalue {
         slist *sl;
-          sl=addtxt($1,",");
-          $$=addsl(sl,$3);
+          if (with_selector_expr) {
+            sl=addtxt($1," || (");
+            sl=addsl(sl,with_selector_expr);
+            sl=addtxt(sl," == ");
+            sl=addsl(sl,$3);
+            $$=addtxt(sl,")");
+          } else {
+            sl=addtxt($1,",");
+            $$=addsl(sl,$3);
+          }
         }
       ;
 
