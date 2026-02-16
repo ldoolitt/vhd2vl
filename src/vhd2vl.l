@@ -89,6 +89,7 @@ static void replace_dash(char *s);
 "in"                              { return IN; }
 "inout"                           { return INOUT; }
 "is"                              { return IS; }
+"length"                          { return LENGTH; }
 "library ".*\n                    { lineno++; }
 "loop"                            { return LOOP; }
 "map"                             { return MAP; }
