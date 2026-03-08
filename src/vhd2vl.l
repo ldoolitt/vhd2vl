@@ -143,7 +143,7 @@ static void replace_dash(char *s);
 "to_signed" |
 "to_unsigned" |
 "conv_std_logic_vector" |
-"conv_std_ulogic_vector"          { return CONVFUNC_2; }
+"conv_std_ulogic_vector"          { yylval.txt=xstrdup(yytext); return CONVFUNC_2; }
 "to_integer" |
 "conv_integer"                    { yylval.txt=xstrdup(yytext); return CONVFUNC_1; }
 

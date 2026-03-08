@@ -114,10 +114,6 @@ larger expression must take the form `smaller + offset` or `offset + smaller`.
 Otherwise the output will be a direct transcription of the VHDL, which is not
 standard-conforming unless both ends of the range are constant.
 
-Conversion functions (resize, to_unsigned, conv_integer) are parsed, but
-their semantics are ignored: resize(foo,n), to_unsigned(foo,n), and
-conv_integer(foo) are treated as equivalent to foo.
-
 VHDL is case insensitive, vhd2vl is case retentive, and Verilog is case
 sensitive. If you're sloppy with case in the original VHDL, the
 resulting Verilog will have compile-time warnings or errors. See

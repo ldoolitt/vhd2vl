@@ -6,8 +6,8 @@ all:
 ifneq ($(shell which ghdl),)
 	@mkdir -p $(TEMP)
 	@echo "##### Checking examples with GHDL ##############################"
-	ghdl -a --workdir=$(TEMP) signextend.vhd
-	ghdl -a -fsynopsys --workdir=$(TEMP) *.vhd
+	ghdl -a --std=08 --workdir=$(TEMP) signextend.vhd
+	ghdl -a --std=08 -fsynopsys --workdir=$(TEMP) *.vhd
 endif
 
 clean:
