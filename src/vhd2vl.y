@@ -2308,6 +2308,7 @@ wlist : wvalue {$$=$1;}
 wvalue : STRING {$$=addvec(NULL,$1);}
        | NAME STRING {$$=addvec_base(NULL,$1,$2);}
        | NAME {$$=addtxt(NULL,$1);}
+       | NATURAL {$$=addval(NULL,$1);}
        ;
 
 sign_list : signal {$$=$1->sl; free($1);}
